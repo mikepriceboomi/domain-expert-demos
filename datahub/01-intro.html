@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boomi DataHub — Interactive Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #02283B;
+      --navy-mid:    #0A3A52;
+      --coral:       #FF7C66;
+      --teal:        #0EC38B;
+      --indigo:      #4B4FE2;
+      --white:       #FFFFFF;
+      --text-muted:  rgba(255,255,255,0.52);
+      --panel-bg:    rgba(2,28,48,0.72);
+      --panel-border:rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow: hidden;
+    }
+
+    /* ── BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 900px 700px at -5% 15%,  rgba(255,124,102,0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 700px 600px at 105% 85%, rgba(14,195,139,0.10)  0%, transparent 65%),
+        radial-gradient(ellipse 500px 500px at 55%  -5%, rgba(75,79,226,0.09)   0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── LAYOUT ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(2,28,48,0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+
+    .boomi-wordmark {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+    .boomi-wordmark .dot { color: var(--coral); }
+
+    .header-divider {
+      width: 1px; height: 24px;
+      background: rgba(255,255,255,0.18);
+    }
+
+    .header-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .header-label span { color: var(--coral); }
+
+    .header-badge {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--teal); letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.4; transform:scale(0.8); }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7rem;
+      padding: 3rem 6rem;
+    }
+
+    /* Left column — text */
+    .hero-text {
+      flex: 0 0 auto;
+      max-width: 600px;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(24px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .eyebrow {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      margin-bottom: 1.1rem;
+    }
+
+    .product-name {
+      font-size: clamp(4rem, 6vw, 6.5rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.75rem;
+    }
+
+    .coral-rule {
+      width: 52px; height: 3px;
+      background: var(--coral);
+      border-radius: 2px;
+      margin-bottom: 1.75rem;
+    }
+
+    .tagline {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.5;
+      margin-bottom: 2.5rem;
+      max-width: 480px;
+    }
+
+    .tagline strong {
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    /* CTA */
+    .cta-row { display: flex; align-items: center; gap: 1.25rem; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 2rem;
+      background: var(--coral);
+      color: var(--navy);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(255,124,102,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(255,124,102,0.45);
+    }
+    .btn-primary svg { transition: transform 0.15s; }
+    .btn-primary:hover svg { transform: translateX(3px); }
+
+    .cta-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Stat pills */
+    .stat-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 8px;
+      padding: 0.55rem 1rem;
+    }
+    .stat-pill .val {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--teal);
+    }
+    .stat-pill .lbl {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* Right column — DataHub icon */
+    .hero-icon {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeUp 0.7s 0.15s ease both;
+    }
+
+    .icon-ring {
+      position: relative;
+      width: 380px;
+      height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Animated orbital ring */
+    .icon-ring::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(255,124,102,0.18);
+      animation: spin 18s linear infinite;
+    }
+    .icon-ring::after {
+      content: '';
+      position: absolute;
+      inset: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(14,195,139,0.14);
+      animation: spin 12s linear infinite reverse;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .icon-glow {
+      position: absolute;
+      inset: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(255,124,102,0.18) 0%,
+        rgba(14,195,139,0.10) 45%,
+        transparent 72%);
+    }
+
+    .datahub-icon {
+      width: 240px;
+      height: 240px;
+      position: relative;
+      z-index: 2;
+      filter: drop-shadow(0 8px 32px rgba(0,0,0,0.40));
+    }
+
+    /* ── CHAPTER STRIP ── */
+    .chapter-strip {
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid var(--panel-border);
+      background: rgba(2,28,48,0.50);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .chapter {
+      flex: 1;
+      padding: 0.9rem 1.5rem;
+      border-right: 1px solid var(--panel-border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .chapter:last-child { border-right: none; }
+
+    .chapter-num {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.15);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .chapter-info {}
+    .chapter-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.70);
+      margin-bottom: 0.15rem;
+    }
+    .chapter-sub {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .chapter.active .chapter-num { color: var(--coral); }
+    .chapter.active .chapter-title { color: var(--white); }
+
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <div class="boomi-wordmark">boomi<span class="dot">.</span></div>
+      <div class="header-divider"></div>
+      <div class="header-label">DataHub <span>Interactive Demo</span></div>
+    </div>
+    <div class="header-badge">
+      <div class="badge-dot"></div>
+      Live Demo Environment
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+
+    <div class="hero-text">
+      <div class="eyebrow">Boomi · Data Management</div>
+      <div class="product-name">DataHub</div>
+      <div class="coral-rule"></div>
+      <p class="tagline">
+        Most AI initiatives don't fail because of the model.<br>
+        They fail because the <strong>data feeding it was never governed.</strong>
+      </p>
+
+      <div class="cta-row">
+        <a href="02-pain.html" class="btn-primary">
+          Start the demo
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <span class="cta-note">~8 min walkthrough</span>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-pill">
+          <span class="val">36→9</span>
+          <span class="lbl">point-to-point connections eliminated</span>
+        </div>
+        <div class="stat-pill">
+          <span class="val">Real-time</span>
+          <span class="lbl">governed record distribution</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="hero-icon">
+      <div class="icon-ring">
+        <div class="icon-glow"></div>
+        <img class="datahub-icon"
+             src="https://mikepriceboomi.github.io/domain-expert-demos/assets/datahub-icon.png"
+             alt="Boomi DataHub"
+             onerror="this.style.display='none'"/>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Chapter strip -->
+  <div class="chapter-strip">
+    <div class="chapter active">
+      <div class="chapter-num">01</div>
+      <div class="chapter-info">
+        <div class="chapter-title">The Problem</div>
+        <div class="chapter-sub">Why governed data matters</div>
+      </div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">02</div>
+      <div class="chapter-info">
+        <div class="chapter-title">HubGen</div>
+        <div class="chapter-sub">AI model generation</div>
+      </div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">03</div>
+      <div class="chapter-info">
+        <div class="chapter-title">Stewardship</div>
+        <div class="chapter-sub">Quarantine & resolution</div>
+      </div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">04</div>
+      <div class="chapter-info">
+        <div class="chapter-title">Governance</div>
+        <div class="chapter-sub">Rules, match logic, audit trail</div>
+      </div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">05</div>
+      <div class="chapter-info">
+        <div class="chapter-title">The Result</div>
+        <div class="chapter-sub">One governed layer</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
