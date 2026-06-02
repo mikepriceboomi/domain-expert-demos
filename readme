@@ -1,0 +1,9 @@
+# Boomi Domain Expert Demos
+
+Interactive demo experiences for Boomi DataHub and World Tour Hands-On Experiences.
+
+## Structure
+
+- `/datahub/` — DataHub interactive Navattic demo
+- `/world-tour/` — World Tour Hands-On Experience pages
+- `/assets/` — Shared images and icons
