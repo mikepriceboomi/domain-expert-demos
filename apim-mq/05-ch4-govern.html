@@ -125,77 +125,42 @@
       <div class="coral-rule"></div>
       <p class="chapter-hook">Two gateways. One control plane. Threat protection, API products, and <strong>IDP-controlled AI tool access.</strong></p>
       <div class="cap-tags"><span class="cap-tag cap-strong">API Security</span><span class="cap-tag cap-new">AI Gateway Support</span><span class="cap-tag cap-partial">AI & API Monetization</span><span class="cap-tag cap-strong">Versioning & Governance</span></div>
-      <div class="time-badge">⏱ <span>10 minutes</span> · 10 steps</div>
+      <div class="time-badge">⏱ <span>10 minutes</span> · 5 beats</div>
     </div>
     <div class="right-panel">
       <div class="step-card">
-        <div class="step-num">1</div>
+        <div class="step-num">A</div>
         <div class="step-body">
-          <div class="step-title">Deploy to runtime — new feature</div>
-          <div class="step-detail">Direct runtime deployment. No gateway required. Advanced setup type needed.</div>
+          <div class="step-title">Deploy &amp; Import</div>
+          <div class="step-detail">Deploy directly to a runtime — no gateway required. Import into Cloud API Management. The unsecured warning is intentional; CAM flags what isn't protected yet.</div>
         </div>
       </div>
       <div class="step-card">
-        <div class="step-num">2</div>
+        <div class="step-num">B</div>
         <div class="step-body">
-          <div class="step-title">CAM import from Boomi Platform</div>
-          <div class="step-detail">Unsecured warning is intentional. CAM flags missing auth.</div>
+          <div class="step-title">Threat Protection</div>
+          <div class="step-detail">JSON schema validation, GraphQL max depth and object-level field restrictions. Method-level policies — different rules for read vs. write. Object-level blocking is the AI security story in concrete form.</div>
         </div>
       </div>
       <div class="step-card">
-        <div class="step-num">3</div>
+        <div class="step-num">C</div>
         <div class="step-body">
-          <div class="step-title">Documentation import — URL embed</div>
-          <div class="step-detail">Username:token in URL carries spec into CAM. 3.1.0→3.0.1 downgrade acknowledged.</div>
+          <div class="step-title">API Products &amp; Plans</div>
+          <div class="step-detail">BrightBrand product groups BAG and AWS APIs in one commercial offering. Plans (Enterprise, Unlimited, Free) are a commercial architecture — each tier maps to a business relationship, not just an access level.</div>
         </div>
       </div>
       <div class="step-card">
-        <div class="step-num">4</div>
+        <div class="step-num">D</div>
         <div class="step-body">
-          <div class="step-title">Threat protection — JSON schema + GraphQL</div>
-          <div class="step-detail">Max payload, field-level restrictions. Object-level blocking for AI agent access.</div>
+          <div class="step-title">Boomi Connect — IDP-Controlled AI Access</div>
+          <div class="step-detail">Uniform credentials or user passthrough. Okta IDP mapping. Action-level controls: read approved, write requires approval workflow. This is the CISO conversation — not just "does the AI have access" but which operations, on behalf of which users.</div>
         </div>
       </div>
       <div class="step-card">
-        <div class="step-num">5</div>
+        <div class="step-num">E</div>
         <div class="step-body">
-          <div class="step-title">Method-level threat protection</div>
-          <div class="step-detail">Different policy sets for read vs. write operations.</div>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">6</div>
-        <div class="step-body">
-          <div class="step-title">API Products — BrightBrand packaging</div>
-          <div class="step-detail">Multi-environment grouping: BAG APIs + AWS APIs in one product.</div>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">7</div>
-        <div class="step-body">
-          <div class="step-title">Plans — commercial architecture</div>
-          <div class="step-detail">Enterprise, Unlimited, Free. Tiers that map to business relationships.</div>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">8</div>
-        <div class="step-body">
-          <div class="step-title">Boomi Connect — IDP + action-level</div>
-          <div class="step-detail">Uniform creds or user passthrough. Okta IDP mapping. Read approved, write requires approval.</div>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">9</div>
-        <div class="step-body">
-          <div class="step-title">Governance dashboard</div>
-          <div class="step-detail">Org-level scores, most violated rules, zombie APIs, shadow APIs. Weekly operating view.</div>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">10</div>
-        <div class="step-body">
-          <div class="step-title">CI/CD via Platform APIs</div>
-          <div class="step-detail">Quality gates embeddable in pipelines. Fail the score, block the promotion.</div>
+          <div class="step-title">Governance Dashboard &amp; CI/CD</div>
+          <div class="step-detail">Org-level quality and security scores, most violated rules, zombie and shadow API detection. The same scores are accessible via Platform APIs — quality gates that block promotion automatically.</div>
         </div>
       </div>
     </div>
