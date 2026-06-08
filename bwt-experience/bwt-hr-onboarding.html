@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian — Day One Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(135deg, #02283B 0%, #0a3d5c 40%, #1a2f6e 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Nav */
+  .portal-nav {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 0 2rem;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .portal-nav .company-name {
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .portal-nav .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .portal-nav .powered-by {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .portal-nav .boomi-badge {
+    background: linear-gradient(135deg, #FF7C66, #ff9a54);
+    color: white;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(255,124,102,0.4);
+  }
+
+  /* Layout */
+  .portal-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  /* Screens */
+  .screen {
+    display: none;
+    width: 100%;
+    max-width: 660px;
+    animation: fadeIn 0.3s ease;
+  }
+  .screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Card */
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem 2.75rem;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  /* Step dots */
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 1.75rem;
+  }
+  .step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #e2e8ee;
+    transition: all 0.25s ease;
+  }
+  .step-dot.active {
+    background: linear-gradient(90deg, #FF7C66, #ff9a54);
+    width: 28px;
+    border-radius: 4px;
+  }
+  .step-dot.done { background: #02283B; }
+
+  /* Welcome */
+  .welcome-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #FF7C66;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    margin-bottom: 0.75rem;
+    background: #fff3f0;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .welcome-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #02283B;
+    line-height: 1.2;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.02em;
+  }
+  .welcome-heading span {
+    background: linear-gradient(135deg, #FF7C66, #ff9a54);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .welcome-subhead {
+    font-size: 0.88rem;
+    color: #5a7080;
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+  }
+  .meta-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid #edf1f5;
+  }
+  .meta-item {
+    flex: 1;
+    padding: 1rem 1.25rem;
+    border-right: 1.5px solid #edf1f5;
+    background: #fafbfc;
+  }
+  .meta-item:last-child { border-right: none; }
+  .meta-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #FF7C66;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.3rem;
+  }
+  .meta-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #02283B;
+    line-height: 1.3;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #FF7C66, #ff6b4a);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.8rem 1.75rem;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 16px rgba(255,107,74,0.35);
+    letter-spacing: 0.01em;
+  }
+  .btn-primary:hover  { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,107,74,0.45); }
+  .btn-primary:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(255,107,74,0.3); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    color: #5a7080;
+    border: 1.5px solid #d8e0e8;
+    border-radius: 10px;
+    padding: 0.8rem 1.75rem;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-secondary:hover { border-color: #02283B; color: #02283B; }
+
+  .btn-row { display: flex; gap: 0.75rem; align-items: center; }
+
+  /* Section typography */
+  .section-heading {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #02283B;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+  }
+  .section-subhead {
+    font-size: 0.83rem;
+    color: #5a7080;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    background: #f0f3f6;
+    border-radius: 6px;
+    height: 6px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FF7C66, #ff9a54);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; right: 0; bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer { to { left: 100%; } }
+
+  /* App list */
+  .app-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-bottom: 1.75rem;
+  }
+  .app-row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.85rem 1.1rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1.5px solid #edf1f5;
+    transition: border-color 0.2s;
+  }
+  .app-row:has(.app-status.ready) {
+    border-color: rgba(11,138,86,0.2);
+    background: #f4fbf8;
+  }
+  .app-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+    letter-spacing: -0.01em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .app-icon.workday    { background: linear-gradient(135deg, #F6821F, #e5720f); }
+  .app-icon.okta       { background: linear-gradient(135deg, #007DC1, #0066a0); }
+  .app-icon.m365       { background: linear-gradient(135deg, #D83B01, #b83001); }
+  .app-icon.slack      { background: linear-gradient(135deg, #4A154B, #611560); }
+  .app-icon.servicenow { background: linear-gradient(135deg, #62D84E, #4ab83d); color: white; }
+  .app-icon.zoom       { background: linear-gradient(135deg, #2D8CFF, #1a6fe0); }
+
+  .app-info { flex: 1; }
+  .app-name  { font-size: 0.83rem; font-weight: 600; color: #02283B; }
+  .app-desc  { font-size: 0.68rem; color: #8fa3b1; }
+
+  .app-status {
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .app-status.ready        { color: #0B8A56; }
+  .app-status.provisioning { color: #8fa3b1; }
+  .app-status.pending      { color: #c8d4dc; }
+
+  .spinner {
+    width: 13px; height: 13px;
+    border: 2px solid #e2e8ee;
+    border-top-color: #FF7C66;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .check-circle {
+    width: 18px; height: 18px;
+    background: linear-gradient(135deg, #0B8A56, #0EC38B);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.58rem;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(11,138,86,0.3);
+  }
+
+  /* Task card */
+  .task-card {
+    border: 1.5px solid #edf1f5;
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  }
+  .task-card.urgent {
+    border-color: #FF7C66;
+    background: linear-gradient(135deg, #fff9f8, #fff5f3);
+    box-shadow: 0 4px 16px rgba(255,124,102,0.15);
+  }
+  .task-card.urgent:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,124,102,0.2); }
+  .task-icon-wrap {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fff0ee, #ffe4e0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .task-title { font-size: 0.88rem; font-weight: 700; color: #02283B; margin-bottom: 0.2rem; }
+  .task-meta  { font-size: 0.69rem; color: #8fa3b1; }
+  .task-badge {
+    margin-left: auto;
+    background: linear-gradient(135deg, #FF7C66, #ff6b4a);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(255,107,74,0.3);
+    letter-spacing: 0.03em;
+  }
+
+  /* Document preview */
+  .doc-preview {
+    background: #f8fafc;
+    border: 1.5px solid #edf1f5;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    max-height: 148px;
+    overflow: hidden;
+    position: relative;
+  }
+  .doc-preview::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(transparent, #f8fafc);
+  }
+  .doc-title { font-size: 0.83rem; font-weight: 700; color: #02283B; margin-bottom: 0.65rem; }
+  .doc-preview p {
+    font-size: 0.75rem;
+    color: #5a7080;
+    line-height: 1.65;
+    margin-bottom: 0.6rem;
+  }
+
+  /* App grid (Screen 4) */
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.7rem;
+    margin-bottom: 1.75rem;
+  }
+  .app-grid-item {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    border: 1.5px solid rgba(11,138,86,0.2);
+    background: linear-gradient(135deg, #f4fbf8, #effaf5);
+  }
+  .app-grid-icon {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+  .app-grid-name { font-size: 0.75rem; font-weight: 600; color: #02283B; line-height: 1.2; }
+
+  /* All systems ready — green checkmarks on grid */
+  .app-grid-item .grid-check {
+    margin-left: auto;
+    width: 16px; height: 16px;
+    background: linear-gradient(135deg, #0B8A56, #0EC38B);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.5rem;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  /* Success screen */
+  .success-icon-wrap {
+    width: 76px; height: 76px;
+    background: linear-gradient(135deg, #0B8A56, #0EC38B);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    font-size: 2rem;
+    color: white;
+    box-shadow: 0 8px 32px rgba(11,138,86,0.35);
+  }
+  .success-heading {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #02283B;
+    text-align: center;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+  }
+  .success-subhead {
+    font-size: 0.85rem;
+    color: #5a7080;
+    text-align: center;
+    margin-bottom: 1.75rem;
+    line-height: 1.55;
+  }
+
+  /* Schedule */
+  .schedule-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .schedule-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1.5px solid #edf1f5;
+    transition: border-color 0.15s;
+  }
+  .schedule-item:hover { border-color: #d0d8e8; }
+  .schedule-time { font-size: 0.7rem; font-weight: 700; color: #FF7C66; min-width: 46px; }
+  .schedule-title { font-size: 0.82rem; font-weight: 600; color: #02283B; }
+  .schedule-with  { font-size: 0.69rem; color: #8fa3b1; }
+
+  .info-banner {
+    background: linear-gradient(135deg, #f8fafc, #f3f7fb);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    border-left: 3px solid #FF7C66;
+    font-size: 0.76rem;
+    color: #5a7080;
+    line-height: 1.6;
+  }
+  .info-banner strong { color: #02283B; }
+</style>
+</head>
+<body>
+
+<nav class="portal-nav">
+  <div class="company-name">Meridian — People Portal</div>
+  <div class="nav-right">
+    <span class="powered-by">Powered by</span>
+    <span class="boomi-badge">Boomi</span>
+  </div>
+</nav>
+
+<main class="portal-body">
+
+  <!-- SCREEN 1: Welcome -->
+  <div class="screen active" id="screen-1">
+    <div class="card">
+      <div class="step-indicator">
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+      </div>
+      <div class="welcome-eyebrow">Day One Onboarding</div>
+      <h1 class="welcome-heading">Welcome to Meridian,<br><span>Sarah.</span></h1>
+      <p class="welcome-subhead">Your workspace is ready to be configured. This takes about two minutes — you'll be set up across every system your role requires, automatically.</p>
+      <div class="meta-row">
+        <div class="meta-item">
+          <div class="meta-label">Role</div>
+          <div class="meta-value">Business Development Manager</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Start Date</div>
+          <div class="meta-value">Monday 9 June 2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Manager</div>
+          <div class="meta-value">James Cooper</div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="goTo(2)">Begin Setup →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Provisioning -->
+  <div class="screen" id="screen-2">
+    <div class="card">
+      <div class="step-indicator">
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+      </div>
+      <h2 class="section-heading">Setting up your workspace…</h2>
+      <p class="section-subhead">Boomi is provisioning your access across Meridian's systems. This usually completes in under 60 seconds.</p>
+      <div class="progress-wrap">
+        <div class="progress-fill" style="width:45%"></div>
+      </div>
+      <div class="app-list">
+        <div class="app-row">
+          <div class="app-icon workday">WD</div>
+          <div class="app-info">
+            <div class="app-name">Workday</div>
+            <div class="app-desc">HR profile &amp; payroll</div>
+          </div>
+          <div class="app-status ready"><div class="check-circle">✓</div> Active</div>
+        </div>
+        <div class="app-row">
+          <div class="app-icon okta">OK</div>
+          <div class="app-info">
+            <div class="app-name">Okta</div>
+            <div class="app-desc">Identity &amp; single sign-on</div>
+          </div>
+          <div class="app-status ready"><div class="check-circle">✓</div> Active</div>
+        </div>
+        <div class="app-row">
+          <div class="app-icon m365">M</div>
+          <div class="app-info">
+            <div class="app-name">Microsoft 365</div>
+            <div class="app-desc">Email, Teams &amp; OneDrive</div>
+          </div>
+          <div class="app-status provisioning"><div class="spinner"></div> Provisioning</div>
+        </div>
+        <div class="app-row">
+          <div class="app-icon slack">S</div>
+          <div class="app-info">
+            <div class="app-name">Slack</div>
+            <div class="app-desc">Team messaging</div>
+          </div>
+          <div class="app-status provisioning"><div class="spinner"></div> Provisioning</div>
+        </div>
+        <div class="app-row">
+          <div class="app-icon servicenow">SN</div>
+          <div class="app-info">
+            <div class="app-name">ServiceNow</div>
+            <div class="app-desc">IT service desk</div>
+          </div>
+          <div class="app-status pending">— Pending</div>
+        </div>
+        <div class="app-row">
+          <div class="app-icon zoom">Z</div>
+          <div class="app-info">
+            <div class="app-name">Zoom</div>
+            <div class="app-desc">Video conferencing</div>
+          </div>
+          <div class="app-status pending">— Pending</div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="goTo(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Action required -->
+  <div class="screen" id="screen-3">
+    <div class="card">
+      <div class="step-indicator">
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+      </div>
+      <h2 class="section-heading">One thing needs your attention</h2>
+      <p class="section-subhead">Please review and sign the Meridian Acceptable Use Policy before your systems are fully activated. Takes about two minutes.</p>
+      <div class="task-card urgent">
+        <div class="task-icon-wrap">📄</div>
+        <div>
+          <div class="task-title">Acceptable Use Policy</div>
+          <div class="task-meta">Meridian Group · Required before activation · ~2 min</div>
+        </div>
+        <div class="task-badge">Action Required</div>
+      </div>
+      <div class="doc-preview">
+        <div class="doc-title">Meridian Group — Acceptable Use Policy (v4.2)</div>
+        <p>This Acceptable Use Policy ("Policy") governs the use of Meridian Group's information systems, networks, and data by all employees, contractors, and third-party users. By signing below, you confirm that you have read, understood, and agree to comply with the terms set out in this document.</p>
+        <p>1. Authorised Use. Systems and data are to be used for legitimate business purposes only. Employees may not use company resources for personal commercial activities, illegal activities, or any purpose that conflicts with Meridian Group's Code of Conduct.</p>
+        <p>2. Data Handling. All personally identifiable information and confidential client data must be handled in accordance with the UK GDPR and Meridian's Data Protection Policy.</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="goTo(4)">Sign &amp; Continue →</button>
+        <button class="btn-secondary" onclick="goTo(4)">Download PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: All systems ready -->
+  <div class="screen" id="screen-4">
+    <div class="card">
+      <div class="step-indicator">
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+      </div>
+      <h2 class="section-heading">All systems ready ✓</h2>
+      <p class="section-subhead">Access provisioned. Policy signed. Everything is activated and ready for your first day.</p>
+      <div class="app-grid">
+        <div class="app-grid-item">
+          <div class="app-grid-icon workday">WD</div>
+          <div class="app-grid-name">Workday</div>
+          <div class="grid-check">✓</div>
+        </div>
+        <div class="app-grid-item">
+          <div class="app-grid-icon okta">OK</div>
+          <div class="app-grid-name">Okta</div>
+          <div class="grid-check">✓</div>
+        </div>
+        <div class="app-grid-item">
+          <div class="app-grid-icon m365">M</div>
+          <div class="app-grid-name">Microsoft 365</div>
+          <div class="grid-check">✓</div>
+        </div>
+        <div class="app-grid-item">
+          <div class="app-grid-icon slack">S</div>
+          <div class="app-grid-name">Slack</div>
+          <div class="grid-check">✓</div>
+        </div>
+        <div class="app-grid-item">
+          <div class="app-grid-icon servicenow">SN</div>
+          <div class="app-grid-name">ServiceNow</div>
+          <div class="grid-check">✓</div>
+        </div>
+        <div class="app-grid-item">
+          <div class="app-grid-icon zoom">Z</div>
+          <div class="app-grid-name">Zoom</div>
+          <div class="grid-check">✓</div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="goTo(5)">See Your Day One Schedule →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: Day One Ready -->
+  <div class="screen" id="screen-5">
+    <div class="card">
+      <div class="step-indicator">
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+      </div>
+      <div style="text-align:center;margin-bottom:1.75rem;">
+        <div class="success-icon-wrap">✓</div>
+        <h2 class="success-heading">You're all set, Sarah.</h2>
+        <p class="success-subhead">Everything is ready for Monday. Here's what your first day looks like.</p>
+      </div>
+      <div class="schedule-list">
+        <div class="schedule-item">
+          <div class="schedule-time">09:00</div>
+          <div>
+            <div class="schedule-title">Welcome Meeting</div>
+            <div class="schedule-with">James Cooper · Microsoft Teams</div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="schedule-time">10:00</div>
+          <div>
+            <div class="schedule-title">IT Induction &amp; Security Briefing</div>
+            <div class="schedule-with">IT Team · Room 3B</div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="schedule-time">11:30</div>
+          <div>
+            <div class="schedule-title">Team Introduction — Business Development</div>
+            <div class="schedule-with">Full BD Team · Zoom</div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="schedule-time">14:00</div>
+          <div>
+            <div class="schedule-title">Product &amp; Platform Overview</div>
+            <div class="schedule-with">Enablement Team · Training Room</div>
+          </div>
+        </div>
+      </div>
+      <div class="info-banner">
+        A calendar invite and your systems guide have been sent to <strong>sarah.chen@meridian.com</strong>. Your Slack channels and Microsoft Teams workspace are ready.
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + n).classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+
+</body>
+</html>
