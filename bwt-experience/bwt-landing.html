@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boomi World Tour London — Hands-On Experiences</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #02283B;
+      --coral:  #FF7C66;
+      --teal:   #0EC38B;
+      --indigo: #4B4FE2;
+      --purple: #A03291;
+      --white:  #FFFFFF;
+      --off-white: #F4F6F8;
+      --text-muted: rgba(255,255,255,0.55);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND ORBS ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 700px 600px at -10% 20%, rgba(255,124,102,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 500px at 110% 80%, rgba(14,195,139,0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 400px 400px at 60% -10%, rgba(75,79,226,0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(2,40,59,0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Boomi wordmark — inline SVG so no external dependency */
+    .boomi-logo {
+      height: 28px;
+      width: auto;
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 28px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .event-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.75);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .event-name span {
+      color: var(--coral);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .header-live {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 3.5rem 2rem 2.5rem;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--coral);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 1rem;
+      background: rgba(255,124,102,0.12);
+      border: 1px solid rgba(255,124,102,0.25);
+      padding: 5px 14px;
+      border-radius: 20px;
+    }
+
+    .hero-title {
+      font-size: 2.6rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.9rem;
+    }
+
+    .hero-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--coral), #ff9a8a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.6);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* ── GRID ── */
+    .grid-wrap {
+      flex: 1;
+      padding: 0 2.5rem 3rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    /* 5 cards: row of 3, then row of 2 centred */
+    .grid-card:nth-child(4) { grid-column: 1 / 2; margin-left: auto; width: 100%; }
+    .grid-card:nth-child(5) { grid-column: 2 / 3; margin-right: auto; width: 100%; }
+
+    /* ── CARD ── */
+    .grid-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px;
+      padding: 2rem 1.75rem 1.75rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .grid-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 20px 20px 0 0;
+      opacity: 0;
+      transition: opacity 0.22s ease;
+    }
+
+    .grid-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.07);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+    }
+
+    .grid-card:hover::before { opacity: 1; }
+
+    /* Accent colours per card */
+    .card--coral::before  { background: linear-gradient(90deg, var(--coral), #ff9a8a); }
+    .card--teal::before   { background: linear-gradient(90deg, var(--teal), #34e8a8); }
+    .card--indigo::before { background: linear-gradient(90deg, var(--indigo), #7b7ff5); }
+    .card--purple::before { background: linear-gradient(90deg, var(--purple), #c94db3); }
+    .card--orange::before { background: linear-gradient(90deg, #f59e0b, #f97316); }
+
+    .card-icon-wrap {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .card--coral  .card-icon-wrap { background: rgba(255,124,102,0.15); }
+    .card--teal   .card-icon-wrap { background: rgba(14,195,139,0.15); }
+    .card--indigo .card-icon-wrap { background: rgba(75,79,226,0.15); }
+    .card--purple .card-icon-wrap { background: rgba(160,50,145,0.15); }
+    .card--orange .card-icon-wrap { background: rgba(245,158,11,0.15); }
+
+    .card-tag {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.5rem;
+      opacity: 0.6;
+    }
+
+    .card--coral  .card-tag { color: var(--coral); }
+    .card--teal   .card-tag { color: var(--teal); }
+    .card--indigo .card-tag { color: #7b7ff5; }
+    .card--purple .card-tag { color: #c94db3; }
+    .card--orange .card-tag { color: #f59e0b; }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.015em;
+      margin-bottom: 0.65rem;
+    }
+
+    .card-desc {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .card-pills {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .card-pill {
+      font-size: 0.6rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .card-arrow {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .grid-card:hover .card-arrow {
+      background: var(--coral);
+      border-color: var(--coral);
+      color: #fff;
+    }
+
+    .card--teal:hover   .card-arrow { background: var(--teal);   border-color: var(--teal); }
+    .card--indigo:hover .card-arrow { background: var(--indigo); border-color: var(--indigo); }
+    .card--purple:hover .card-arrow { background: var(--purple); border-color: var(--purple); }
+    .card--orange:hover .card-arrow { background: #f59e0b;       border-color: #f59e0b; color: #1c1917; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 1.25rem 2rem;
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.25);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      letter-spacing: 0.04em;
+    }
+
+    footer strong { color: rgba(255,255,255,0.45); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <header>
+    <div class="header-left">
+      <!-- Boomi official wordmark (1-Color Reversed / white) -->
+      <svg class="boomi-logo" id="Logos" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224.24 90.19" aria-label="Boomi"><defs><style>.cls-1{fill:#fff;}</style></defs><circle class="cls-1" cx="190.49" cy="22.52" r="3.71"/><path class="cls-1" d="M81.29,31.26a15.06,15.06,0,1,1,0,30.11,15.06,15.06,0,1,1,0-30.11Zm0,24.51a9.2,9.2,0,0,0,9.39-9.46,9.39,9.39,0,1,0-18.78,0A9.2,9.2,0,0,0,81.29,55.77Z"/><path class="cls-1" d="M115.53,31.26a15.06,15.06,0,1,1-15.35,15.05A14.92,14.92,0,0,1,115.53,31.26Zm0,24.51a9.2,9.2,0,0,0,9.39-9.46,9.39,9.39,0,1,0-18.78,0A9.2,9.2,0,0,0,115.53,55.77Z"/><path class="cls-1" d="M187.51,60.11V31.92a.66.66,0,0,1,.66-.66h4.65a.65.65,0,0,1,.65.66V60.11a.66.66,0,0,1-.65.66h-4.65A.67.67,0,0,1,187.51,60.11Z"/><path class="cls-1" d="M170.1,31.26a12,12,0,0,0-10.33,5.39c-1.83-3.34-5.33-5.39-10.29-5.39s-7.83,2.77-8.76,4.25V30.93a.65.65,0,0,0-1-.56l-4.84,2.79a.35.35,0,0,0-.18.3V60.11a.67.67,0,0,0,.66.66h4.68a.67.67,0,0,0,.66-.66V44.48c0-4.79,3.52-7.56,7.82-7.56s6.81,2.77,6.81,7.56V60.11a.66.66,0,0,0,.65.66h4.69a.66.66,0,0,0,.65-.66v-16c.15-4.55,3.61-7.2,7.83-7.2s6.8,2.77,6.8,7.56V60.11a.66.66,0,0,0,.65.66h4.69a.66.66,0,0,0,.65-.66V43.21C182,36.2,177.81,31.26,170.1,31.26Z"/><path class="cls-1" d="M46.66,31.26A15.46,15.46,0,0,0,36,35.32V15.38a.66.66,0,0,0-1-.57l-4.81,2.78a.34.34,0,0,0-.17.3V60.11a.65.65,0,0,0,.65.65h4.66a.65.65,0,0,0,.65-.65v-2.8a15.46,15.46,0,0,0,10.66,4.06,15.06,15.06,0,1,0,0-30.11Zm0,24.51a9.2,9.2,0,0,1-9.39-9.46,9.39,9.39,0,1,1,18.78,0A9.2,9.2,0,0,1,46.66,55.77Z"/></svg>
+      <div class="header-divider"></div>
+      <span class="event-name">World Tour &nbsp;<span>London</span></span>
+    </div>
+    <div class="header-right">
+      <div class="header-dot"></div>
+      <span class="header-live">Live Demos</span>
+    </div>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.5v3l1.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Pick an experience &mdash; takes about 90 seconds
+    </div>
+    <h1 class="hero-title">See the platform<br>work in <em>your</em> world.</h1>
+    <p class="hero-sub">Five real business scenarios. Click through and see what Boomi makes possible — from AI-ready data to automated operations.</p>
+  </section>
+
+  <!-- ── EXPERIENCE CARDS ── -->
+  <div class="grid-wrap">
+    <div class="grid">
+
+      <!-- 1. HR Employee Onboarding -->
+      <a class="grid-card card--coral" href="https://app.navattic.com/PLACEHOLDER-HR" target="_blank" rel="noopener">
+        <div class="card-icon-wrap">👤</div>
+        <div class="card-tag">Integration + Flow</div>
+        <div class="card-title">New hire, ready on day one — automatically</div>
+        <div class="card-desc">Watch Boomi provision access across every system the moment an offer is accepted. No IT tickets. No waiting.</div>
+        <div class="card-footer">
+          <div class="card-pills">
+            <span class="card-pill">HR Onboarding</span>
+            <span class="card-pill">Flow</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </div>
+      </a>
+
+      <!-- 2. Clinical Document Intake -->
+      <a class="grid-card card--teal" href="https://app.navattic.com/PLACEHOLDER-MFT" target="_blank" rel="noopener">
+        <div class="card-icon-wrap">🏥</div>
+        <div class="card-tag">MFT + Integration</div>
+        <div class="card-title">Clinical documents, securely routed and acted on</div>
+        <div class="card-desc">Referral packets arrive. Boomi classifies, routes, and triggers next steps — compliantly, in seconds, not days.</div>
+        <div class="card-footer">
+          <div class="card-pills">
+            <span class="card-pill">Healthcare</span>
+            <span class="card-pill">MFT</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </div>
+      </a>
+
+      <!-- 3. Supplier Data Onboarding -->
+      <a class="grid-card card--indigo" href="https://app.navattic.com/PLACEHOLDER-DATAHUB" target="_blank" rel="noopener">
+        <div class="card-icon-wrap">🏭</div>
+        <div class="card-tag">DataHub + Integration</div>
+        <div class="card-title">Supplier data, clean and trusted from the start</div>
+        <div class="card-desc">New supplier submits their data. Boomi validates, deduplicates, and creates a golden record — before it ever reaches your ERP.</div>
+        <div class="card-footer">
+          <div class="card-pills">
+            <span class="card-pill">Procurement</span>
+            <span class="card-pill">DataHub</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </div>
+      </a>
+
+      <!-- 4. API to AI Tool -->
+      <a class="grid-card card--purple" href="https://app.navattic.com/PLACEHOLDER-APIM" target="_blank" rel="noopener">
+        <div class="card-icon-wrap">⚡</div>
+        <div class="card-tag">API Management</div>
+        <div class="card-title">One toggle. Your APIs become AI tools.</div>
+        <div class="card-desc">Flip a switch and Boomi publishes your enterprise APIs as governed MCP tools — instantly available to any AI agent, with full security and auditability.</div>
+        <div class="card-footer">
+          <div class="card-pills">
+            <span class="card-pill">APIM</span>
+            <span class="card-pill">MCP</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </div>
+      </a>
+
+      <!-- 5. Build a Data Model in a Sentence -->
+      <a class="grid-card card--orange" href="https://app.navattic.com/PLACEHOLDER-HUBGEN" target="_blank" rel="noopener">
+        <div class="card-icon-wrap">✨</div>
+        <div class="card-tag">DataHub · HubGen</div>
+        <div class="card-title">Describe your data model. Watch it build itself.</div>
+        <div class="card-desc">Type a sentence in plain English. Boomi's AI generates a complete, governed data model — ready to connect and activate in minutes, not months.</div>
+        <div class="card-footer">
+          <div class="card-pills">
+            <span class="card-pill">AI-Generated</span>
+            <span class="card-pill">DataHub</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <strong>Boomi World Tour London</strong> &nbsp;·&nbsp; Hands-On Experience Zone &nbsp;·&nbsp; <strong>boomi.com</strong>
+  </footer>
+
+</div>
+</body>
+</html>
