@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Platform Premise — Boomi APIM Live Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #02283B; --coral: #FF7C66; --teal: #0EC38B;
+      --indigo: #4B4FE2; --white: #FFFFFF;
+      --text-muted: rgba(255,255,255,0.50); --panel-border: rgba(255,255,255,0.08);
+    }
+    html, body { height: 100%; font-family: 'Poppins', Arial, sans-serif; background: var(--navy); color: var(--white); overflow: hidden; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 1000px 800px at -10% 50%, rgba(75,79,226,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 700px 600px at 110% 50%, rgba(14,195,139,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 500px 400px at 50% 110%,  rgba(255,124,102,0.07) 0%, transparent 55%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .page { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 3rem; border-bottom: 1px solid var(--panel-border);
+      background: rgba(2,28,48,0.55); backdrop-filter: blur(14px); flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+    .header-label span { color: var(--coral); }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+      text-decoration: none; padding: 0.4rem 0.8rem;
+      border: 1px solid var(--panel-border); border-radius: 7px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .nav-back:hover { color: var(--white); border-color: rgba(255,255,255,0.25); }
+
+    /* ── MAIN ── */
+    .main { flex: 1; display: flex; overflow: hidden; }
+
+    /* ── LEFT: TIMELINE ── */
+    .timeline-panel {
+      flex: 0 0 340px;
+      border-right: 1px solid var(--panel-border);
+      padding: 2.5rem 2rem;
+      display: flex; flex-direction: column; justify-content: center;
+      position: relative;
+    }
+
+    .timeline-label {
+      font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
+      letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+
+    .timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+
+    /* Vertical spine */
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px; top: 8px; bottom: 8px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--indigo), var(--teal));
+      opacity: 0.35;
+    }
+
+    .tl-item {
+      display: flex; align-items: flex-start; gap: 1.25rem;
+      padding-bottom: 2rem; position: relative;
+      opacity: 0; transform: translateX(-12px);
+      animation: slideIn 0.5s ease both;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-item:nth-child(1) { animation-delay: 0.1s; }
+    .tl-item:nth-child(2) { animation-delay: 0.3s; }
+    .tl-item:nth-child(3) { animation-delay: 0.5s; }
+    .tl-item:nth-child(4) { animation-delay: 0.7s; }
+    .tl-item:nth-child(5) { animation-delay: 0.9s; }
+
+    @keyframes slideIn { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:translateX(0)} }
+
+    .tl-dot {
+      width: 16px; height: 16px; border-radius: 50%;
+      flex-shrink: 0; margin-top: 3px;
+      border: 2px solid;
+      position: relative; z-index: 1;
+    }
+    .tl-dot-edi     { background: rgba(75,79,226,0.25);  border-color: var(--indigo); }
+    .tl-dot-ipaas   { background: rgba(160,50,145,0.25); border-color: #A03291; }
+    .tl-dot-data    { background: rgba(255,124,102,0.25); border-color: var(--coral); }
+    .tl-dot-ai      { background: rgba(14,195,139,0.30);  border-color: var(--teal); box-shadow: 0 0 12px rgba(14,195,139,0.45); }
+
+    .tl-body {}
+    .tl-era {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; margin-bottom: 0.2rem;
+    }
+    .tl-era-edi   { color: var(--indigo); }
+    .tl-era-ipaas { color: #A03291; }
+    .tl-era-data  { color: var(--coral); }
+    .tl-era-ai    { color: var(--teal); }
+
+    .tl-title { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; line-height: 1.3; }
+    .tl-detail { font-size: 0.75rem; color: rgba(255,255,255,0.45); line-height: 1.5; }
+
+    /* Current era highlight */
+    .tl-item.current .tl-title { color: var(--teal); }
+
+    /* ── RIGHT: INDEPENDENCE STATEMENT ── */
+    .statement-panel {
+      flex: 1;
+      padding: 2.8rem 3.15rem;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+
+    .statement-eyebrow {
+      font-size: 0.72rem; font-weight: 700; color: var(--text-muted);
+      letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp 0.5s 0.2s ease both;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+    /* "Not X" list */
+    .not-list {
+      display: flex; flex-wrap: wrap; gap: 0.6rem 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .not-item {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.45rem 0.9rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      opacity: 0; transform: translateY(8px);
+      animation: fadeUp 0.4s ease both;
+    }
+    .not-item:nth-child(1)  { animation-delay: 0.4s; }
+    .not-item:nth-child(2)  { animation-delay: 0.55s; }
+    .not-item:nth-child(3)  { animation-delay: 0.70s; }
+    .not-item:nth-child(4)  { animation-delay: 0.85s; }
+    .not-item:nth-child(5)  { animation-delay: 1.00s; }
+    .not-item:nth-child(6)  { animation-delay: 1.15s; }
+    .not-item:nth-child(7)  { animation-delay: 1.30s; }
+
+    .not-word {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(255,255,255,0.30);
+    }
+    .not-name {
+      font-size: 0.88rem; font-weight: 700;
+      color: rgba(255,255,255,0.40);
+      text-decoration: line-through;
+      text-decoration-color: rgba(255,124,102,0.50);
+      text-decoration-thickness: 2px;
+    }
+
+    /* Divider line */
+    .statement-divider {
+      width: 48px; height: 3px; background: var(--coral); border-radius: 2px;
+      margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp 0.5s 1.5s ease both;
+    }
+
+    /* The payoff */
+    .payoff {
+      opacity: 0; animation: fadeUp 0.6s 1.6s ease both;
+    }
+
+    .payoff-headline {
+      font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+      font-weight: 800; line-height: 1.15;
+      letter-spacing: -0.02em; margin-bottom: 1.25rem;
+    }
+    .payoff-headline .hl-independent {
+      color: var(--teal);
+    }
+
+    .payoff-body {
+      font-size: 0.95rem; font-weight: 400;
+      color: rgba(255,255,255,0.68); line-height: 1.7;
+      max-width: 560px; margin-bottom: 2rem;
+    }
+    .payoff-body strong { color: var(--white); font-weight: 700; }
+
+    .tagline-pill {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1.25rem;
+      background: rgba(255,124,102,0.10);
+      border: 1px solid rgba(255,124,102,0.30);
+      border-radius: 10px;
+      font-size: 1rem; font-weight: 700; font-style: italic;
+      color: var(--white);
+    }
+    .tagline-pill::before {
+      content: '"'; color: var(--coral); font-style: normal; font-size: 1.4rem; line-height: 1;
+    }
+    .tagline-pill::after {
+      content: '"'; color: var(--coral); font-style: normal; font-size: 1.4rem; line-height: 1;
+    }
+
+    /* CTA */
+    .cta-row {
+      margin-top: 2rem;
+      display: flex; align-items: center; gap: 1rem;
+      opacity: 0; animation: fadeUp 0.5s 2.0s ease both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.8rem 1.75rem; background: var(--coral); color: var(--navy);
+      font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 700;
+      border: none; border-radius: 9px; cursor: pointer; text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 18px rgba(255,124,102,0.32);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 7px 24px rgba(255,124,102,0.42); }
+
+    /* ── CHAPTER STRIP ── */
+    .chapter-strip {
+      display: flex; align-items: stretch;
+      border-top: 1px solid var(--panel-border);
+      background: rgba(2,28,48,0.50); backdrop-filter: blur(10px); flex-shrink: 0;
+    }
+    .chapter { flex: 1; padding: 0.55rem 0.85rem; border-right: 1px solid var(--panel-border); display: flex; align-items: center; gap: 0.6rem; }
+    .chapter:last-child { border-right: none; }
+    .chapter-num { font-size: 0.9rem; font-weight: 800; color: rgba(255,255,255,0.14); flex-shrink: 0; }
+    .chapter-title-s { font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.60); margin-bottom: 0.1rem; }
+    .chapter-sub { font-size: 0.6rem; color: var(--text-muted); }
+    .chapter.active .chapter-num { color: var(--coral); }
+    .chapter.active .chapter-title-s { color: var(--white); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-left">
+      <a href="../bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;"><img src="../../assets/boomi-logo.svg" height="22" style="width:auto;display:block;" alt="Boomi"></a>
+      <div class="header-label">API Management <span>· Live Demo</span></div>
+    </div>
+    <a href="01-intro.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4l-4 4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back
+    </a>
+  </header>
+
+  <div class="main">
+
+    <!-- Timeline -->
+    <div class="timeline-panel">
+      <div class="timeline-label">25 years of evolution</div>
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-edi"></div>
+          <div class="tl-body">
+            <div class="tl-era tl-era-edi">~2000</div>
+            <div class="tl-title">EDI &amp; B2B</div>
+            <div class="tl-detail">Founded as an EDI platform. Supply chain, trading partner connectivity.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-ipaas"></div>
+          <div class="tl-body">
+            <div class="tl-era tl-era-ipaas">~2007</div>
+            <div class="tl-title">iPaaS</div>
+            <div class="tl-detail">Helped define the integration platform-as-a-service category.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-data"></div>
+          <div class="tl-body">
+            <div class="tl-era tl-era-data">~2016</div>
+            <div class="tl-title">Data Management</div>
+            <div class="tl-detail">Structured and unstructured data, data models, data movement.</div>
+          </div>
+        </div>
+
+        <div class="tl-item current">
+          <div class="tl-dot tl-dot-ai"></div>
+          <div class="tl-body">
+            <div class="tl-era tl-era-ai">Now</div>
+            <div class="tl-title">APIs · MCP · AI Agents</div>
+            <div class="tl-detail">Federation and governance for every enterprise asset type.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Independence statement -->
+    <div class="statement-panel">
+
+      <div class="statement-eyebrow">What makes this platform different</div>
+
+      <div class="not-list">
+        <div class="not-item">
+          <span class="not-word">Not</span>
+          <span class="not-name">AWS</span>
+        </div>
+        <div class="not-item">
+          <span class="not-word">Not</span>
+          <span class="not-name">Azure</span>
+        </div>
+        <div class="not-item">
+          <span class="not-word">Not</span>
+          <span class="not-name">Google Cloud</span>
+        </div>
+        <div class="not-item">
+          <span class="not-word">Not</span>
+          <span class="not-name">SAP</span>
+        </div>
+        <div class="not-item">
+          <span class="not-word">Not</span>
+          <span class="not-name">Salesforce</span>
+        </div>
+        <div class="not-item">
+          <span class="not-word">Not</span>
+          <span class="not-name">IBM</span>
+        </div>
+        <div class="not-item">
+          <span class="not-word">Not</span>
+          <span class="not-name">Oracle</span>
+        </div>
+      </div>
+
+      <div class="statement-divider"></div>
+
+      <div class="payoff">
+        <div class="payoff-headline">
+          That independence wasn't accidental.<br>
+          It was <span class="hl-independent">strategic</span>.
+        </div>
+        <p class="payoff-body">
+          The result is a platform with <strong>no allegiance to any one vendor's stack.</strong>
+          A common approach to federation and governance that works across APIs, AI agents, MCP tools, and event catalogs —
+          whether the underlying infrastructure is Boomi's or someone else's.
+        </p>
+        <div class="tagline-pill">Build how you want, and multiply the value of everything you've already built.</div>
+
+        <div class="cta-row">
+          <a href="02-ch1-federation.html" class="btn-primary">
+            See it in action
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="chapter-strip">
+    <div class="chapter active">
+      <div class="chapter-num">—</div>
+      <div class="chapter-info"><div class="chapter-title-s">The Premise</div><div class="chapter-sub">25 years · vendor agnostic</div></div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">01</div>
+      <div class="chapter-info"><div class="chapter-title-s">ACP Federation</div><div class="chapter-sub">Every gateway, one plane</div></div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">02</div>
+      <div class="chapter-info"><div class="chapter-title-s">Uniform Catalog</div><div class="chapter-sub">Quality, docs, MCP, agents</div></div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">03</div>
+      <div class="chapter-info"><div class="chapter-title-s">Design & Build</div><div class="chapter-sub">OAS gen, linting, Companion</div></div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">04</div>
+      <div class="chapter-info"><div class="chapter-title-s">Govern & Secure</div><div class="chapter-sub">Deploy, CAM, Connect, IDP</div></div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">05</div>
+      <div class="chapter-info"><div class="chapter-title-s">Portals & Embed</div><div class="chapter-sub">Plans, MCP creds, Embed Kit</div></div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">06</div>
+      <div class="chapter-info"><div class="chapter-title-s">Event-Driven</div><div class="chapter-sub">Orchestrate + AI consumption</div></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

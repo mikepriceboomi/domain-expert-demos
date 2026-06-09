@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ch.02 — Uniform Catalog — Quality, Docs and MCP Registry</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #02283B; --coral: #FF7C66; --teal: #0EC38B;
+      --indigo: #4B4FE2; --white: #FFFFFF;
+      --text-muted: rgba(255,255,255,0.50); --panel-border: rgba(255,255,255,0.08);
+      --accent: #A03291;
+    }
+    html, body { height: 100%; font-family: 'Poppins', Arial, sans-serif; background: var(--navy); color: var(--white); overflow: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: radial-gradient(ellipse 800px 600px at -5% 20%, rgba(160,50,145,0.14) 0%, transparent 65%), radial-gradient(ellipse 600px 500px at 105% 80%, rgba(75,79,226,0.09) 0%, transparent 65%);
+      pointer-events: none; z-index: 0;
+    }
+    .page { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 3rem; border-bottom: 1px solid var(--panel-border);
+      background: rgba(2,28,48,0.55); backdrop-filter: blur(14px); flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+    .header-label span { color: var(--coral); }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+      text-decoration: none; padding: 0.4rem 0.8rem;
+      border: 1px solid var(--panel-border); border-radius: 7px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .nav-back:hover { color: var(--white); border-color: rgba(255,255,255,0.25); }
+    .main { flex: 1; display: flex; overflow: hidden; }
+    .left-panel {
+      flex: 0 0 460px; padding: 2.8rem 2.45rem;
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: 1px solid var(--panel-border);
+      animation: fadeUp 0.6s ease both;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .chapter-eyebrow {
+      font-size: 0.72rem; font-weight: 700; color: var(--accent);
+      letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .chapter-title { font-size: 2.6rem; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
+    .coral-rule { width: 48px; height: 3px; background: var(--coral); border-radius: 2px; margin-bottom: 1.5rem; }
+    .chapter-hook { font-size: 0.95rem; font-weight: 500; color: rgba(255,255,255,0.78); line-height: 1.65; margin-bottom: 2rem; max-width: 360px; }
+    .chapter-hook strong { color: var(--white); font-weight: 700; }
+    .cap-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+    .cap-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; padding: 0.3rem 0.65rem; border-radius: 20px; border: 1px solid; }
+    .cap-strong { color: #4ade80; border-color: rgba(74,222,128,0.35); background: rgba(74,222,128,0.08); }
+    .cap-new    { color: #d8a3e8; border-color: rgba(216,163,232,0.35); background: rgba(216,163,232,0.08); }
+    .cap-partial{ color: #fbbf24; border-color: rgba(251,191,36,0.35);  background: rgba(251,191,36,0.08); }
+    .time-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+      padding: 0.45rem 0.9rem;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--panel-border); border-radius: 8px;
+    }
+    .time-badge span { color: var(--white); }
+    .right-panel { flex: 1; padding: 1.75rem 2.1rem; display: flex; flex-direction: column; justify-content: center; gap: 0.85rem; overflow-y: auto; }
+    .step-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px; padding: 1rem 1.25rem;
+      display: flex; align-items: flex-start; gap: 1rem;
+      opacity: 0; transform: translateY(10px);
+      animation: fadeUp 0.45s ease both;
+    }
+    .step-card:nth-child(1)  { animation-delay: 0.08s; }
+    .step-card:nth-child(2)  { animation-delay: 0.15s; }
+    .step-card:nth-child(3)  { animation-delay: 0.22s; }
+    .step-card:nth-child(4)  { animation-delay: 0.29s; }
+    .step-card:nth-child(5)  { animation-delay: 0.36s; }
+    .step-card:nth-child(6)  { animation-delay: 0.43s; }
+    .step-card:nth-child(7)  { animation-delay: 0.50s; }
+    .step-card:nth-child(8)  { animation-delay: 0.57s; }
+    .step-card:nth-child(9)  { animation-delay: 0.64s; }
+    .step-card:nth-child(10) { animation-delay: 0.71s; }
+    .step-num { font-size: 1.3rem; font-weight: 800; color: var(--accent); opacity: 0.35; line-height: 1; flex-shrink: 0; min-width: 26px; }
+    .step-title { font-size: 0.86rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
+    .step-detail { font-size: 0.76rem; color: rgba(255,255,255,0.48); line-height: 1.55; }
+    .chapter-strip {
+      display: flex; align-items: stretch;
+      border-top: 1px solid var(--panel-border);
+      background: rgba(2,28,48,0.50); backdrop-filter: blur(10px); flex-shrink: 0;
+    }
+    .chapter { flex: 1; padding: 0.55rem 0.85rem; border-right: 1px solid var(--panel-border); display: flex; align-items: center; gap: 0.6rem; }
+    .chapter:last-child { border-right: none; }
+    .chapter-num { font-size: 0.9rem; font-weight: 800; color: rgba(255,255,255,0.14); flex-shrink: 0; }
+    .chapter-title-s { font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.60); margin-bottom: 0.1rem; }
+    .chapter-sub { font-size: 0.6rem; color: var(--text-muted); }
+    .chapter.active .chapter-num { color: var(--coral); }
+    .chapter.active .chapter-title-s { color: var(--white); }
+    .chapter.done .chapter-num { color: var(--teal); }
+    .chapter.done .chapter-title-s { color: rgba(255,255,255,0.75); }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="header-left">
+      <a href="../bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;"><img src="../../assets/boomi-logo.svg" height="22" style="width:auto;display:block;" alt="Boomi"></a>
+      <div class="header-label">API Management <span>· Live Demo</span></div>
+    </div>
+    <a href="02-ch1-federation.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4l-4 4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back
+    </a>
+  </header>
+  <div class="main">
+    <div class="left-panel">
+      <img src="../../assets/Icon AI Control Tower.png" alt="" style="width:52px;height:52px;object-fit:contain;margin-bottom:1.25rem;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.30));"/>
+      <div class="chapter-eyebrow">Chapter 02 · 5:00 – 12:00</div>
+      <div class="chapter-title">Uniform Catalog —<br>Quality, Docs &amp; MCP Registry</div>
+      <div class="coral-rule"></div>
+      <p class="chapter-hook">Every API scored. Every doc generated. Every MCP tool governed. <strong>One catalog for all of it.</strong></p>
+      <div class="cap-tags"><span class="cap-tag cap-new">MCP Dev & Management</span><span class="cap-tag cap-strong">API Portal & Docs</span><span class="cap-tag cap-strong">Versioning & Governance</span></div>
+      <div class="time-badge">⏱ <span>7 minutes</span> · 6 steps</div>
+    </div>
+    <div class="right-panel">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Security & quality scoring</div>
+          <div class="step-detail">Per-API scores against OWASP and OpenAPI standards. Traceable to specific spec violations.</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Inline spec editing</div>
+          <div class="step-detail">Fix violations without leaving the browser. Re-validates in real time.</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">AI Documentation Agent</div>
+          <div class="step-detail">Business overview + technical summary generated from the spec. Two audiences, one source.</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">MCP Registry — multi-source catalog</div>
+          <div class="step-detail">Anthropic, Boomi API Control Plane, and Connect sub-registries unified in one discovery surface.</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">MCP governance</div>
+          <div class="step-detail">Same rule sets as APIs applied to MCP tools. Versioning, lifecycle, deprecation.</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">Agent Control Tower</div>
+          <div class="step-detail">Bedrock, Salesforce, CoPilot, and Boomi agents in one view. Federation for the full AI stack.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chapter-strip">
+    <div class="chapter done">
+      <div class="chapter-num">01</div>
+      <div class="chapter-info"><div class="chapter-title-s">ACP Federation</div><div class="chapter-sub">Every gateway, one plane</div></div>
+    </div>
+    <div class="chapter active">
+      <div class="chapter-num">02</div>
+      <div class="chapter-info"><div class="chapter-title-s">Uniform Catalog</div><div class="chapter-sub">Quality, docs, MCP, agents</div></div>
+    </div>
+    <div class="chapter ">
+      <div class="chapter-num">03</div>
+      <div class="chapter-info"><div class="chapter-title-s">Design & Build</div><div class="chapter-sub">OAS gen, linting, Companion</div></div>
+    </div>
+    <div class="chapter ">
+      <div class="chapter-num">04</div>
+      <div class="chapter-info"><div class="chapter-title-s">Govern & Secure</div><div class="chapter-sub">Deploy, CAM, Connect, IDP</div></div>
+    </div>
+    <div class="chapter ">
+      <div class="chapter-num">05</div>
+      <div class="chapter-info"><div class="chapter-title-s">Portals & Embed</div><div class="chapter-sub">Plans, MCP creds, Embed Kit</div></div>
+    </div>
+    <div class="chapter ">
+      <div class="chapter-num">06</div>
+      <div class="chapter-info"><div class="chapter-title-s">Event-Driven</div><div class="chapter-sub">Orchestrate + AI consumption</div></div>
+    </div>
+    <div class="chapter ">
+      <div class="chapter-num">07</div>
+      <div class="chapter-info"><div class="chapter-title-s">Analytics</div><div class="chapter-sub">CAM, Grafana, Control Tower</div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
