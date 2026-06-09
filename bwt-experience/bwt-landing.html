@@ -52,7 +52,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.25rem 3rem;
+      padding: 0.85rem 2.5rem;
       border-bottom: 1px solid rgba(255,255,255,0.08);
       background: rgba(2,40,59,0.6);
       backdrop-filter: blur(12px);
@@ -115,7 +115,7 @@
     /* ── HERO ── */
     .hero {
       text-align: center;
-      padding: 3rem 2rem 2rem;
+      padding: 1.25rem 2rem 0.75rem;
     }
 
     .hero-eyebrow {
@@ -135,7 +135,7 @@
     }
 
     .hero-title {
-      font-size: 2.4rem;
+      font-size: 1.8rem;
       font-weight: 800;
       line-height: 1.1;
       letter-spacing: -0.03em;
@@ -161,7 +161,7 @@
     /* ── GRID ── */
     .grid-wrap {
       flex: 1;
-      padding: 0 2.5rem 3rem;
+      padding: 0 2rem 1.25rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -180,7 +180,7 @@
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.09);
       border-radius: 20px;
-      padding: 2rem 1.75rem 1.75rem;
+      padding: 1.25rem 1.25rem 1.25rem;
       cursor: pointer;
       text-decoration: none;
       color: inherit;
@@ -216,14 +216,14 @@
     .card--purple::before { background: linear-gradient(90deg, var(--purple), #c94db3); }
 
     .card-icon-wrap {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.45rem;
-      margin-bottom: 1.25rem;
+      font-size: 1.15rem;
+      margin-bottom: 0.75rem;
       flex-shrink: 0;
     }
 
@@ -258,7 +258,7 @@
       color: rgba(255,255,255,0.5);
       line-height: 1.65;
       flex: 1;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.85rem;
     }
 
     .card-footer {
@@ -305,6 +305,22 @@
     .card--teal:hover   .card-arrow { background: var(--teal);   border-color: var(--teal);   color: #02283B; }
     .card--indigo:hover .card-arrow { background: var(--indigo); border-color: var(--indigo); color: #fff; }
     .card--purple:hover .card-arrow { background: var(--purple); border-color: var(--purple); color: #fff; }
+
+    /* Docs link inside card */
+    .card-docs-link {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      margin-top: 0.85rem;
+      font-size: 0.65rem; font-weight: 600;
+      color: rgba(255,255,255,0.32);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.15s;
+      width: fit-content;
+    }
+    .card-docs-link:hover { color: rgba(255,255,255,0.72); }
+
+    /* Make coral card a div so we can nest the docs link */
+    div.grid-card { cursor: pointer; }
 
     /* ── FOOTER ── */
     footer {
@@ -357,8 +373,8 @@
   <div class="grid-wrap">
     <div class="grid">
 
-      <!-- 1. Orchestrate / Connect -->
-      <a class="grid-card card--coral" href="https://us.flow-prod.boomi.com/32f8a96a-f2e0-4b4a-8b39-7310be09b10b/play/theme/BWT-London-HR/?flow-id=fec6998e-43a5-4616-92d6-b8042829d57a" target="_blank" rel="noopener">
+      <!-- 1. HR Onboarding -->
+      <div class="grid-card card--coral" onclick="window.location='hr-onboarding/01-intro.html'">
         <div class="card-icon-wrap">⚙️</div>
         <div class="card-tag">iPaaS · Flow · AgentStudio</div>
         <div class="card-title">New hire, ready on day one — automatically</div>
@@ -371,7 +387,11 @@
           </div>
           <div class="card-arrow">→</div>
         </div>
-      </a>
+        <a class="card-docs-link" href="hr-onboarding/04-docs.html" onclick="event.stopPropagation()">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M5 4l-3 4 3 4M11 4l3 4-3 4M9 2l-2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          How it's built
+        </a>
+      </div>
 
       <!-- 2. APIM / MCP -->
       <a class="grid-card card--purple" href="../apim-mq/01-intro.html">
@@ -392,14 +412,14 @@
       <!-- 3. DataHub -->
       <a class="grid-card card--indigo" href="../datahub/01-intro.html">
         <div class="card-icon-wrap">🔷</div>
-        <div class="card-tag">DataHub · MDM</div>
-        <div class="card-title">Trusted data, from every source to every system.</div>
-        <div class="card-desc">Boomi ingests fragmented supplier records, validates and deduplicates, then creates a single golden record — before it reaches your ERP, your CRM, or your AI models.</div>
+        <div class="card-tag">DataHub · HubGen · Resolve</div>
+        <div class="card-title">Bad data doesn't reach AI. Ever.</div>
+        <div class="card-desc">Boomi ingests fragmented records, Resolve matches and deduplicates, HubGen enriches with AI — and DataHub publishes a clean golden record your models can actually trust.</div>
         <div class="card-footer">
           <div class="card-pills">
             <span class="card-pill">DataHub</span>
-            <span class="card-pill">MDM</span>
-            <span class="card-pill">Golden Record</span>
+            <span class="card-pill">HubGen</span>
+            <span class="card-pill">Resolve</span>
           </div>
           <div class="card-arrow">→</div>
         </div>
