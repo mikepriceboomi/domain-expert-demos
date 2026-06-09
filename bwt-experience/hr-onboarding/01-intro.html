@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meridian HR Onboarding — Powered by Boomi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest:       #031e12;
+      --forest-mid:   #064e3b;
+      --emerald:      #059669;
+      --amber:        #f59e0b;
+      --amber-dark:   #d97706;
+      --white:        #FFFFFF;
+      --text-muted:   rgba(255,255,255,0.50);
+      --panel-border: rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--forest);
+      color: var(--white);
+      overflow: auto;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 900px 700px at -5% 15%,  rgba(5,150,105,0.14)  0%, transparent 65%),
+        radial-gradient(ellipse 700px 600px at 105% 85%, rgba(245,158,11,0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 500px 500px at 55%  -5%, rgba(5,150,105,0.09)  0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      height: 100vh; display: flex; flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 2.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(3,30,18,0.55);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .boomi-wordmark { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em; }
+    .boomi-wordmark .dot { color: var(--amber); }
+    .header-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.18); }
+    .header-label { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+    .header-label span { color: var(--amber); }
+    .header-badge { display: flex; align-items: center; gap: 0.4rem; font-size: 0.68rem; font-weight: 600; color: var(--emerald); letter-spacing: 0.08em; text-transform: uppercase; }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); animation: pulse 2.2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(0.8); } }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1; display: flex; align-items: center;
+      justify-content: center; gap: 4rem; padding: 1.5rem 4rem;
+    }
+
+    .hero-text { flex: 0 0 auto; max-width: 520px; animation: fadeUp 0.7s ease both; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+    .eyebrow { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.32em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .product-name { font-size: clamp(2.4rem, 3.8vw, 4.2rem); font-weight: 800; line-height: 1.0; letter-spacing: -0.03em; margin-bottom: 1.1rem; }
+    .amber-rule { width: 48px; height: 3px; background: var(--amber); border-radius: 2px; margin-bottom: 1.1rem; }
+    .tagline { font-size: 1.0rem; font-weight: 500; color: rgba(255,255,255,0.80); line-height: 1.55; margin-bottom: 1.5rem; max-width: 460px; }
+    .tagline strong { color: var(--white); font-weight: 700; }
+
+    .cta-row { display: flex; align-items: center; gap: 1rem; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.6rem;
+      background: linear-gradient(135deg, var(--amber), var(--amber-dark));
+      color: #1c1917;
+      font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 700;
+      border: none; border-radius: 10px; cursor: pointer; text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(245,158,11,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(245,158,11,0.45); }
+    .btn-primary svg { transition: transform 0.15s; }
+    .btn-primary:hover svg { transform: translateX(3px); }
+    .cta-note { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
+
+    .btn-hood {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.7rem 1.4rem; background: rgba(5,150,105,0.10);
+      color: var(--emerald);
+      font-family: 'Poppins', sans-serif; font-size: 0.82rem; font-weight: 600;
+      border: 1px solid rgba(5,150,105,0.25); border-radius: 10px;
+      cursor: pointer; text-decoration: none;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .btn-hood:hover { background: rgba(5,150,105,0.18); border-color: rgba(5,150,105,0.45); color: #34d399; }
+
+    .stat-row { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .stat-pill {
+      display: flex; align-items: center; gap: 0.45rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 8px; padding: 0.45rem 0.85rem;
+    }
+    .stat-pill .val { font-size: 0.95rem; font-weight: 800; color: var(--emerald); }
+    .stat-pill .lbl { font-size: 0.65rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; }
+
+    /* ── ORBITAL DIAGRAM ── */
+    .hero-icon {
+      flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+      animation: fadeUp 0.7s 0.15s ease both;
+    }
+
+    .orbit-stage {
+      position: relative;
+      width: 300px; height: 300px;
+    }
+
+    /* Static decorative rings */
+    .ring-outer {
+      position: absolute; inset: 0; border-radius: 50%;
+      border: 1px solid rgba(5,150,105,0.20);
+    }
+    .ring-inner {
+      position: absolute; inset: 50px; border-radius: 50%;
+      border: 1px dashed rgba(245,158,11,0.14);
+    }
+
+    /* Central glow */
+    .orbit-glow {
+      position: absolute; inset: 70px; border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(5,150,105,0.22) 0%,
+        rgba(245,158,11,0.09) 45%,
+        transparent 72%);
+      pointer-events: none;
+    }
+
+    /* Center card — Sarah */
+    .orbit-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      width: 138px; height: 138px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.35rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.40);
+    }
+    .orbit-center-em { font-size: 2.8rem; }
+    .orbit-center-lbl { font-size: 0.58rem; font-weight: 700; color: var(--emerald); letter-spacing: 0.12em; text-transform: uppercase; }
+
+    /* ── ORBITING ARMS ──
+     * Each .orb-arm is a full-size div anchored at the stage top-left.
+     * It spins 360° — this carries the chip (at its top edge) around the orbit.
+     * The chip itself counter-spins so text stays upright.
+     * Negative animation-delay staggers starting positions evenly:
+     *   6 satellites × 22s period → offset of 3.67s between each.
+    */
+    .orb-arm {
+      position: absolute;
+      top: 0; left: 0;
+      width: 300px; height: 300px;
+      animation: arm-spin 22s linear infinite;
+    }
+    /* Numbered classes set the starting offset — 22s ÷ 6 = 3.67s apart */
+    .arm-1 { animation-delay:    0s; }
+    .arm-2 { animation-delay: -3.67s; }
+    .arm-3 { animation-delay: -7.33s; }
+    .arm-4 { animation-delay:  -11s; }
+    .arm-5 { animation-delay: -14.67s; }
+    .arm-6 { animation-delay: -18.33s; }
+
+    @keyframes arm-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* Chip rides on the outer edge of the arm (top-center) */
+    .orb-chip {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0 10px;
+      height: 26px; line-height: 26px;
+      border-radius: 13px;
+      white-space: nowrap;
+      font-size: 0.50rem; font-weight: 800;
+      letter-spacing: 0.09em; color: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.45);
+      animation: chip-counter 22s linear infinite;
+    }
+    /* Each chip counter-spin delay matches its arm */
+    .arm-1 .orb-chip { animation-delay:    0s; }
+    .arm-2 .orb-chip { animation-delay: -3.67s; }
+    .arm-3 .orb-chip { animation-delay: -7.33s; }
+    .arm-4 .orb-chip { animation-delay:  -11s; }
+    .arm-5 .orb-chip { animation-delay: -14.67s; }
+    .arm-6 .orb-chip { animation-delay: -18.33s; }
+
+    @keyframes chip-counter {
+      from { transform: translateX(-50%) rotate(0deg); }
+      to   { transform: translateX(-50%) rotate(-360deg); }
+    }
+
+    /* Chip brand colors */
+    .chip-workday    { background: linear-gradient(120deg,#F59E0B,#D97706); }
+    .chip-okta       { background: linear-gradient(120deg,#3B82F6,#1D4ED8); }
+    .chip-m365       { background: linear-gradient(120deg,#059669,#047857); }
+    .chip-slack      { background: linear-gradient(120deg,#7C3AED,#5B21B6); }
+    .chip-servicenow { background: linear-gradient(120deg,#EF4444,#B91C1C); }
+    .chip-zoom       { background: linear-gradient(120deg,#2563EB,#1E40AF); }
+
+    /* ── CHAPTER STRIP ── */
+    .chapter-strip {
+      display: flex; align-items: stretch;
+      border-top: 1px solid var(--panel-border);
+      background: rgba(3,30,18,0.50);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      flex-shrink: 0;
+    }
+    .chapter { flex: 1; padding: 0.65rem 1rem; border-right: 1px solid var(--panel-border); display: flex; align-items: center; gap: 0.55rem; text-decoration: none; color: inherit; transition: background 0.15s; }
+    .chapter:last-child { border-right: none; }
+    .chapter:hover { background: rgba(255,255,255,0.03); }
+    .chapter-num { font-size: 1rem; font-weight: 800; color: rgba(255,255,255,0.14); flex-shrink: 0; line-height: 1; }
+    .chapter-title { font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.60); margin-bottom: 0.1rem; }
+    .chapter-sub { font-size: 0.63rem; color: var(--text-muted); }
+    .chapter.active .chapter-num { color: var(--amber); }
+    .chapter.active .chapter-title { color: var(--white); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-left">
+      <div class="boomi-wordmark">boomi<span class="dot">.</span></div>
+      <div class="header-divider"></div>
+      <div class="header-label">Meridian <span>HR Onboarding</span></div>
+    </div>
+    <div class="header-badge">
+      <div class="badge-dot"></div>
+      Live Demo Environment
+    </div>
+  </header>
+
+  <section class="hero">
+
+    <div class="hero-text">
+      <div class="eyebrow">Boomi · iPaaS · Flow · AgentStudio</div>
+      <div class="product-name">New hire,<br>ready on<br>day one.</div>
+      <div class="amber-rule"></div>
+      <p class="tagline">
+        Sarah Chen walked in on Monday morning and everything worked.
+        <strong>Six systems provisioned before she arrived</strong> — automatically.
+        No IT tickets. No manual steps. No waiting.
+      </p>
+
+      <div class="cta-row">
+        <a href="02-demo.html" class="btn-primary">
+          Start the demo
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="04-docs.html" class="btn-hood">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M5 4l-3 4 3 4M11 4l3 4-3 4M9 2l-2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Under the hood
+        </a>
+        <span class="cta-note">~90 second walkthrough</span>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-pill"><span class="val">6</span><span class="lbl">systems provisioned automatically</span></div>
+        <div class="stat-pill"><span class="val">0</span><span class="lbl">IT tickets raised</span></div>
+        <div class="stat-pill"><span class="val">Day one</span><span class="lbl">fully ready</span></div>
+      </div>
+    </div>
+
+    <!-- Orbital diagram -->
+    <div class="hero-icon">
+      <div class="orbit-stage">
+
+        <div class="ring-outer"></div>
+        <div class="ring-inner"></div>
+        <div class="orbit-glow"></div>
+
+        <!-- 6 orbiting arms — each carries one system chip around the outer ring -->
+        <div class="orb-arm arm-1"><div class="orb-chip chip-workday">WORKDAY</div></div>
+        <div class="orb-arm arm-2"><div class="orb-chip chip-okta">OKTA</div></div>
+        <div class="orb-arm arm-3"><div class="orb-chip chip-m365">M365</div></div>
+        <div class="orb-arm arm-4"><div class="orb-chip chip-slack">SLACK</div></div>
+        <div class="orb-arm arm-5"><div class="orb-chip chip-servicenow">SERVICENOW</div></div>
+        <div class="orb-arm arm-6"><div class="orb-chip chip-zoom">ZOOM</div></div>
+
+        <!-- Center -->
+        <div class="orbit-center">
+          <div class="orbit-center-em">👤</div>
+          <div class="orbit-center-lbl">Sarah Chen</div>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <div class="chapter-strip">
+    <a href="02-demo.html" class="chapter active">
+      <div class="chapter-num">01</div>
+      <div class="chapter-info"><div class="chapter-title">Welcome</div><div class="chapter-sub">Meet Sarah Chen</div></div>
+    </a>
+    <div class="chapter">
+      <div class="chapter-num">02</div>
+      <div class="chapter-info"><div class="chapter-title">Profile</div><div class="chapter-sub">Trigger confirmed</div></div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">03</div>
+      <div class="chapter-info"><div class="chapter-title">Provisioning</div><div class="chapter-sub">6 systems, in parallel</div></div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">04</div>
+      <div class="chapter-info"><div class="chapter-title">Compliance</div><div class="chapter-sub">Policy gate</div></div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">05</div>
+      <div class="chapter-info"><div class="chapter-title">Day One</div><div class="chapter-sub">Fully ready</div></div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">06</div>
+      <div class="chapter-info"><div class="chapter-title">Assistant</div><div class="chapter-sub">AgentStudio</div></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
