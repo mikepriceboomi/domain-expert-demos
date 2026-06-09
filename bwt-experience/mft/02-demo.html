@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MFT Clinical Data Gateway — Live Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark:         #0B1929;
+      --teal:         #0EC38B;
+      --white:        #FFFFFF;
+      --text-muted:   rgba(255,255,255,0.50);
+      --panel-border: rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--dark);
+      color: var(--white);
+      overflow: hidden;
+    }
+
+    .page {
+      height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 2.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(11,25,41,0.92);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0; z-index: 10;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-label {
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .header-label span { color: var(--teal); }
+
+    .security-badge {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.68rem; font-weight: 600;
+      color: var(--teal); letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid rgba(14,195,139,0.25);
+      border-radius: 20px;
+      background: rgba(14,195,139,0.07);
+    }
+    .security-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+    /* ── EMBED ── */
+    .embed-container {
+      flex: 1; position: relative; overflow: hidden;
+    }
+    .embed-container iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; border: none;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.65rem 2.5rem;
+      border-top: 1px solid var(--panel-border);
+      background: rgba(11,25,41,0.92);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+    .chapter-links { display: flex; align-items: center; gap: 1.5rem; }
+    .chapter-link {
+      font-size: 0.68rem; font-weight: 600;
+      color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase;
+      text-decoration: none; transition: color 0.15s;
+    }
+    .chapter-link:hover { color: var(--white); }
+    .chapter-link.active { color: var(--teal); }
+
+    .footer-cta {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--teal); letter-spacing: 0.05em; text-transform: uppercase;
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-cta:hover { color: #34d399; }
+    .footer-cta svg { transition: transform 0.15s; }
+    .footer-cta:hover svg { transform: translateX(3px); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-left">
+      <a href="../bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;">
+        <img src="../../assets/boomi-logo.svg" height="22" style="width:auto;display:block;" alt="Boomi">
+      </a>
+      <div class="header-label">MFT &nbsp;<span>Clinical Data Gateway</span></div>
+    </div>
+    <div class="security-badge">
+      <div class="security-dot"></div>
+      Encrypted Session
+    </div>
+  </header>
+
+  <div class="embed-container">
+    <iframe
+      data-navattic-src="https://capture.navattic.com/cmq6pq2ps000a04l58srye6k9"
+      data-navattic-placeholder-src="https://app.navattic.com/api/poster/cmq6pq2ps000a04l58srye6k9"
+      data-navattic-button-text="Try a demo"
+      style="border:none;width:100%;height:100%;position:relative;"
+      data-navattic-demo-id="cmq6pq2ps000a04l58srye6k9"
+      allow="fullscreen">
+    </iframe>
+  </div>
+
+  <footer>
+    <div class="chapter-links">
+      <a href="01-intro.html" class="chapter-link">← Back to intro</a>
+      <span style="color:rgba(255,255,255,0.12)">|</span>
+      <span class="chapter-link active">MFT Gateway · Walkthrough</span>
+      <span style="color:rgba(255,255,255,0.12)">|</span>
+    </div>
+    <a href="03-close.html" class="footer-cta">
+      See the outcome
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </footer>
+
+</div>
+
+<script>
+  var d = document,
+      w = "https://js.navattic.com/embeds.js",
+      v = function() {
+        "undefined" != typeof NavatticEmbed
+          ? NavatticEmbed.loadEmbeds()
+          : d.querySelectorAll("iframe[data-navattic-src]:not([src])").forEach(function(e) {
+              e.src = e.dataset.navatticSrc;
+            });
+      };
+  if ("undefined" != typeof NavatticEmbed) v();
+  else if (d.querySelector('script[src="' + w + '"]') == null) {
+    var s = d.createElement("script");
+    s.src = w; s.onload = v; s.onerror = v; d.body.appendChild(s);
+  }
+</script>
+
+</body>
+</html>
