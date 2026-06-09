@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boomi API Management — Live Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #02283B;
+      --coral:       #FF7C66;
+      --teal:        #0EC38B;
+      --indigo:      #4B4FE2;
+      --purple:      #A03291;
+      --white:       #FFFFFF;
+      --text-muted:  rgba(255,255,255,0.52);
+      --panel-border:rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 900px 700px at -5% 15%,  rgba(255,124,102,0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 700px 600px at 105% 85%, rgba(14,195,139,0.10)  0%, transparent 65%),
+        radial-gradient(ellipse 500px 500px at 55%  -5%, rgba(75,79,226,0.09)   0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 2.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(2,28,48,0.55);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-label { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+    .header-label span { color: var(--coral); }
+    .header-badge {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.68rem; font-weight: 600; color: var(--teal);
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      gap: 4rem; padding: 1.5rem 4rem;
+    }
+
+    .hero-text {
+      flex: 0 0 auto; max-width: 580px;
+      animation: fadeUp 0.7s ease both;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    .eyebrow {
+      font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+      letter-spacing: 0.32em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+
+    .product-name {
+      font-size: clamp(2.2rem, 3.5vw, 4rem);
+      font-weight: 800; line-height: 0.95;
+      letter-spacing: -0.03em; margin-bottom: 0.5rem;
+    }
+    .product-sub {
+      font-size: clamp(1.1rem, 2vw, 1.6rem);
+      font-weight: 600; color: var(--coral);
+      letter-spacing: -0.01em; margin-bottom: 1.1rem;
+    }
+
+    .coral-rule { width: 52px; height: 3px; background: var(--coral); border-radius: 2px; margin-bottom: 1.1rem; }
+
+    .tagline {
+      font-size: 1.0rem; font-weight: 500;
+      color: rgba(255,255,255,0.80); line-height: 1.6;
+      margin-bottom: 1.5rem; max-width: 500px;
+    }
+    .tagline strong { color: var(--white); font-weight: 700; }
+
+    .cta-row { display: flex; align-items: center; gap: 1rem; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.7rem 1.6rem;
+      background: var(--coral); color: var(--navy);
+      font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 700;
+      border: none; border-radius: 10px; cursor: pointer; text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(255,124,102,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,124,102,0.45); }
+    .btn-primary svg { transition: transform 0.15s; }
+    .btn-primary:hover svg { transform: translateX(3px); }
+
+    .cta-note { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
+
+    .stat-row { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .stat-pill {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 8px; padding: 0.45rem 0.85rem;
+    }
+    .stat-pill .val { font-size: 1rem; font-weight: 800; color: var(--teal); }
+    .stat-pill .lbl { font-size: 0.72rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; }
+
+    /* ── VISUAL ── */
+    .hero-visual {
+      flex: 0 0 auto;
+      animation: fadeUp 0.7s 0.15s ease both;
+    }
+
+    .orbit-wrap {
+      position: relative; width: 290px; height: 290px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .orbit-wrap::before {
+      content: ''; position: absolute; inset: 0;
+      border-radius: 50%; border: 1px solid rgba(255,124,102,0.18);
+      animation: spin 20s linear infinite;
+    }
+    .orbit-wrap::after {
+      content: ''; position: absolute; inset: 30px;
+      border-radius: 50%; border: 1px solid rgba(14,195,139,0.14);
+      animation: spin 14s linear infinite reverse;
+    }
+    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+    .orbit-glow {
+      position: absolute; inset: 60px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(75,79,226,0.20) 0%, rgba(255,124,102,0.12) 40%, transparent 70%);
+    }
+
+    /* Orbiting nodes */
+    .orbit-nodes {
+      position: absolute; inset: 0;
+      animation: spin 30s linear infinite;
+    }
+    .onode {
+      position: absolute;
+      width: 64px; height: 24px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.55rem; font-weight: 800; letter-spacing: 0.1em;
+      color: var(--white);
+    }
+    .onode-cam  { top: 8px;  left: 50%; transform: translateX(-50%); background: rgba(75,79,226,0.85); }
+    .onode-bag  { right: 8px; top: 50%; transform: translateY(-50%);  background: rgba(14,195,139,0.75); }
+    .onode-aws  { bottom: 8px; left: 50%; transform: translateX(-50%); background: rgba(255,124,102,0.75); }
+    .onode-3p   { left: 8px; top: 50%; transform: translateY(-50%);   background: rgba(160,50,145,0.75); }
+
+    /* ── CHAPTER STRIP ── */
+    .chapter-strip {
+      display: flex; align-items: stretch;
+      border-top: 1px solid var(--panel-border);
+      background: rgba(2,28,48,0.50);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      flex-shrink: 0;
+    }
+    .chapter {
+      flex: 1; padding: 0.55rem 0.85rem;
+      border-right: 1px solid var(--panel-border);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .chapter:last-child { border-right: none; }
+    .chapter-num { font-size: 0.9rem; font-weight: 800; color: rgba(255,255,255,0.14); flex-shrink: 0; }
+    .chapter-title { font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.60); margin-bottom: 0.1rem; }
+    .chapter-sub { font-size: 0.6rem; color: var(--text-muted); }
+    .chapter.active .chapter-num { color: var(--coral); }
+    .chapter.active .chapter-title { color: var(--white); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-left">
+      <a href="../bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;"><img src="../../assets/boomi-logo.svg" height="22" style="width:auto;display:block;" alt="Boomi"></a>
+      <div class="header-label">API Management <span>· Live Demo</span></div>
+    </div>
+    <div class="header-badge">
+      <div class="badge-dot"></div>
+      Live Demo Environment
+    </div>
+  </header>
+
+  <section class="hero">
+
+    <div class="hero-text">
+      <div class="eyebrow">Boomi · API Management</div>
+      <div class="product-name">API Management</div>
+      <div class="product-sub">Boomi World Tour London</div>
+      <div class="coral-rule"></div>
+      <p class="tagline">
+        One platform. Every gateway.<br>
+        <strong>APIs, MCP tools, and AI agents — governed together.</strong>
+      </p>
+
+      <div class="cta-row">
+        <a href="01b-premise.html" class="btn-primary">
+          Start the demo
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <span class="cta-note">Interactive walkthrough · London 2026</span>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-pill">
+          <span class="val">7</span>
+          <span class="lbl">demo chapters</span>
+        </div>
+        <div class="stat-pill">
+          <span class="val">13</span>
+          <span class="lbl">critical capabilities covered</span>
+        </div>
+        <div class="stat-pill">
+          <span class="val">1</span>
+          <span class="lbl">unified control plane</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="orbit-wrap">
+        <div class="orbit-glow"></div>
+        <div class="orbit-nodes">
+          <div class="onode onode-cam"><img src="../../assets/Icon Cloud API Management (CAM).png" alt="CAM" style="width:28px;height:28px;object-fit:contain;"/></div>
+          <div class="onode onode-bag"><img src="../../assets/Icon APIM API Gateway.png" alt="BAG" style="width:28px;height:28px;object-fit:contain;"/></div>
+          <div class="onode onode-aws">AWS</div>
+          <div class="onode onode-3p">3P</div>
+        </div>
+        <img src="../../assets/Icon ACP.png" alt="Boomi API Control Plane" style="width:180px;height:180px;object-fit:contain;position:relative;z-index:2;filter:drop-shadow(0 8px 32px rgba(0,0,0,0.40));"/>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="chapter-strip">
+    <div class="chapter active">
+      <div class="chapter-num">01</div>
+      <div class="chapter-info">
+        <div class="chapter-title">ACP Federation</div>
+        <div class="chapter-sub">Every gateway, one plane</div>
+      </div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">02</div>
+      <div class="chapter-info">
+        <div class="chapter-title">Uniform Catalog</div>
+        <div class="chapter-sub">Quality, docs, MCP, agents</div>
+      </div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">03</div>
+      <div class="chapter-info">
+        <div class="chapter-title">Design & Build</div>
+        <div class="chapter-sub">OAS gen, linting, Companion</div>
+      </div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">04</div>
+      <div class="chapter-info">
+        <div class="chapter-title">Govern & Secure</div>
+        <div class="chapter-sub">Deploy, CAM, Connect, IDP</div>
+      </div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">05</div>
+      <div class="chapter-info">
+        <div class="chapter-title">Portals & Embed</div>
+        <div class="chapter-sub">Plans, MCP creds, Embed Kit</div>
+      </div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">06</div>
+      <div class="chapter-info">
+        <div class="chapter-title">Event-Driven</div>
+        <div class="chapter-sub">Orchestrate + AI consumption</div>
+      </div>
+    </div>
+    <div class="chapter">
+      <div class="chapter-num">07</div>
+      <div class="chapter-info">
+        <div class="chapter-title">Analytics</div>
+        <div class="chapter-sub">CAM, Grafana, Control Tower</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
