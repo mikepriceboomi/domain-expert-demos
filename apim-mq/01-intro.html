@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Boomi API Management — Live Demo</title>
+  <title>Boomi API Management — 2026 MQ Demo</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -195,42 +195,6 @@
     .chapter-sub { font-size: 0.6rem; color: var(--text-muted); }
     .chapter.active .chapter-num { color: var(--coral); }
     .chapter.active .chapter-title { color: var(--white); }
-
-    /* ── THEME TOGGLE ── */
-    .theme-toggle {
-      display: flex; align-items: center;
-      background: rgba(255,255,255,0.10);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 20px; padding: 3px;
-      cursor: pointer; transition: background 0.2s;
-    }
-    .theme-toggle:hover { background: rgba(255,255,255,0.16); }
-    .toggle-option {
-      display: flex; align-items: center; justify-content: center;
-      width: 28px; height: 22px;
-      border-radius: 16px; font-size: 0.75rem;
-      transition: background 0.25s ease, color 0.2s;
-      color: rgba(255,255,255,0.38);
-    }
-    .toggle-option.sun.active  { background: rgba(255,200,80,0.25); color: #FFD060; }
-    .toggle-option.moon.active { background: rgba(75,79,226,0.30);  color: #A0A8FF; }
-
-    /* ── LIGHT MODE ── */
-    body.light { background: #EEF3F8; color: #02283B; }
-    body.light::before {
-      background:
-        radial-gradient(ellipse 900px 700px at -5% 15%,  rgba(255,124,102,0.06) 0%, transparent 65%),
-        radial-gradient(ellipse 700px 600px at 105% 85%, rgba(14,195,139,0.05)  0%, transparent 65%),
-        radial-gradient(ellipse 500px 500px at 55%  -5%, rgba(75,79,226,0.05)   0%, transparent 60%);
-    }
-    body.light header        { background: #02283B; }
-    body.light .chapter-strip { background: #02283B; }
-    body.light .eyebrow      { color: rgba(2,40,59,0.52); }
-    body.light .tagline      { color: rgba(2,40,59,0.75); }
-    body.light .tagline strong { color: #02283B; }
-    body.light .cta-note     { color: rgba(2,40,59,0.52); }
-    body.light .stat-pill    { background: rgba(2,40,59,0.05); border-color: rgba(2,40,59,0.10); }
-    body.light .stat-pill .lbl { color: rgba(2,40,59,0.52); }
   </style>
 </head>
 <body>
@@ -238,18 +202,12 @@
 
   <header>
     <div class="header-left">
-      <a href="../bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;"><img src="../../assets/boomi-logo.svg" height="22" style="width:auto;display:block;" alt="Boomi"></a>
-      <div class="header-label">API Management <span>· Live Demo</span></div>
+      <a href="../bwt-experience/bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;"><img src="../assets/boomi-logo.svg" height="22" style="width:auto;display:block;" alt="Boomi"></a>
+      <div class="header-label">API Management <span>· 2026 MQ Demo</span></div>
     </div>
-    <div style="display:flex;align-items:center;gap:0.85rem;">
-      <div class="header-badge">
-        <div class="badge-dot"></div>
-        Live Demo Environment
-      </div>
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
-        <span class="toggle-option sun" id="sunIcon">☀</span>
-        <span class="toggle-option moon active" id="moonIcon">🌙</span>
-      </button>
+    <div class="header-badge">
+      <div class="badge-dot"></div>
+      Live Demo Environment
     </div>
   </header>
 
@@ -258,7 +216,7 @@
     <div class="hero-text">
       <div class="eyebrow">Boomi · API Management</div>
       <div class="product-name">API Management</div>
-      <div class="product-sub">Boomi World Tour London</div>
+      <div class="product-sub">2026 Magic Quadrant</div>
       <div class="coral-rule"></div>
       <p class="tagline">
         One platform. Every gateway.<br>
@@ -272,7 +230,7 @@
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
-        <span class="cta-note">Interactive walkthrough · London 2026</span>
+        <span class="cta-note">~47 min · 13 Gartner capabilities</span>
       </div>
 
       <div class="stat-row">
@@ -295,12 +253,12 @@
       <div class="orbit-wrap">
         <div class="orbit-glow"></div>
         <div class="orbit-nodes">
-          <div class="onode onode-cam"><img src="../../assets/Icon Cloud API Management (CAM).png" alt="CAM" style="width:28px;height:28px;object-fit:contain;"/></div>
-          <div class="onode onode-bag"><img src="../../assets/Icon APIM API Gateway.png" alt="BAG" style="width:28px;height:28px;object-fit:contain;"/></div>
+          <div class="onode onode-cam"><img src="../assets/Icon Cloud API Management (CAM).png" alt="CAM" style="width:28px;height:28px;object-fit:contain;"/></div>
+          <div class="onode onode-bag"><img src="../assets/Icon APIM API Gateway.png" alt="BAG" style="width:28px;height:28px;object-fit:contain;"/></div>
           <div class="onode onode-aws">AWS</div>
           <div class="onode onode-3p">3P</div>
         </div>
-        <img src="../../assets/Icon ACP.png" alt="Boomi API Control Plane" style="width:180px;height:180px;object-fit:contain;position:relative;z-index:2;filter:drop-shadow(0 8px 32px rgba(0,0,0,0.40));"/>
+        <img src="../assets/Icon ACP.png" alt="Boomi API Control Plane" style="width:180px;height:180px;object-fit:contain;position:relative;z-index:2;filter:drop-shadow(0 8px 32px rgba(0,0,0,0.40));"/>
       </div>
     </div>
 
@@ -359,26 +317,5 @@
   </div>
 
 </div>
-<script>
-  (function() {
-    var body = document.body;
-    var btn = document.getElementById('themeToggle');
-    var sunIcon = document.getElementById('sunIcon');
-    var moonIcon = document.getElementById('moonIcon');
-    var isLight = false;
-    btn.addEventListener('click', function() {
-      isLight = !isLight;
-      if (isLight) {
-        body.classList.add('light');
-        sunIcon.classList.add('active');
-        moonIcon.classList.remove('active');
-      } else {
-        body.classList.remove('light');
-        sunIcon.classList.remove('active');
-        moonIcon.classList.add('active');
-      }
-    });
-  })();
-</script>
 </body>
 </html>
