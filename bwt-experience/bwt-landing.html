@@ -22,7 +22,7 @@
       font-family: 'Poppins', Arial, sans-serif;
       background: var(--navy);
       color: var(--white);
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
     /* ── BACKGROUND ORBS ── */
@@ -42,7 +42,7 @@
     .page {
       position: relative;
       z-index: 1;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
     }
@@ -115,31 +115,31 @@
     /* ── HERO ── */
     .hero {
       text-align: center;
-      padding: 1.25rem 2rem 0.75rem;
+      padding: 0.85rem 2rem 0.5rem;
     }
 
     .hero-eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 700;
       color: var(--coral);
       text-transform: uppercase;
       letter-spacing: 0.14em;
-      margin-bottom: 1rem;
+      margin-bottom: 0.65rem;
       background: rgba(255,124,102,0.1);
       border: 1px solid rgba(255,124,102,0.2);
-      padding: 5px 14px;
+      padding: 4px 12px;
       border-radius: 20px;
     }
 
     .hero-title {
-      font-size: 1.8rem;
+      font-size: 1.55rem;
       font-weight: 800;
       line-height: 1.1;
       letter-spacing: -0.03em;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.5rem;
     }
 
     .hero-title em {
@@ -161,7 +161,7 @@
     /* ── GRID ── */
     .grid-wrap {
       flex: 1;
-      padding: 0 2rem 1.25rem;
+      padding: 0 2rem 0.75rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -170,7 +170,7 @@
     .grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1.25rem;
+      gap: 0.85rem;
       width: 100%;
       max-width: 920px;
     }
@@ -246,11 +246,11 @@
     .card--purple .card-tag { color: rgba(201,77,179,0.8); }
 
     .card-title {
-      font-size: 1.05rem;
+      font-size: 0.92rem;
       font-weight: 700;
       line-height: 1.3;
       letter-spacing: -0.015em;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.5rem;
     }
 
     .card-desc {
@@ -322,17 +322,39 @@
     /* Make coral card a div so we can nest the docs link */
     div.grid-card { cursor: pointer; }
 
-    /* ── FOOTER ── */
-    footer {
-      text-align: center;
-      padding: 1.1rem 2rem;
-      font-size: 0.65rem;
-      color: rgba(255,255,255,0.22);
-      border-top: 1px solid rgba(255,255,255,0.06);
-      letter-spacing: 0.04em;
+    /* ── BOTTOM STRIP ── */
+    .bottom-strip {
+      display: flex; align-items: stretch;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(2,40,59,0.70);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      flex-shrink: 0;
     }
 
-    footer strong { color: rgba(255,255,255,0.4); }
+    .strip-item {
+      flex: 1;
+      display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.6rem 1.1rem;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      text-decoration: none; color: inherit;
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+    .strip-item:last-child { border-right: none; }
+    .strip-item:hover { background: rgba(255,255,255,0.03); }
+
+    .strip-num {
+      font-size: 1rem; font-weight: 800;
+      color: rgba(255,255,255,0.12); flex-shrink: 0; line-height: 1;
+    }
+    .strip-item.coral .strip-num  { color: var(--coral); }
+    .strip-item.purple .strip-num { color: var(--purple); }
+    .strip-item.indigo .strip-num { color: var(--indigo); }
+    .strip-item.teal .strip-num   { color: var(--teal); }
+
+    .strip-info { display: flex; flex-direction: column; }
+    .strip-title { font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.75); margin-bottom: 0.05rem; }
+    .strip-sub   { font-size: 0.6rem;  font-weight: 500; color: rgba(255,255,255,0.35); letter-spacing: 0.02em; }
   </style>
 </head>
 <body>
@@ -378,7 +400,7 @@
         <div class="card-icon-wrap">⚙️</div>
         <div class="card-tag">iPaaS · Flow · AgentStudio</div>
         <div class="card-title">New hire, ready on day one — automatically</div>
-        <div class="card-desc">The moment an offer is accepted, Boomi orchestrates provisioning across every system the new employee needs. No IT tickets. No waiting. No manual steps.</div>
+        <div class="card-desc">Sarah Chen walked in on Monday and everything worked. Six systems provisioned before she arrived — automatically, with zero IT tickets and zero manual steps.</div>
         <div class="card-footer">
           <div class="card-pills">
             <span class="card-pill">iPaaS</span>
@@ -444,10 +466,37 @@
     </div>
   </div>
 
-  <!-- ── FOOTER ── -->
-  <footer>
-    <strong>Boomi World Tour London</strong> &nbsp;·&nbsp; Hands-On Experience Zone &nbsp;·&nbsp; <strong>boomi.com</strong>
-  </footer>
+  <!-- ── BOTTOM STRIP ── -->
+  <div class="bottom-strip">
+    <div class="strip-item coral" onclick="window.location='hr-onboarding/01-intro.html'">
+      <div class="strip-num">01</div>
+      <div class="strip-info">
+        <div class="strip-title">HR Onboarding</div>
+        <div class="strip-sub">iPaaS · Flow · AgentStudio</div>
+      </div>
+    </div>
+    <a class="strip-item purple" href="../apim-mq/01-intro.html">
+      <div class="strip-num">02</div>
+      <div class="strip-info">
+        <div class="strip-title">APIM &amp; MCP</div>
+        <div class="strip-sub">API Management · AI Agents</div>
+      </div>
+    </a>
+    <a class="strip-item indigo" href="../datahub/01-intro.html">
+      <div class="strip-num">03</div>
+      <div class="strip-info">
+        <div class="strip-title">DataHub</div>
+        <div class="strip-sub">Data Governance · HubGen</div>
+      </div>
+    </a>
+    <a class="strip-item teal" href="#">
+      <div class="strip-num">04</div>
+      <div class="strip-info">
+        <div class="strip-title">MFT &amp; EDI</div>
+        <div class="strip-sub">B2B · Trading Partners</div>
+      </div>
+    </a>
+  </div>
 
 </div>
 </body>
