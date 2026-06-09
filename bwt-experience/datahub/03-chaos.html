@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Problem at Scale — Boomi DataHub Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #02283B; --coral: #FF7C66; --teal: #0EC38B;
+      --white: #FFFFFF; --text-muted: rgba(255,255,255,0.50);
+      --panel-border: rgba(255,255,255,0.08);
+    }
+    html, body { height: 100%; font-family: 'Poppins', Arial, sans-serif; background: var(--navy); color: var(--white); overflow: auto; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 800px 600px at -5% 20%,  rgba(255,124,102,0.11) 0%, transparent 65%),
+        radial-gradient(ellipse 600px 500px at 105% 80%, rgba(14,195,139,0.09)  0%, transparent 65%);
+      pointer-events: none; z-index: 0;
+    }
+    .page { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; }
+
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 3rem; border-bottom: 1px solid var(--panel-border);
+      background: rgba(2,28,48,0.55); backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px); flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-label { font-size:0.75rem; font-weight:600; color:var(--text-muted); letter-spacing:0.06em; text-transform:uppercase; }
+    .header-label span { color: var(--coral); }
+    .nav-back {
+      display:inline-flex; align-items:center; gap:0.4rem;
+      font-size:0.78rem; font-weight:600; color:var(--text-muted);
+      text-decoration:none; padding:0.4rem 0.8rem;
+      border:1px solid var(--panel-border); border-radius:7px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .nav-back:hover { color:var(--white); border-color:rgba(255,255,255,0.25); }
+
+    .main { flex: 1; display: flex; gap: 0; overflow: hidden; }
+
+    /* Left */
+    .left-panel {
+      flex: 0 0 380px; padding: 2rem 2.5rem;
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: 1px solid var(--panel-border);
+    }
+    .step-eyebrow { font-size: 0.72rem; font-weight: 700; color: var(--coral); letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .left-panel h1 { font-size: 2.1rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .left-panel p { font-size: 0.88rem; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 1rem; }
+
+    /* Stats */
+    .stat-stack { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .stat-row {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.6rem 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+    }
+    .stat-val { font-size: 2rem; font-weight: 800; color: var(--coral); line-height: 1; min-width: 48px; }
+    .stat-val.zero { color: rgba(255,255,255,0.25); }
+    .stat-lbl { font-size: 0.78rem; font-weight: 500; color: rgba(255,255,255,0.55); letter-spacing: 0.04em; }
+
+    .btn-primary {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      padding: 0.8rem 1.75rem; background: var(--coral); color: var(--navy);
+      font-family:'Poppins',sans-serif; font-size:0.9rem; font-weight:700;
+      border:none; border-radius:9px; cursor:pointer; text-decoration:none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 18px rgba(255,124,102,0.32);
+    }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 7px 24px rgba(255,124,102,0.42); }
+
+    /* Right — diagram */
+    .right-panel { flex: 1; position: relative; overflow: hidden; }
+
+    .diagram-wrap {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    svg.chaos-diagram { width: 100%; height: 100%; max-width: 900px; }
+
+    /* Chapter strip */
+    .chapter-strip { display:flex; align-items:stretch; border-top:1px solid var(--panel-border); background:rgba(2,28,48,0.50); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); flex-shrink: 0; }
+    .chapter { flex:1; padding:0.65rem 1.1rem; border-right:1px solid var(--panel-border); display:flex; align-items:center; gap:0.65rem; }
+    .chapter:last-child { border-right:none; }
+    .chapter-num { font-size:1rem; font-weight:800; color:rgba(255,255,255,0.14); flex-shrink:0; }
+    .chapter-title { font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.65); margin-bottom:0.1rem; }
+    .chapter-sub { font-size:0.65rem; color:var(--text-muted); }
+    .chapter.active .chapter-num { color: var(--coral); }
+    .chapter.active .chapter-title { color:var(--white); }
+    .chapter.done .chapter-num { color: var(--teal); }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="header-left">
+      <a href="../bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;"><img src="../../assets/boomi-logo.svg" height="22" style="width:auto;display:block;" alt="Boomi"></a>
+      <div class="header-label">DataHub <span>Interactive Demo</span></div>
+    </div>
+    <a href="02-pain.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4l-4 4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back
+    </a>
+  </header>
+
+  <div class="main">
+    <div class="left-panel">
+      <div class="step-eyebrow">The Problem at Scale</div>
+      <h1>Now multiply that across your entire stack.</h1>
+      <p>Most organisations didn't design this. They accumulated it — every team picking the best tool for their problem, every integration wired point-to-point, nobody owning the whole picture.</p>
+      <p>The result: not a data platform. A web of dependencies where every connection is a liability.</p>
+
+      <a href="04-pivot.html" class="btn-primary">
+        See the alternative
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+
+      <div class="stat-stack" style="margin-top:1.25rem">
+        <div class="stat-row">
+          <div class="stat-val">9</div>
+          <div class="stat-lbl">Systems — each a silo, each a different version of the truth</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-val">36</div>
+          <div class="stat-lbl">Point-to-point connections — every one a custom wire nobody fully owns</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-val zero">0</div>
+          <div class="stat-lbl">Governed records — no formal agreement on what any record actually is</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="diagram-wrap">
+        <svg class="chaos-diagram" viewBox="0 0 800 560" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Node gradients -->
+            <linearGradient id="gSF" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5BB8FF"/><stop offset="100%" stop-color="#1A87ED"/></linearGradient>
+            <linearGradient id="gWD" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFB060"/><stop offset="100%" stop-color="#E8803A"/></linearGradient>
+            <linearGradient id="gNS" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF6B5B"/><stop offset="100%" stop-color="#E03C31"/></linearGradient>
+            <linearGradient id="gSN" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#70D8FF"/><stop offset="100%" stop-color="#29B5E8"/></linearGradient>
+            <linearGradient id="gHS" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFAA80"/><stop offset="100%" stop-color="#FF7A59"/></linearGradient>
+            <linearGradient id="gZD" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#60CC88"/><stop offset="100%" stop-color="#1A9B50"/></linearGradient>
+            <linearGradient id="gSP" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#A0D860"/><stop offset="100%" stop-color="#74B43A"/></linearGradient>
+            <linearGradient id="gSAP" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4AACFF"/><stop offset="100%" stop-color="#0070C1"/></linearGradient>
+            <linearGradient id="gSL" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF5888"/><stop offset="100%" stop-color="#E01E5A"/></linearGradient>
+          </defs>
+
+          <!-- All 36 connection lines (muted) -->
+          <!-- SF connections -->
+          <line x1="230" y1="80"  x2="480" y2="68"  stroke="#5BB8FF" stroke-width="1.2" opacity="0.30"/>
+          <line x1="230" y1="80"  x2="650" y2="160" stroke="#5BB8FF" stroke-width="1.2" opacity="0.30"/>
+          <line x1="230" y1="80"  x2="160" y2="240" stroke="#5BB8FF" stroke-width="1.2" opacity="0.30"/>
+          <line x1="230" y1="80"  x2="380" y2="300" stroke="#5BB8FF" stroke-width="1.2" opacity="0.30"/>
+          <line x1="230" y1="80"  x2="620" y2="310" stroke="#5BB8FF" stroke-width="1.2" opacity="0.30"/>
+          <line x1="230" y1="80"  x2="520" y2="430" stroke="#5BB8FF" stroke-width="1.2" opacity="0.30"/>
+          <line x1="230" y1="80"  x2="180" y2="430" stroke="#5BB8FF" stroke-width="1.2" opacity="0.30"/>
+          <line x1="230" y1="80"  x2="370" y2="490" stroke="#5BB8FF" stroke-width="1.2" opacity="0.30"/>
+          <!-- WD connections -->
+          <line x1="480" y1="68"  x2="650" y2="160" stroke="#E8803A" stroke-width="1.2" opacity="0.30"/>
+          <line x1="480" y1="68"  x2="160" y2="240" stroke="#E8803A" stroke-width="1.2" opacity="0.30"/>
+          <line x1="480" y1="68"  x2="380" y2="300" stroke="#E8803A" stroke-width="1.2" opacity="0.30"/>
+          <line x1="480" y1="68"  x2="620" y2="310" stroke="#E8803A" stroke-width="1.2" opacity="0.30"/>
+          <line x1="480" y1="68"  x2="520" y2="430" stroke="#E8803A" stroke-width="1.2" opacity="0.30"/>
+          <line x1="480" y1="68"  x2="180" y2="430" stroke="#E8803A" stroke-width="1.2" opacity="0.30"/>
+          <line x1="480" y1="68"  x2="370" y2="490" stroke="#E8803A" stroke-width="1.2" opacity="0.30"/>
+          <!-- NS connections -->
+          <line x1="650" y1="160" x2="160" y2="240" stroke="#E03C31" stroke-width="1.2" opacity="0.30"/>
+          <line x1="650" y1="160" x2="380" y2="300" stroke="#E03C31" stroke-width="1.2" opacity="0.30"/>
+          <line x1="650" y1="160" x2="620" y2="310" stroke="#E03C31" stroke-width="1.2" opacity="0.30"/>
+          <line x1="650" y1="160" x2="520" y2="430" stroke="#E03C31" stroke-width="1.2" opacity="0.30"/>
+          <line x1="650" y1="160" x2="180" y2="430" stroke="#E03C31" stroke-width="1.2" opacity="0.30"/>
+          <line x1="650" y1="160" x2="370" y2="490" stroke="#E03C31" stroke-width="1.2" opacity="0.30"/>
+          <!-- SN connections -->
+          <line x1="160" y1="240" x2="380" y2="300" stroke="#29B5E8" stroke-width="1.2" opacity="0.30"/>
+          <line x1="160" y1="240" x2="620" y2="310" stroke="#29B5E8" stroke-width="1.2" opacity="0.30"/>
+          <line x1="160" y1="240" x2="520" y2="430" stroke="#29B5E8" stroke-width="1.2" opacity="0.30"/>
+          <line x1="160" y1="240" x2="180" y2="430" stroke="#29B5E8" stroke-width="1.2" opacity="0.30"/>
+          <line x1="160" y1="240" x2="370" y2="490" stroke="#29B5E8" stroke-width="1.2" opacity="0.30"/>
+          <!-- HS connections -->
+          <line x1="380" y1="300" x2="620" y2="310" stroke="#FF7A59" stroke-width="1.2" opacity="0.30"/>
+          <line x1="380" y1="300" x2="520" y2="430" stroke="#FF7A59" stroke-width="1.2" opacity="0.30"/>
+          <line x1="380" y1="300" x2="180" y2="430" stroke="#FF7A59" stroke-width="1.2" opacity="0.30"/>
+          <line x1="380" y1="300" x2="370" y2="490" stroke="#FF7A59" stroke-width="1.2" opacity="0.30"/>
+          <!-- ZD connections -->
+          <line x1="620" y1="310" x2="520" y2="430" stroke="#1A9B50" stroke-width="1.2" opacity="0.30"/>
+          <line x1="620" y1="310" x2="180" y2="430" stroke="#1A9B50" stroke-width="1.2" opacity="0.30"/>
+          <line x1="620" y1="310" x2="370" y2="490" stroke="#1A9B50" stroke-width="1.2" opacity="0.30"/>
+          <!-- SP connections -->
+          <line x1="520" y1="430" x2="180" y2="430" stroke="#74B43A" stroke-width="1.2" opacity="0.30"/>
+          <line x1="520" y1="430" x2="370" y2="490" stroke="#74B43A" stroke-width="1.2" opacity="0.30"/>
+          <!-- SAP connection -->
+          <line x1="180" y1="430" x2="370" y2="490" stroke="#0070C1" stroke-width="1.2" opacity="0.30"/>
+
+          <!-- Nodes (ellipses) -->
+          <!-- Salesforce -->
+          <ellipse cx="230" cy="80" rx="80" ry="32" fill="url(#gSF)"/>
+          <text x="230" y="75" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="800" fill="white" letter-spacing="1">SALESFORCE</text>
+          <text x="230" y="91" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="500" fill="rgba(255,255,255,0.65)">CRM</text>
+          <!-- Workday -->
+          <ellipse cx="480" cy="68" rx="72" ry="30" fill="url(#gWD)"/>
+          <text x="480" y="63" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="800" fill="white" letter-spacing="1">WORKDAY</text>
+          <text x="480" y="79" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="500" fill="rgba(255,255,255,0.65)">HR</text>
+          <!-- NetSuite -->
+          <ellipse cx="650" cy="160" rx="76" ry="30" fill="url(#gNS)"/>
+          <text x="650" y="155" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="800" fill="white" letter-spacing="1">NETSUITE</text>
+          <text x="650" y="171" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="500" fill="rgba(255,255,255,0.65)">ERP</text>
+          <!-- Snowflake -->
+          <ellipse cx="160" cy="240" rx="80" ry="30" fill="url(#gSN)"/>
+          <text x="160" y="235" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="800" fill="white" letter-spacing="1">SNOWFLAKE</text>
+          <text x="160" y="251" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="500" fill="rgba(255,255,255,0.65)">Analytics</text>
+          <!-- HubSpot -->
+          <ellipse cx="380" cy="300" rx="76" ry="30" fill="url(#gHS)"/>
+          <text x="380" y="295" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="800" fill="white" letter-spacing="1">HUBSPOT</text>
+          <text x="380" y="311" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="500" fill="rgba(255,255,255,0.65)">Marketing</text>
+          <!-- Zendesk -->
+          <ellipse cx="620" cy="310" rx="74" ry="30" fill="url(#gZD)"/>
+          <text x="620" y="305" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="800" fill="white" letter-spacing="1">ZENDESK</text>
+          <text x="620" y="321" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="500" fill="rgba(255,255,255,0.65)">Support</text>
+          <!-- Shopify -->
+          <ellipse cx="520" cy="430" rx="72" ry="30" fill="url(#gSP)"/>
+          <text x="520" y="425" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="800" fill="white" letter-spacing="1">SHOPIFY</text>
+          <text x="520" y="441" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="500" fill="rgba(255,255,255,0.65)">Commerce</text>
+          <!-- SAP -->
+          <ellipse cx="180" cy="430" rx="64" ry="30" fill="url(#gSAP)"/>
+          <text x="180" y="425" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="800" fill="white" letter-spacing="1">SAP</text>
+          <text x="180" y="441" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="500" fill="rgba(255,255,255,0.65)">Finance</text>
+          <!-- Slack -->
+          <ellipse cx="370" cy="490" rx="66" ry="30" fill="url(#gSL)"/>
+          <text x="370" y="485" text-anchor="middle" font-family="Poppins,sans-serif" font-size="11" font-weight="800" fill="white" letter-spacing="1">SLACK</text>
+          <text x="370" y="501" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="500" fill="rgba(255,255,255,0.65)">Comms</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter-strip">
+    <div class="chapter done"><div class="chapter-num">01</div><div class="chapter-info"><div class="chapter-title">The Problem</div><div class="chapter-sub">Why governed data matters</div></div></div>
+    <div class="chapter active"><div class="chapter-num">02</div><div class="chapter-info"><div class="chapter-title">The Scale</div><div class="chapter-sub">9 systems, 36 connections, 0 governed records</div></div></div>
+    <div class="chapter"><div class="chapter-num">03</div><div class="chapter-info"><div class="chapter-title">The Solution</div><div class="chapter-sub">DataHub changes all that</div></div></div>
+    <div class="chapter"><div class="chapter-num">04</div><div class="chapter-info"><div class="chapter-title">HubGen</div><div class="chapter-sub">AI model generation</div></div></div>
+    <div class="chapter"><div class="chapter-num">05</div><div class="chapter-info"><div class="chapter-title">Stewardship</div><div class="chapter-sub">Quarantine & resolution</div></div></div>
+  </div>
+</div>
+</body>
+</html>

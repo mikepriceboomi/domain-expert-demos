@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Result — Boomi DataHub Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:         #02283B;
+      --coral:        #FF7C66;
+      --teal:         #0EC38B;
+      --indigo:       #4B4FE2;
+      --white:        #FFFFFF;
+      --text-muted:   rgba(255,255,255,0.50);
+      --panel-border: rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      height: 100%; font-family: 'Poppins', Arial, sans-serif;
+      background: var(--navy); color: var(--white); overflow: auto;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 900px 700px at -5% 15%,  rgba(255,124,102,0.14) 0%, transparent 65%),
+        radial-gradient(ellipse 700px 600px at 105% 85%, rgba(14,195,139,0.12)  0%, transparent 65%),
+        radial-gradient(ellipse 500px 500px at 55%  -5%, rgba(75,79,226,0.09)   0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .page { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 3rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(2,28,48,0.55);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-label { font-size:0.75rem; font-weight:600; color:var(--text-muted); letter-spacing:0.06em; text-transform:uppercase; }
+    .header-label span { color: var(--coral); }
+    .header-complete {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--teal); letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .complete-dot { width:6px; height:6px; border-radius:50%; background:var(--teal); }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1; display: flex; align-items: center;
+      justify-content: center; gap: 4rem; padding: 1.5rem 4rem;
+    }
+
+    /* Left */
+    .hero-left {
+      flex: 0 0 560px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .chapter-label {
+      font-size: 0.72rem; font-weight: 700; color: var(--teal);
+      letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+
+    .hero-headline {
+      font-size: clamp(2.8rem, 4vw, 4rem);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -0.02em; margin-bottom: 1.5rem;
+    }
+
+    .coral-rule { width:52px; height:3px; background:var(--coral); border-radius:2px; margin-bottom:1.5rem; }
+
+    .hero-tagline {
+      font-size: 1.0rem; font-weight: 700;
+      color: var(--white); line-height: 1.4;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .hero-sub {
+      font-size: 1rem; color: rgba(255,255,255,0.62);
+      line-height: 1.7; margin-bottom: 1.5rem; max-width: 480px;
+    }
+
+    /* Three outcomes */
+    .outcomes { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+
+    .outcome {
+      display: flex; align-items: flex-start; gap: 0.85rem;
+      padding: 0.65rem 0.85rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-left: 3px solid var(--teal);
+      border-radius: 10px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .outcome:nth-child(2) { animation-delay: 0.1s; border-left-color: var(--coral); }
+    .outcome:nth-child(3) { animation-delay: 0.2s; border-left-color: var(--indigo); }
+
+    .outcome-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .outcome-text { font-size: 0.88rem; color: rgba(255,255,255,0.78); line-height: 1.55; }
+    .outcome-text strong { color: var(--white); font-weight: 700; }
+
+    /* CTA */
+    .cta-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+
+    .btn-primary {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      padding: 0.7rem 1.6rem;
+      background: var(--coral); color: var(--navy);
+      font-family:'Poppins',sans-serif; font-size:0.88rem; font-weight:700;
+      border:none; border-radius:10px; cursor:pointer; text-decoration:none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(255,124,102,0.35);
+    }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(255,124,102,0.45); }
+
+    .btn-secondary {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      padding: 0.85rem 1.75rem; background:transparent;
+      color:rgba(255,255,255,0.65);
+      font-family:'Poppins',sans-serif; font-size:0.9rem; font-weight:600;
+      border:1px solid var(--panel-border); border-radius:10px;
+      cursor:pointer; text-decoration:none;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-secondary:hover { color:var(--white); border-color:rgba(255,255,255,0.25); }
+
+    /* Right — hub diagram */
+    .hero-right {
+      flex: 0 0 auto;
+      display: flex; align-items: center; justify-content: center;
+      animation: fadeUp 0.6s 0.15s ease both;
+    }
+
+    .hub-diagram {
+      position: relative; width: 420px; height: 420px;
+    }
+
+    /* Orbital rings */
+    .ring {
+      position: absolute; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .ring-1 { inset: 0; animation: spin 20s linear infinite; }
+    .ring-2 { inset: 40px; animation: spin 14s linear infinite reverse; border-color: rgba(14,195,139,0.12); }
+
+    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+    /* Hub center */
+    .hub-center {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 110px; height: 110px;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 5;
+    }
+
+    .hub-glow {
+      position: absolute; inset: -20px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,124,102,0.20) 0%, rgba(14,195,139,0.12) 40%, transparent 70%);
+    }
+
+    .hub-icon {
+      width: 110px; height: 110px;
+      position: relative; z-index: 2;
+      filter: drop-shadow(0 4px 20px rgba(0,0,0,0.40));
+    }
+
+    /* System nodes */
+    .node {
+      position: absolute;
+      width: 90px; height: 36px;
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 800;
+      letter-spacing: 0.08em; color: white;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    }
+
+    /* Spoke lines via SVG */
+    .spokes {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+    }
+
+    /* Node positions — top, right, bottom, left */
+    .node-sf  { top:  14px; left: 50%; transform: translateX(-50%); background: linear-gradient(120deg,#5BB8FF,#1A87ED); }
+    .node-ns  { top: 50%;  right: 14px; transform: translateY(-50%); background: linear-gradient(120deg,#FF6B5B,#E03C31); }
+    .node-hs  { bottom: 14px; left: 50%; transform: translateX(-50%); background: linear-gradient(120deg,#FFAA80,#FF7A59); }
+    .node-zd  { top: 50%;  left: 14px; transform: translateY(-50%); background: linear-gradient(120deg,#60CC88,#1A9B50); }
+
+    /* ── CHAPTER STRIP ── */
+    .chapter-strip {
+      display:flex; align-items:stretch;
+      border-top:1px solid var(--panel-border);
+      background:rgba(2,28,48,0.50);
+      backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      flex-shrink: 0;
+    }
+    .chapter { flex:1; padding:0.65rem 1.1rem; border-right:1px solid var(--panel-border); display:flex; align-items:center; gap:0.65rem; }
+    .chapter:last-child { border-right:none; }
+    .chapter-num { font-size:1rem; font-weight:800; color:rgba(255,255,255,0.14); flex-shrink:0; }
+    .chapter-title { font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.65); margin-bottom:0.1rem; }
+    .chapter-sub { font-size:0.65rem; color:var(--text-muted); }
+    .chapter.done .chapter-num { color: var(--teal); }
+    .chapter.done .chapter-title { color: rgba(255,255,255,0.80); }
+    .chapter.active .chapter-num { color: var(--coral); }
+    .chapter.active .chapter-title { color: var(--white); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-left">
+      <a href="../bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;"><img src="../../assets/boomi-logo.svg" height="22" style="width:auto;display:block;" alt="Boomi"></a>
+      <div class="header-label">DataHub <span>Interactive Demo</span></div>
+    </div>
+    <div class="header-complete">
+      <div class="complete-dot"></div>
+      Demo complete
+    </div>
+  </header>
+
+  <section class="hero">
+
+    <div class="hero-left">
+      <div class="chapter-label">Chapter 05 — The Result</div>
+      <div class="hero-headline">One governed layer.<br>Every system in agreement.</div>
+      <div class="coral-rule"></div>
+
+      <p class="hero-tagline">"You can't activate what you can't trust."</p>
+      <p class="hero-sub">This is how you get from data you have to data you can use. Three things change when you make this architectural shift.</p>
+
+      <div class="outcomes">
+        <div class="outcome">
+          <div class="outcome-icon">🔄</div>
+          <div class="outcome-text"><strong>Reconciliation stops being manual.</strong> It happens automatically at the record level, before anything reaches a downstream system.</div>
+        </div>
+        <div class="outcome">
+          <div class="outcome-icon">🤖</div>
+          <div class="outcome-text"><strong>AI produces outputs people act on.</strong> Because the data it runs on has been governed — not just collected.</div>
+        </div>
+        <div class="outcome">
+          <div class="outcome-icon">📋</div>
+          <div class="outcome-text"><strong>Audit trails replace guesswork.</strong> When a regulator asks how a record ended up the way it did, you have a complete answer.</div>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <a href="mailto:michael.price@boomi.com?subject=DataHub Demo Follow-up" class="btn-primary">
+          Talk to an expert
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="01-intro.html" class="btn-secondary">Restart the demo</a>
+      </div>
+    </div>
+
+    <!-- Hub diagram -->
+    <div class="hero-right">
+      <div class="hub-diagram">
+
+        <svg class="spokes" viewBox="0 0 420 420">
+          <line x1="210" y1="56"  x2="210" y2="175" stroke="#1A87ED" stroke-width="1.5" opacity="0.45"/>
+          <line x1="364" y1="210" x2="245" y2="210" stroke="#E03C31" stroke-width="1.5" opacity="0.45"/>
+          <line x1="210" y1="364" x2="210" y2="245" stroke="#FF7A59" stroke-width="1.5" opacity="0.45"/>
+          <line x1="56"  y1="210" x2="175" y2="210" stroke="#1A9B50" stroke-width="1.5" opacity="0.45"/>
+        </svg>
+
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+
+        <div class="node node-sf">SALESFORCE</div>
+        <div class="node node-ns">NETSUITE</div>
+        <div class="node node-hs">HUBSPOT</div>
+        <div class="node node-zd">ZENDESK</div>
+
+        <div class="hub-center">
+          <div class="hub-glow"></div>
+          <img class="hub-icon"
+               src="https://mikepriceboomi.github.io/domain-expert-demos/assets/datahub-icon.png"
+               alt="DataHub"
+               onerror="this.style.opacity='0.3'"/>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <div class="chapter-strip">
+    <div class="chapter done">
+      <div class="chapter-num">01</div>
+      <div class="chapter-info"><div class="chapter-title">The Problem</div><div class="chapter-sub">Why governed data matters</div></div>
+    </div>
+    <div class="chapter done">
+      <div class="chapter-num">02</div>
+      <div class="chapter-info"><div class="chapter-title">HubGen</div><div class="chapter-sub">AI model generation</div></div>
+    </div>
+    <div class="chapter done">
+      <div class="chapter-num">03</div>
+      <div class="chapter-info"><div class="chapter-title">Stewardship</div><div class="chapter-sub">Quarantine & resolution</div></div>
+    </div>
+    <div class="chapter done">
+      <div class="chapter-num">04</div>
+      <div class="chapter-info"><div class="chapter-title">Governance</div><div class="chapter-sub">Rules, match logic, audit trail</div></div>
+    </div>
+    <div class="chapter active">
+      <div class="chapter-num">05</div>
+      <div class="chapter-info"><div class="chapter-title">The Result</div><div class="chapter-sub">One governed layer</div></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

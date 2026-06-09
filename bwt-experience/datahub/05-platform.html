@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Platform — Boomi DataHub Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:         #02283B;
+      --coral:        #FF7C66;
+      --teal:         #0EC38B;
+      --indigo:       #4B4FE2;
+      --white:        #FFFFFF;
+      --text-muted:   rgba(255,255,255,0.50);
+      --panel-border: rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow: hidden;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 700px 600px at -5% 20%,  rgba(14,195,139,0.08) 0%, transparent 65%),
+        radial-gradient(ellipse 600px 500px at 105% 80%, rgba(75,79,226,0.08)  0%, transparent 65%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 3rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(2,28,48,0.55);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-label { font-size:0.75rem; font-weight:600; color:var(--text-muted); letter-spacing:0.06em; text-transform:uppercase; }
+    .header-label span { color: var(--coral); }
+    .live-badge {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--teal); letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+    /* ── MAIN ── */
+    .main { flex: 1; display: flex; overflow: hidden; }
+
+    /* Left — Navattic embed */
+    .embed-panel {
+      flex: 1;
+      position: relative;
+      border-right: 1px solid var(--panel-border);
+      border-left: 3px solid rgba(14,195,139,0.30);
+      background: #000;
+      overflow: hidden;
+    }
+
+    .embed-panel iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Right — context panel */
+    .right-panel {
+      flex: 0 0 300px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .step-eyebrow {
+      font-size: 0.65rem; font-weight: 700; color: var(--coral);
+      letter-spacing: 0.24em; text-transform: uppercase; margin-bottom: 0.6rem;
+    }
+
+    .right-panel h1 {
+      font-size: 1.6rem; font-weight: 800;
+      line-height: 1.1; letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+
+    .coral-rule { width:40px; height:3px; background:var(--coral); border-radius:2px; margin: 0.75rem 0; }
+
+    .right-panel p {
+      font-size: 0.80rem; color: rgba(255,255,255,0.65);
+      line-height: 1.65; margin-bottom: 0.9rem;
+    }
+
+    /* What you'll see list */
+    .see-list {
+      display: flex; flex-direction: column; gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .see-item {
+      display: flex; align-items: flex-start; gap: 0.6rem;
+      padding: 0.5rem 0.85rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-left: 3px solid var(--teal);
+      border-radius: 8px;
+    }
+    .see-item:nth-child(2) { border-left-color: var(--coral); }
+    .see-item:nth-child(3) { border-left-color: var(--indigo); }
+    .see-item:nth-child(4) { border-left-color: rgba(255,255,255,0.25); }
+
+    .see-icon { font-size: 0.8rem; flex-shrink: 0; margin-top: 1px; }
+    .see-text { font-size: 0.75rem; color: rgba(255,255,255,0.72); line-height: 1.5; }
+    .see-text strong { color: var(--white); }
+
+    /* Navigation hint */
+    .nav-hint {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 0.85rem;
+      background: rgba(14,195,139,0.08);
+      border: 1px solid rgba(14,195,139,0.20);
+      border-radius: 8px;
+      font-size: 0.72rem; color: rgba(255,255,255,0.65);
+    }
+    .nav-hint-icon { font-size: 0.8rem; flex-shrink: 0; }
+
+    .btn-close {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      padding: 0.65rem 1.25rem; margin-top: 1rem;
+      background: var(--coral); color: var(--navy);
+      font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:700;
+      border:none; border-radius:8px; cursor:pointer; text-decoration:none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 18px rgba(255,124,102,0.30);
+      align-self: flex-start;
+    }
+    .btn-close:hover { transform:translateY(-2px); box-shadow:0 7px 24px rgba(255,124,102,0.40); }
+
+    /* ── CHAPTER STRIP ── */
+    .chapter-strip {
+      display:flex; align-items:stretch;
+      border-top:1px solid var(--panel-border);
+      background:rgba(2,28,48,0.70);
+      backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      flex-shrink: 0;
+    }
+    .chapter { flex:1; padding:0.65rem 1.1rem; border-right:1px solid var(--panel-border); display:flex; align-items:center; gap:0.65rem; text-decoration:none; transition: background 0.15s; }
+    .chapter:last-child { border-right:none; }
+    .chapter:hover { background: rgba(255,255,255,0.03); }
+    .chapter-num { font-size:1rem; font-weight:800; color:rgba(255,255,255,0.14); flex-shrink:0; }
+    .chapter-title { font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.65); margin-bottom:0.1rem; }
+    .chapter-sub { font-size:0.65rem; color:var(--text-muted); }
+    .chapter.done .chapter-num { color: var(--teal); }
+    .chapter.done .chapter-title { color:rgba(255,255,255,0.80); }
+    .chapter.active .chapter-num { color: var(--coral); }
+    .chapter.active .chapter-title { color:var(--white); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-left">
+      <a href="../bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;"><img src="../../assets/boomi-logo.svg" height="22" style="width:auto;display:block;" alt="Boomi"></a>
+      <div class="header-label">DataHub <span>Interactive Demo</span></div>
+    </div>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Live Demo Environment
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- Navattic embed -->
+    <div class="embed-panel">
+      <iframe
+        data-navattic-src="https://capture.navattic.com/cmpzjeoie003z04jp4yjm8hb6"
+        data-navattic-placeholder-src="https://app.navattic.com/api/poster/cmpzjeoie003z04jp4yjm8hb6"
+        data-navattic-button-text="Try a demo"
+        style="border:none;width:100%;height:100%;position:absolute;"
+        data-navattic-demo-id="cmpzjeoie003z04jp4yjm8hb6"
+        allow="fullscreen">
+      </iframe>
+    </div>
+
+    <!-- Right panel -->
+    <div class="right-panel">
+      <div class="step-eyebrow">Chapter 04 — The Platform</div>
+      <h1>Now watch it work.</h1>
+      <div class="coral-rule"></div>
+
+      <p>Live DataHub environment. Follow the walkthrough to see every concept from the narrative play out in the actual product.</p>
+
+      <div class="see-list">
+        <div class="see-item">
+          <div class="see-icon">🤖</div>
+          <div class="see-text"><strong>HubGen</strong> — build a complete Contact model from a single plain-language prompt.</div>
+        </div>
+        <div class="see-item">
+          <div class="see-icon">🔍</div>
+          <div class="see-text"><strong>Quarantine</strong> — see bad data caught before it reaches downstream systems, with exact failure reasons.</div>
+        </div>
+        <div class="see-item">
+          <div class="see-icon">✅</div>
+          <div class="see-text"><strong>Stewardship</strong> — resolve records directly, without IT. No ticket. No wait.</div>
+        </div>
+        <div class="see-item">
+          <div class="see-icon">📊</div>
+          <div class="see-text"><strong>Command Center</strong> — operational visibility across every record that flowed through.</div>
+        </div>
+      </div>
+
+      <a href="06-close.html" class="btn-close">
+        See the outcome
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Chapter strip -->
+  <div class="chapter-strip">
+    <a href="01-intro.html" class="chapter done">
+      <div class="chapter-num">01</div>
+      <div class="chapter-info"><div class="chapter-title">Intro</div><div class="chapter-sub">What is DataHub?</div></div>
+    </a>
+    <a href="02-pain.html" class="chapter done">
+      <div class="chapter-num">02</div>
+      <div class="chapter-info"><div class="chapter-title">The Problem</div><div class="chapter-sub">Why governed data matters</div></div>
+    </a>
+    <a href="03-chaos.html" class="chapter done">
+      <div class="chapter-num">03</div>
+      <div class="chapter-info"><div class="chapter-title">The Scale</div><div class="chapter-sub">9 systems, 36 connections</div></div>
+    </a>
+    <a href="04-pivot.html" class="chapter done">
+      <div class="chapter-num">04</div>
+      <div class="chapter-info"><div class="chapter-title">The Solution</div><div class="chapter-sub">DataHub changes all that</div></div>
+    </a>
+    <a href="05-platform.html" class="chapter active">
+      <div class="chapter-num">05</div>
+      <div class="chapter-info"><div class="chapter-title">The Platform</div><div class="chapter-sub">Live walkthrough</div></div>
+    </a>
+    <a href="06-close.html" class="chapter">
+      <div class="chapter-num">06</div>
+      <div class="chapter-info"><div class="chapter-title">The Result</div><div class="chapter-sub">One governed layer</div></div>
+    </a>
+  </div>
+
+</div>
+
+<script>
+  var d=document,
+      w="https://js.navattic.com/embeds.js",
+      v=function(){
+        "undefined"!=typeof NavatticEmbed
+          ? NavatticEmbed.loadEmbeds()
+          : d.querySelectorAll("iframe[data-navattic-src]:not([src])").forEach(function(e){
+              e.src=e.dataset.navatticSrc
+            })
+      };
+  if("undefined"!=typeof NavatticEmbed) v();
+  else if(d.querySelector('script[src="'+w+'"]')==null){
+    var s=d.createElement("script");
+    s.src=w; s.onload=v; s.onerror=v; d.body.appendChild(s);
+  }
+</script>
+
+</body>
+</html>
