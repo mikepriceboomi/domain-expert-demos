@@ -236,6 +236,44 @@
     .chapter-sub { font-size: 0.63rem; color: var(--text-muted); }
     .chapter.active .chapter-num { color: var(--amber); }
     .chapter.active .chapter-title { color: var(--white); }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px; padding: 3px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .theme-toggle:hover { background: rgba(255,255,255,0.16); }
+    .toggle-option {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 22px;
+      border-radius: 16px; font-size: 0.75rem;
+      transition: background 0.25s ease, color 0.2s;
+      color: rgba(255,255,255,0.38);
+    }
+    .toggle-option.sun.active  { background: rgba(255,200,80,0.25); color: #FFD060; }
+    .toggle-option.moon.active { background: rgba(75,79,226,0.30);  color: #A0A8FF; }
+
+    /* ── LIGHT MODE ── */
+    body.light { background: #F0F6F3; color: #031e12; }
+    body.light::before {
+      background:
+        radial-gradient(ellipse 900px 700px at -5% 15%,  rgba(5,150,105,0.07)  0%, transparent 65%),
+        radial-gradient(ellipse 700px 600px at 105% 85%, rgba(245,158,11,0.06) 0%, transparent 65%),
+        radial-gradient(ellipse 500px 500px at 55%  -5%, rgba(5,150,105,0.05)  0%, transparent 60%);
+    }
+    body.light header         { background: #031e12; }
+    body.light .chapter-strip { background: #031e12; }
+    body.light .eyebrow       { color: rgba(3,30,18,0.52); }
+    body.light .tagline       { color: rgba(3,30,18,0.72); }
+    body.light .tagline strong { color: #031e12; }
+    body.light .cta-note      { color: rgba(3,30,18,0.52); }
+    body.light .stat-pill     { background: rgba(3,30,18,0.05); border-color: rgba(3,30,18,0.10); }
+    body.light .stat-pill .lbl { color: rgba(3,30,18,0.52); }
+    /* Orbital center card */
+    body.light .orbit-center  { background: rgba(255,255,255,0.80); border-color: rgba(3,30,18,0.12); box-shadow: 0 8px 32px rgba(3,30,18,0.12); }
   </style>
 </head>
 <body>
@@ -246,9 +284,15 @@
       <a href="../bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;"><img src="../../assets/boomi-logo.svg" height="22" style="width:auto;display:block;" alt="Boomi"></a>
       <div class="header-label">Meridian <span>HR Onboarding</span></div>
     </div>
-    <div class="header-badge">
-      <div class="badge-dot"></div>
-      Live Demo Environment
+    <div style="display:flex;align-items:center;gap:0.85rem;">
+      <div class="header-badge">
+        <div class="badge-dot"></div>
+        Live Demo Environment
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+        <span class="toggle-option sun" id="sunIcon">☀</span>
+        <span class="toggle-option moon active" id="moonIcon">🌙</span>
+      </button>
     </div>
   </header>
 
@@ -340,5 +384,26 @@
   </div>
 
 </div>
+<script>
+  (function() {
+    var body = document.body;
+    var btn = document.getElementById('themeToggle');
+    var sunIcon = document.getElementById('sunIcon');
+    var moonIcon = document.getElementById('moonIcon');
+    var isLight = false;
+    btn.addEventListener('click', function() {
+      isLight = !isLight;
+      if (isLight) {
+        body.classList.add('light');
+        sunIcon.classList.add('active');
+        moonIcon.classList.remove('active');
+      } else {
+        body.classList.remove('light');
+        sunIcon.classList.remove('active');
+        moonIcon.classList.add('active');
+      }
+    });
+  })();
+</script>
 </body>
 </html>
