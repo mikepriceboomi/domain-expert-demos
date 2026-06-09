@@ -355,6 +355,60 @@
     .strip-info { display: flex; flex-direction: column; }
     .strip-title { font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.75); margin-bottom: 0.05rem; }
     .strip-sub   { font-size: 0.6rem;  font-weight: 500; color: rgba(255,255,255,0.35); letter-spacing: 0.02em; }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px; padding: 3px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .theme-toggle:hover { background: rgba(255,255,255,0.16); }
+    .toggle-option {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 22px;
+      border-radius: 16px; font-size: 0.75rem;
+      transition: background 0.25s ease, color 0.2s;
+      color: rgba(255,255,255,0.38);
+    }
+    .toggle-option.sun.active  { background: rgba(255,200,80,0.25); color: #FFD060; }
+    .toggle-option.moon.active { background: rgba(75,79,226,0.30);  color: #A0A8FF; }
+
+    /* ── LIGHT MODE ── */
+    body.light { background: #EEF3F8; color: #02283B; }
+    body.light::before {
+      background:
+        radial-gradient(ellipse 700px 600px at -10% 20%, rgba(255,124,102,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 500px at 110% 80%, rgba(14,195,139,0.06)  0%, transparent 70%),
+        radial-gradient(ellipse 500px 400px at 55%  -5%, rgba(75,79,226,0.06)   0%, transparent 60%),
+        radial-gradient(ellipse 400px 400px at 100% 10%, rgba(160,50,145,0.05)  0%, transparent 60%);
+    }
+    /* Keep header + strip opaque navy in both modes */
+    body.light header      { background: #02283B; }
+    body.light .bottom-strip { background: #02283B; }
+    /* Hero */
+    body.light .hero-sub { color: rgba(2,40,59,0.52); }
+    /* Cards */
+    body.light .grid-card { background: #ffffff; border-color: rgba(2,40,59,0.10); box-shadow: 0 2px 10px rgba(2,40,59,0.07); }
+    body.light .grid-card:hover { background: rgba(2,40,59,0.02); border-color: rgba(2,40,59,0.14); box-shadow: 0 18px 50px rgba(2,40,59,0.14); }
+    body.light .card--coral:hover  { border-color: rgba(255,124,102,0.35); }
+    body.light .card--teal:hover   { border-color: rgba(14,195,139,0.35); }
+    body.light .card--indigo:hover { border-color: rgba(75,79,226,0.35); }
+    body.light .card--purple:hover { border-color: rgba(160,50,145,0.35); }
+    body.light .card-desc { color: rgba(2,40,59,0.52); }
+    body.light .card-pill { background: rgba(2,40,59,0.06); border-color: rgba(2,40,59,0.10); color: rgba(2,40,59,0.45); }
+    body.light .card-arrow { background: rgba(2,40,59,0.06); border-color: rgba(2,40,59,0.12); color: rgba(2,40,59,0.40); }
+    body.light .card-docs-link { color: rgba(2,40,59,0.30); }
+    body.light .card-docs-link:hover { color: rgba(2,40,59,0.65); }
+    body.light .card--coral  .card-tag { color: rgba(200,80,60,0.85); }
+    body.light .card--teal   .card-tag { color: rgba(5,160,110,0.85); }
+    body.light .card--indigo .card-tag { color: rgba(60,65,210,0.90); }
+    body.light .card--purple .card-tag { color: rgba(140,35,130,0.90); }
+    body.light .card--coral  .card-icon-wrap { background: rgba(255,124,102,0.10); }
+    body.light .card--teal   .card-icon-wrap { background: rgba(14,195,139,0.10); }
+    body.light .card--indigo .card-icon-wrap { background: rgba(75,79,226,0.10); }
+    body.light .card--purple .card-icon-wrap { background: rgba(160,50,145,0.10); }
   </style>
 </head>
 <body>
@@ -378,6 +432,10 @@
     <div class="header-right">
       <div class="header-dot"></div>
       <span class="header-live">Live Demos</span>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+        <span class="toggle-option sun" id="sunIcon">☀</span>
+        <span class="toggle-option moon active" id="moonIcon">🌙</span>
+      </button>
     </div>
   </header>
 
@@ -499,5 +557,26 @@
   </div>
 
 </div>
+<script>
+  (function() {
+    var body = document.body;
+    var btn = document.getElementById('themeToggle');
+    var sunIcon = document.getElementById('sunIcon');
+    var moonIcon = document.getElementById('moonIcon');
+    var isLight = false;
+    btn.addEventListener('click', function() {
+      isLight = !isLight;
+      if (isLight) {
+        body.classList.add('light');
+        sunIcon.classList.add('active');
+        moonIcon.classList.remove('active');
+      } else {
+        body.classList.remove('light');
+        sunIcon.classList.remove('active');
+        moonIcon.classList.add('active');
+      }
+    });
+  })();
+</script>
 </body>
 </html>
