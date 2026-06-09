@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meridian HR Onboarding — How It's Built</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest:       #031e12;
+      --forest-mid:   #064e3b;
+      --emerald:      #059669;
+      --emerald-light:#34d399;
+      --amber:        #f59e0b;
+      --amber-dark:   #d97706;
+      --white:        #ffffff;
+      --text:         rgba(255,255,255,0.88);
+      --text-muted:   rgba(255,255,255,0.50);
+      --text-dim:     rgba(255,255,255,0.35);
+      --panel-border: rgba(255,255,255,0.08);
+      --sidebar-w:    260px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--forest);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 800px 600px at -5% 10%,  rgba(5,150,105,0.12) 0%, transparent 65%),
+        radial-gradient(ellipse 600px 500px at 105% 90%, rgba(245,158,11,0.08) 0%, transparent 65%);
+    }
+
+    /* ── LAYOUT ── */
+    .layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      position: sticky; top: 0; height: 100vh;
+      overflow-y: auto;
+      background: rgba(3,30,18,0.70);
+      backdrop-filter: blur(16px);
+      border-right: 1px solid var(--panel-border);
+      display: flex; flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 1.5rem 1.25rem 1rem;
+      border-bottom: 1px solid var(--panel-border);
+    }
+
+    .boomi-wordmark { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+    .boomi-wordmark .dot { color: var(--amber); }
+    .sidebar-subtitle { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .sidebar-badge {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      margin-top: 0.75rem;
+      padding: 0.3rem 0.6rem;
+      background: rgba(5,150,105,0.15);
+      border: 1px solid rgba(5,150,105,0.25);
+      border-radius: 6px;
+      font-size: 0.62rem; font-weight: 700;
+      color: var(--emerald); letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--emerald); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+
+    .sidebar-nav { flex: 1; padding: 1rem 0; }
+
+    .nav-section-label {
+      padding: 0.6rem 1.25rem 0.3rem;
+      font-size: 0.60rem; font-weight: 700;
+      color: var(--text-dim); letter-spacing: 0.14em; text-transform: uppercase;
+    }
+
+    .nav-link {
+      display: block; padding: 0.45rem 1.25rem;
+      font-size: 0.78rem; font-weight: 500;
+      color: var(--text-muted); text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+    .nav-link.active { color: var(--amber); border-left-color: var(--amber); background: rgba(245,158,11,0.06); }
+
+    .sidebar-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--panel-border);
+      font-size: 0.65rem; color: var(--text-dim);
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main { flex: 1; min-width: 0; }
+
+    .content-header {
+      padding: 2.5rem 4rem 2rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(3,30,18,0.35);
+    }
+
+    .content-eyebrow {
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--emerald); letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .content-title {
+      font-size: 2.2rem; font-weight: 800;
+      line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    .content-lead {
+      font-size: 1.05rem; color: rgba(255,255,255,0.70);
+      max-width: 640px; line-height: 1.65;
+    }
+
+    .content-body { padding: 3rem 4rem; max-width: 860px; }
+
+    /* ── SECTIONS ── */
+    .section { margin-bottom: 4rem; }
+
+    .section-anchor { display: block; position: relative; top: -80px; visibility: hidden; }
+
+    h2.section-title {
+      font-size: 1.3rem; font-weight: 800;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--panel-border);
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+
+    .section-icon {
+      width: 28px; height: 28px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; flex-shrink: 0;
+    }
+    .icon-emerald { background: rgba(5,150,105,0.20); }
+    .icon-amber   { background: rgba(245,158,11,0.20); }
+    .icon-blue    { background: rgba(59,130,246,0.20); }
+    .icon-purple  { background: rgba(124,58,237,0.20); }
+    .icon-red     { background: rgba(239,68,68,0.18); }
+
+    h3.sub-title {
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--white);
+      margin: 1.75rem 0 0.65rem;
+    }
+
+    p { color: rgba(255,255,255,0.78); margin-bottom: 1rem; font-size: 0.93rem; }
+    p:last-child { margin-bottom: 0; }
+    p strong { color: var(--white); font-weight: 700; }
+
+    /* ── CALLOUT CARDS ── */
+    .callout {
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      margin: 1.25rem 0;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .callout-emerald {
+      background: rgba(5,150,105,0.10);
+      border: 1px solid rgba(5,150,105,0.22);
+    }
+    .callout-amber {
+      background: rgba(245,158,11,0.10);
+      border: 1px solid rgba(245,158,11,0.22);
+    }
+    .callout-label {
+      font-size: 0.65rem; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .callout-emerald .callout-label { color: var(--emerald); }
+    .callout-amber   .callout-label { color: var(--amber); }
+
+    /* ── PROCESS STEP CARDS ── */
+    .step-list { display: flex; flex-direction: column; gap: 0.6rem; margin: 1rem 0; }
+
+    .step {
+      display: flex; align-items: flex-start; gap: 0.85rem;
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(245,158,11,0.18);
+      border: 1px solid rgba(245,158,11,0.30);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.60rem; font-weight: 800; color: var(--amber);
+      margin-top: 1px;
+    }
+
+    .step-text { font-size: 0.85rem; color: rgba(255,255,255,0.78); line-height: 1.55; }
+    .step-text strong { color: var(--white); font-weight: 700; }
+
+    /* ── SUBPROCESS CARDS ── */
+    .subprocess-grid { display: flex; flex-direction: column; gap: 1rem; margin: 1.25rem 0; }
+
+    .subprocess-card {
+      padding: 1.1rem 1.25rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      border-left: 3px solid var(--emerald);
+    }
+    .subprocess-card:nth-child(2) { border-left-color: var(--amber); }
+    .subprocess-card:nth-child(3) { border-left-color: #3b82f6; }
+    .subprocess-card:nth-child(4) { border-left-color: #7c3aed; }
+    .subprocess-card:nth-child(5) { border-left-color: #34d399; }
+
+    .subprocess-header { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.6rem; }
+    .subprocess-tag {
+      font-size: 0.58rem; font-weight: 800;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      padding: 0.2rem 0.5rem; border-radius: 4px;
+      background: rgba(255,255,255,0.08); color: var(--text-muted);
+    }
+    .subprocess-name { font-size: 0.9rem; font-weight: 700; color: var(--white); }
+    .subprocess-desc { font-size: 0.83rem; color: rgba(255,255,255,0.65); line-height: 1.55; }
+    .subprocess-systems {
+      display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.65rem;
+    }
+    .sys-pill {
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.2rem 0.55rem; border-radius: 10px; color: #fff;
+    }
+    .pill-okta       { background: #1d4ed8; }
+    .pill-m365       { background: #047857; }
+    .pill-slack      { background: #5b21b6; }
+    .pill-zoom       { background: #1e40af; }
+    .pill-snow       { background: #b91c1c; }
+    .pill-docusign   { background: #374151; border: 1px solid rgba(255,255,255,0.15); }
+    .pill-workday    { background: #d97706; }
+    .pill-calendar   { background: #059669; }
+
+    /* ── LIVE/MOCK TABLE ── */
+    .live-mock-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.83rem; }
+    .live-mock-table th {
+      text-align: left; padding: 0.5rem 0.85rem;
+      font-size: 0.65rem; font-weight: 700;
+      color: var(--text-muted); letter-spacing: 0.10em; text-transform: uppercase;
+      border-bottom: 1px solid var(--panel-border);
+    }
+    .live-mock-table td {
+      padding: 0.6rem 0.85rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.75); vertical-align: top;
+    }
+    .live-mock-table tr:last-child td { border-bottom: none; }
+    .live-mock-table td:first-child { color: var(--white); font-weight: 600; }
+    .badge-live { display: inline-block; padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.60rem; font-weight: 700; background: rgba(5,150,105,0.20); color: var(--emerald); letter-spacing: 0.06em; }
+    .badge-mock { display: inline-block; padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.60rem; font-weight: 700; background: rgba(245,158,11,0.15); color: var(--amber); letter-spacing: 0.06em; }
+
+    /* ── SOUNDBITES ── */
+    .soundbite-list { display: flex; flex-direction: column; gap: 0.65rem; margin: 1rem 0; }
+    .soundbite {
+      padding: 0.85rem 1.1rem 0.85rem 1.25rem;
+      background: rgba(5,150,105,0.08);
+      border: 1px solid rgba(5,150,105,0.18);
+      border-left: 3px solid var(--emerald);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem; font-weight: 600;
+      color: rgba(255,255,255,0.85); font-style: italic;
+    }
+
+    /* ── ARCHITECTURE DIAGRAM ── */
+    .arch-diagram {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      padding: 1.5rem 2rem;
+      margin: 1.25rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.60);
+      overflow-x: auto;
+      line-height: 1.8;
+    }
+    .arch-diagram .highlight { color: var(--emerald); font-weight: 700; }
+    .arch-diagram .dim { color: rgba(255,255,255,0.30); }
+
+    /* ── DATA PROPERTIES TABLE ── */
+    .props-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.82rem; }
+    .props-table th {
+      text-align: left; padding: 0.5rem 0.75rem;
+      font-size: 0.63rem; font-weight: 700; color: var(--text-muted);
+      letter-spacing: 0.10em; text-transform: uppercase;
+      border-bottom: 1px solid var(--panel-border);
+    }
+    .props-table td {
+      padding: 0.55rem 0.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: top;
+    }
+    .props-table tr:last-child td { border-bottom: none; }
+    .props-table td:first-child { font-family: 'Courier New', monospace; font-size: 0.75rem; color: var(--emerald-light); font-weight: 600; white-space: nowrap; }
+    .props-table td:nth-child(2) { color: rgba(255,255,255,0.70); }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="boomi-wordmark">boomi<span class="dot">.</span></div>
+      <div class="sidebar-subtitle">Demo Reference</div>
+      <div class="sidebar-badge"><div class="badge-dot"></div>BWT London</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="#what-it-is" class="nav-link active">What this demo does</a>
+      <a href="#the-story" class="nav-link">The story</a>
+      <a href="#architecture" class="nav-link">How it's wired</a>
+
+      <div class="nav-section-label" style="margin-top:0.75rem">The Build</div>
+      <a href="#subprocess-1" class="nav-link">1 — Identity &amp; Access</a>
+      <a href="#subprocess-2" class="nav-link">2 — Collaboration Tools</a>
+      <a href="#subprocess-3" class="nav-link">3 — IT Service Desk</a>
+      <a href="#subprocess-4" class="nav-link">4 — Policy Gate</a>
+      <a href="#subprocess-5" class="nav-link">5 — Day One Schedule</a>
+
+      <div class="nav-section-label" style="margin-top:0.75rem">Running It</div>
+      <a href="#live-vs-mock" class="nav-link">Live vs. mock</a>
+      <a href="#deployment" class="nav-link">Deployment</a>
+      <a href="#soundbites" class="nav-link">Key soundbites</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      Boomi World Tour London · BWT Experience<br>
+      Built with Boomi Companion
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+    <div class="content-header">
+      <div class="content-eyebrow">Meridian · HR Employee Onboarding</div>
+      <h1 class="content-title">How It's Built</h1>
+      <p class="content-lead">A plain-language guide to the integration behind the demo. What each process does, how they connect, and what to say when someone asks "is this real?"</p>
+    </div>
+
+    <div class="content-body">
+
+      <!-- ── WHAT IT DOES ── -->
+      <div class="section">
+        <span class="section-anchor" id="what-it-is"></span>
+        <h2 class="section-title">
+          <div class="section-icon icon-emerald">⚡</div>
+          What this demo does
+        </h2>
+
+        <p>When Sarah Chen's record appears in Workday, <strong>one Boomi process sees it and kicks off everything else</strong>. No one hits a button. No one opens a ticket. The orchestrator takes that single event and fans out into five parallel workstreams — identity, collaboration, IT setup, compliance, and day-one logistics — all running simultaneously.</p>
+
+        <p>By the time the demo ends, six systems are provisioned, a compliance gate has been cleared, and Sarah has a full day-one calendar in her inbox. The whole thing is built from <strong>one master process and five subprocesses</strong>, all in the Boomi platform.</p>
+
+        <div class="callout callout-emerald">
+          <div class="callout-label">The integration stat</div>
+          The Companion-built suite contains 6 processes, 6 connections, 17 operations, 11 JSON profiles, 10 maps, and 1 cross-reference table. All deployed to a single Boomi atom in the Domain-Experts environment.
+        </div>
+      </div>
+
+      <!-- ── THE STORY ── -->
+      <div class="section">
+        <span class="section-anchor" id="the-story"></span>
+        <h2 class="section-title">
+          <div class="section-icon icon-amber">📖</div>
+          The story
+        </h2>
+
+        <p>The fictional company is <strong>Meridian</strong>. Sarah Chen is starting her first day as Business Development Manager. She sat down, opened her laptop, and everything worked.</p>
+
+        <p>In most companies, that outcome would require someone in IT to have opened tickets days earlier — one for Okta, one for M365, one for Slack, a ServiceNow ticket for the hardware request. Some would be done by day one. Some wouldn't.</p>
+
+        <p>At Meridian, the moment Sarah's record hit Workday, Boomi saw it. <strong>Six systems provisioned before she arrived. Zero tickets raised.</strong></p>
+
+        <div class="callout callout-amber">
+          <div class="callout-label">Demo new-hire record</div>
+          The demo uses a built-in test record: <strong>Priya Raman</strong>, Sr. Solutions Consultant, Pre-Sales Engineering, manager David Whitmore, start date 2026-07-06. This fires automatically when you run the master orchestrator — no manual trigger needed.
+        </div>
+      </div>
+
+      <!-- ── ARCHITECTURE ── -->
+      <div class="section">
+        <span class="section-anchor" id="architecture"></span>
+        <h2 class="section-title">
+          <div class="section-icon icon-blue">🏗️</div>
+          How it's wired
+        </h2>
+
+        <p>The architecture is a hub-and-spoke: one master orchestrator calls five subprocesses in sequence. Each subprocess owns one domain of the onboarding lifecycle and is independently maintainable.</p>
+
+        <div class="arch-diagram">
+          <span class="highlight">Workday</span> <span class="dim">(new employee record)</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+          <span class="highlight">Master Orchestrator</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;┌──────┬───┴───┬──────┬──────────┐<br>
+          &nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+          <span class="highlight">Okta&nbsp;&nbsp;&nbsp;&nbsp;M365/Slack&nbsp;ServiceNow Policy&nbsp;&nbsp;&nbsp;Day One</span><br>
+          <span class="dim">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Zoom&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gate&nbsp;&nbsp;&nbsp;&nbsp;Schedule</span>
+        </div>
+
+        <p>State flows through the entire chain via <strong>Dynamic Process Properties (DPPs)</strong> — think of these as variables that persist across every subprocess call. The Okta user ID created in step 1, for example, is automatically available to every process that comes after it.</p>
+
+        <h3 class="sub-title">Key state variables</h3>
+        <table class="props-table">
+          <thead><tr><th>Property</th><th>What it carries</th></tr></thead>
+          <tbody>
+            <tr><td>DPP_EMPLOYEE_EMAIL</td><td>Work email — used by Collaboration, Policy gate, and Day One</td></tr>
+            <tr><td>DPP_OKTA_USER_ID</td><td>Created in step 1, flows into every later activation and app assignment</td></tr>
+            <tr><td>DPP_ONBOARDING_STATUS</td><td>Gate variable — master orchestrator checks this before moving to Policy</td></tr>
+            <tr><td>DPP_DOCUSIGN_ENVELOPE_ID</td><td>Tracks the policy envelope through the polling loop</td></tr>
+            <tr><td>DPP_SNOW_SYS_ID</td><td>ServiceNow user ID — links the onboarding ticket to the right person</td></tr>
+            <tr><td>DPP_EMPLOYEE_START_DATE</td><td>Used by Day One to calculate all four calendar event timestamps</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-emerald">
+          <div class="callout-label">Why this matters in the demo</div>
+          State threading is one of the strongest technical points to make. The Okta user ID that gets created in subprocess 1 is automatically available to subprocess 2, 4, and 5 — with no re-lookup, no extra API call, no manual handoff. That's the orchestration layer doing its job.
+        </div>
+      </div>
+
+      <!-- ── SUBPROCESS 1 ── -->
+      <div class="section">
+        <span class="section-anchor" id="subprocess-1"></span>
+        <h2 class="section-title">
+          <div class="section-icon icon-blue">🔐</div>
+          Subprocess 1 — Identity &amp; Access
+        </h2>
+
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.1rem;flex-wrap:wrap">
+          <span class="sys-pill pill-okta">Okta</span>
+        </div>
+
+        <p>This subprocess creates Sarah's identity in Okta and assigns her to the right access groups based on her department. It uses a <strong>cross-reference table</strong> to map department name to Okta group — so a Business Development hire automatically gets the BD-Apps-Group, a Pre-Sales hire gets SE-Apps-Group, and so on. No manual lookup required.</p>
+
+        <div class="step-list">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Create Okta user</strong> — staged (not yet active), splits full name into first/last automatically</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Extract Okta user ID</strong> — written to DPP_OKTA_USER_ID immediately, so every downstream process has it</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Assign to app group</strong> — cross-reference table maps department → group automatically</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Activate user</strong> — transitions from STAGED to ACTIVE</div></div>
+        </div>
+
+        <p>If anything fails, the subprocess writes <code style="font-family:monospace;font-size:0.82rem;color:var(--emerald-light)">identity_failed</code> to the onboarding status property and returns — the master orchestrator catches this at the decision gate and alerts the HR team.</p>
+      </div>
+
+      <!-- ── SUBPROCESS 2 ── -->
+      <div class="section">
+        <span class="section-anchor" id="subprocess-2"></span>
+        <h2 class="section-title">
+          <div class="section-icon icon-purple">🤝</div>
+          Subprocess 2 — Collaboration Tools
+        </h2>
+
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.1rem;flex-wrap:wrap">
+          <span class="sys-pill pill-m365">M365</span>
+          <span class="sys-pill pill-slack">Slack</span>
+          <span class="sys-pill pill-zoom">Zoom</span>
+        </div>
+
+        <p>This is the most visually impressive subprocess on the canvas — it uses a <strong>Branch shape to run three provisioning tracks in parallel</strong>. M365, Slack, and Zoom all go simultaneously. This is the moment to make in the demo: what used to be three separate tickets running sequentially is now one Branch shape firing all three at once.</p>
+
+        <div class="step-list">
+          <div class="step"><div class="step-num">A</div><div class="step-text"><strong>Microsoft 365 lane —</strong> create user, assign E3 licence, provision OneDrive, add to Teams department channel</div></div>
+          <div class="step"><div class="step-num">B</div><div class="step-text"><strong>Slack lane —</strong> create user in workspace, add to #general, #announcements, and department channel</div></div>
+          <div class="step"><div class="step-num">C</div><div class="step-text"><strong>Zoom lane —</strong> create user with Pro licence</div></div>
+        </div>
+
+        <p>All three status results are consolidated at the end into a single provisioning summary before returning to the orchestrator. M365 and Teams both run through the same Microsoft Graph connection — Teams is just a different Graph API endpoint, not a separate system.</p>
+      </div>
+
+      <!-- ── SUBPROCESS 3 ── -->
+      <div class="section">
+        <span class="section-anchor" id="subprocess-3"></span>
+        <h2 class="section-title">
+          <div class="section-icon icon-red">🎫</div>
+          Subprocess 3 — IT Service Desk Setup
+        </h2>
+
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.1rem;flex-wrap:wrap">
+          <span class="sys-pill pill-snow">ServiceNow</span>
+        </div>
+
+        <p>Creates Sarah's user record in ServiceNow and automatically raises an onboarding ticket assigned to the IT Onboarding team. The ticket due date is set to Sarah's start date, with priority 3 (Moderate). This is the ticket that would normally be raised manually — here it's created the moment the orchestrator runs.</p>
+
+        <div class="step-list">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Create ServiceNow user record</strong> — name, email, department, manager, user type = employee</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Extract sys_id</strong> — the ServiceNow user ID, written to DPP_SNOW_SYS_ID</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Create onboarding ticket</strong> — linked to the user via sys_id, due date = start date, assigned to IT Onboarding</div></div>
+        </div>
+
+        <div class="callout callout-amber">
+          <div class="callout-label">Real error handling here</div>
+          Unlike some other subprocesses, the ServiceNow calls use actual try/catch — a non-2xx response genuinely throws an error rather than being simulated. This one is wired closer to production behaviour.
+        </div>
+      </div>
+
+      <!-- ── SUBPROCESS 4 ── -->
+      <div class="section">
+        <span class="section-anchor" id="subprocess-4"></span>
+        <h2 class="section-title">
+          <div class="section-icon icon-amber">📋</div>
+          Subprocess 4 — Policy Gate
+        </h2>
+
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.1rem;flex-wrap:wrap">
+          <span class="sys-pill pill-docusign">DocuSign</span>
+          <span class="sys-pill pill-okta">Okta</span>
+          <span class="sys-pill pill-m365">M365</span>
+        </div>
+
+        <p>This is the governance moment of the demo. <strong>Nothing goes fully active until Sarah signs the Acceptable Use Policy.</strong> The subprocess sends the "Meridian Acceptable Use Policy v4.2" DocuSign envelope, then enters a polling loop — checking status every 5 minutes, for up to 24 hours. If she doesn't sign, it sends a reminder and keeps checking.</p>
+
+        <p>The moment the envelope comes back as completed, Okta app assignments flip from PROVISIONED to ACTIVE, and M365 sign-in is enabled. The canvas shows the polling loop as a visible back-edge — it's one of the most interesting shapes in the whole build.</p>
+
+        <div class="step-list">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Send DocuSign envelope</strong> — AUP v4.2 template sent to Sarah's work email</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Poll for signature</strong> — checks status, increments a counter, loops back every 5 minutes</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>24-hour reminder</strong> — if 288 polls hit without a signature, sends an M365 reminder email and resets the counter</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text"><strong>On completion</strong> — activates Okta app assignments and enables M365 sign-in</div></div>
+        </div>
+      </div>
+
+      <!-- ── SUBPROCESS 5 ── -->
+      <div class="section">
+        <span class="section-anchor" id="subprocess-5"></span>
+        <h2 class="section-title">
+          <div class="section-icon icon-emerald">📅</div>
+          Subprocess 5 — Day One Schedule
+        </h2>
+
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.1rem;flex-wrap:wrap">
+          <span class="sys-pill pill-calendar">M365 Calendar</span>
+          <span class="sys-pill pill-m365">M365 Mail</span>
+        </div>
+
+        <p>The finishing touch. Four calendar events are created in Sarah's M365 calendar, all calculated from her start date. Then a welcome email goes out to her and her manager. She gets this before she's even logged in to anything.</p>
+
+        <div class="step-list">
+          <div class="step"><div class="step-num">09:00</div><div class="step-text"><strong>Welcome to Meridian</strong> — 30 min · Teams · Sarah + manager</div></div>
+          <div class="step"><div class="step-num">10:00</div><div class="step-text"><strong>IT Induction &amp; Security Briefing</strong> — 60 min · Room 3B · Sarah + IT Onboarding</div></div>
+          <div class="step"><div class="step-num">11:30</div><div class="step-text"><strong>Team Introduction</strong> — 45 min · Zoom · Sarah + full department distribution</div></div>
+          <div class="step"><div class="step-num">14:00</div><div class="step-text"><strong>Product &amp; Platform Overview</strong> — 90 min · Teams · Sarah + Enablement team</div></div>
+        </div>
+
+        <p>Then: a welcome email to Sarah with her Day One schedule, manager contact, and a link to the Meridian New Joiner Systems Guide. CC'd to her manager.</p>
+      </div>
+
+      <!-- ── LIVE VS MOCK ── -->
+      <div class="section">
+        <span class="section-anchor" id="live-vs-mock"></span>
+        <h2 class="section-title">
+          <div class="section-icon icon-amber">🔧</div>
+          Live vs. mock
+        </h2>
+
+        <p>The demo runs cleanly on placeholder credentials — no live systems needed. Here's what's real and what's simulated, and what it takes to make each thing live.</p>
+
+        <table class="live-mock-table">
+          <thead>
+            <tr>
+              <th>What</th>
+              <th>Status</th>
+              <th>To make it live</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ServiceNow error handling</td>
+              <td><span class="badge-live">LIVE</span></td>
+              <td>Already using real try/catch — non-2xx genuinely throws</td>
+            </tr>
+            <tr>
+              <td>Connections (Okta, M365, Slack, Zoom, DocuSign)</td>
+              <td><span class="badge-mock">MOCK</span></td>
+              <td>Add real credentials via Boomi environment extensions</td>
+            </tr>
+            <tr>
+              <td>HTTP 201 success checks</td>
+              <td><span class="badge-mock">MOCK</span></td>
+              <td>Replace simulated decision with real response-code check or try/catch</td>
+            </tr>
+            <tr>
+              <td>DocuSign envelope completion</td>
+              <td><span class="badge-mock">MOCK</span></td>
+              <td>Extract real <code style="font-size:0.78rem;color:var(--emerald-light)">status</code> from the Get-Envelope API response</td>
+            </tr>
+            <tr>
+              <td>5-minute poll cadence</td>
+              <td><span class="badge-mock">MOCK</span></td>
+              <td>Enforce via scheduled re-run (Boomi has no native sleep)</td>
+            </tr>
+            <tr>
+              <td>Notification email recipients</td>
+              <td><span class="badge-mock">MOCK</span></td>
+              <td>Set real addresses on the mail operation or via environment extensions</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-emerald">
+          <div class="callout-label">If someone asks "is this real?"</div>
+          Yes — the processes are real Boomi integrations running on a live atom. The connector credentials are demo placeholders, but the architecture, the orchestration logic, the parallel branching, the polling loop, the state threading — all of it is genuinely built and deployed. This suite was built by Boomi Companion in a single session. That's part of the story too.
+        </div>
+      </div>
+
+      <!-- ── DEPLOYMENT ── -->
+      <div class="section">
+        <span class="section-anchor" id="deployment"></span>
+        <h2 class="section-title">
+          <div class="section-icon icon-blue">🚀</div>
+          Deployment
+        </h2>
+
+        <p>Everything lives in the <strong>BWT Experience Demos</strong> folder, deployed to the <strong>Domain-Experts environment</strong> on the <strong>Price OpenAI Atom</strong>.</p>
+
+        <div class="step-list">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Deploy the master orchestrator only</strong> — Boomi automatically includes all five subprocesses</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Re-deploy the parent whenever a subprocess changes</strong> — parents snapshot subprocess versions at deploy time</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>To test a subprocess in isolation</strong> — deploy it independently as well</div></div>
+        </div>
+      </div>
+
+      <!-- ── SOUNDBITES ── -->
+      <div class="section">
+        <span class="section-anchor" id="soundbites"></span>
+        <h2 class="section-title">
+          <div class="section-icon icon-emerald">💬</div>
+          Key soundbites
+        </h2>
+
+        <p>Commit these to memory. They're the lines that land in a 90-second self-guided demo.</p>
+
+        <div class="soundbite-list">
+          <div class="soundbite">"The moment the record appeared in Workday, Boomi saw it."</div>
+          <div class="soundbite">"Six systems. Running in parallel. Not sequentially — simultaneously."</div>
+          <div class="soundbite">"Fast and governed. Both, not one or the other."</div>
+          <div class="soundbite">"Nothing goes active until the policy is signed. That's the governance gate."</div>
+          <div class="soundbite">"The Okta user ID created in step one flows into every single process that follows — no re-lookup, no extra API call."</div>
+          <div class="soundbite">"An agent that does things, not just says things. Because it's connected to the integration layer."</div>
+          <div class="soundbite">"What's the equivalent of this in your world? What takes two weeks that should take two minutes?"</div>
+        </div>
+      </div>
+
+    </div><!-- /content-body -->
+  </main><!-- /main -->
+
+</div><!-- /layout -->
+
+<script>
+  // Highlight active nav link on scroll
+  const sections = document.querySelectorAll('.section-anchor');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>

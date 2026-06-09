@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Result — Meridian HR Onboarding · Boomi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest:       #031e12;
+      --forest-mid:   #064e3b;
+      --emerald:      #059669;
+      --amber:        #f59e0b;
+      --amber-dark:   #d97706;
+      --white:        #FFFFFF;
+      --text-muted:   rgba(255,255,255,0.50);
+      --panel-border: rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      height: 100%; font-family: 'Poppins', Arial, sans-serif;
+      background: var(--forest); color: var(--white); overflow: auto;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 900px 700px at -5% 15%,  rgba(5,150,105,0.14)  0%, transparent 65%),
+        radial-gradient(ellipse 700px 600px at 105% 85%, rgba(245,158,11,0.12) 0%, transparent 65%),
+        radial-gradient(ellipse 500px 500px at 55%  -5%, rgba(5,150,105,0.09)  0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .page { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 2.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(3,30,18,0.55);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .boomi-wordmark { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
+    .boomi-wordmark .dot { color: var(--amber); }
+    .header-divider { width:1px; height:22px; background:rgba(255,255,255,0.18); }
+    .header-label { font-size:0.75rem; font-weight:600; color:var(--text-muted); letter-spacing:0.06em; text-transform:uppercase; }
+    .header-label span { color: var(--amber); }
+    .header-complete {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--emerald); letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .complete-dot { width:6px; height:6px; border-radius:50%; background:var(--emerald); }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1; display: flex; align-items: center;
+      justify-content: center; gap: 4rem; padding: 1.5rem 4rem;
+    }
+
+    .hero-left {
+      flex: 0 0 540px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .chapter-label {
+      font-size: 0.72rem; font-weight: 700; color: var(--emerald);
+      letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+
+    .hero-headline {
+      font-size: clamp(1.8rem, 2.8vw, 2.8rem);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -0.02em; margin-bottom: 1.5rem;
+    }
+
+    .amber-rule { width:52px; height:3px; background:var(--amber); border-radius:2px; margin-bottom:1.5rem; }
+
+    .hero-tagline {
+      font-size: 1.0rem; font-weight: 700;
+      color: var(--white); line-height: 1.4;
+      margin-bottom: 1rem; font-style: italic;
+    }
+
+    .hero-sub {
+      font-size: 0.95rem; color: rgba(255,255,255,0.62);
+      line-height: 1.7; margin-bottom: 1.25rem; max-width: 480px;
+    }
+
+    .outcomes { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+
+    .outcome {
+      display: flex; align-items: flex-start; gap: 0.85rem;
+      padding: 0.65rem 0.9rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .outcome:nth-child(1) { border-left: 3px solid var(--emerald); }
+    .outcome:nth-child(2) { border-left: 3px solid var(--amber); animation-delay: 0.1s; }
+    .outcome:nth-child(3) { border-left: 3px solid #7c3aed; animation-delay: 0.2s; }
+
+    .outcome-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .outcome-text { font-size: 0.88rem; color: rgba(255,255,255,0.78); line-height: 1.55; }
+    .outcome-text strong { color: var(--white); font-weight: 700; }
+
+    .cta-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+
+    .btn-primary {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      padding: 0.7rem 1.6rem;
+      background: linear-gradient(135deg, var(--amber), var(--amber-dark));
+      color: #1c1917;
+      font-family:'Poppins',sans-serif; font-size:0.95rem; font-weight:700;
+      border:none; border-radius:10px; cursor:pointer; text-decoration:none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(245,158,11,0.35);
+    }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(245,158,11,0.45); }
+
+    .btn-secondary {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      padding: 0.7rem 1.4rem; background:transparent;
+      color:rgba(255,255,255,0.65);
+      font-family:'Poppins',sans-serif; font-size:0.9rem; font-weight:600;
+      border:1px solid var(--panel-border); border-radius:10px;
+      cursor:pointer; text-decoration:none;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-secondary:hover { color:var(--white); border-color:rgba(255,255,255,0.25); }
+
+    .btn-hood {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      padding: 0.7rem 1.4rem; background: rgba(5,150,105,0.10);
+      color: var(--emerald);
+      font-family:'Poppins',sans-serif; font-size:0.9rem; font-weight:600;
+      border:1px solid rgba(5,150,105,0.25); border-radius:10px;
+      cursor:pointer; text-decoration:none;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .btn-hood:hover { background: rgba(5,150,105,0.18); border-color: rgba(5,150,105,0.45); color: #34d399; }
+
+    /* ── RIGHT — hub diagram ── */
+    .hero-right {
+      flex: 0 0 auto;
+      display: flex; align-items: center; justify-content: center;
+      animation: fadeUp 0.6s 0.15s ease both;
+    }
+
+    .hub-diagram { position: relative; width: 320px; height: 320px; }
+
+    .ring {
+      position: absolute; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .ring-1 { inset: 0; animation: spin 20s linear infinite; border-color: rgba(5,150,105,0.14); }
+    .ring-2 { inset: 40px; animation: spin 14s linear infinite reverse; border-color: rgba(245,158,11,0.12); }
+    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+    .hub-center {
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px; height: 100px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.3rem;
+      z-index: 5;
+    }
+
+    .hub-glow {
+      position: absolute; inset: -24px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(5,150,105,0.22) 0%, rgba(245,158,11,0.10) 40%, transparent 70%);
+    }
+
+    .hub-bg {
+      position: absolute; inset: 0; border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      z-index: 1;
+    }
+
+    .hub-em { font-size: 2rem; position: relative; z-index: 2; }
+    .hub-lbl {
+      font-size: 0.5rem; font-weight: 700;
+      color: var(--emerald); letter-spacing: 0.1em;
+      text-transform: uppercase; position: relative; z-index: 2;
+    }
+
+    .node {
+      position: absolute;
+      width: 80px; height: 28px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.5rem; font-weight: 800;
+      letter-spacing: 0.08em; color: white;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.35);
+    }
+
+    .node-wd { top: 10px;  left: 50%; transform:translateX(-50%); background:linear-gradient(120deg,#F59E0B,#D97706); }
+    .node-ok { top: 50%;  right: 10px; transform:translateY(-50%); background:linear-gradient(120deg,#3B82F6,#1D4ED8); }
+    .node-sl { bottom: 10px; left: 50%; transform:translateX(-50%); background:linear-gradient(120deg,#7C3AED,#5B21B6); }
+    .node-m3 { top: 50%;  left: 10px; transform:translateY(-50%); background:linear-gradient(120deg,#059669,#047857); }
+    .node-sn { top: 18%;  right: 18%; background:linear-gradient(120deg,#EF4444,#B91C1C); }
+    .node-zm { top: 18%;  left: 18%; background:linear-gradient(120deg,#2563EB,#1E40AF); }
+
+    .check {
+      position: absolute;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--emerald);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6rem; color: white; font-weight: 800;
+      box-shadow: 0 0 8px rgba(5,150,105,0.6);
+    }
+    .check-wd { top: 0;   left: 50%; transform:translateX(24px); }
+    .check-ok { top: 50%; right: -2px; transform:translateY(-24px); }
+    .check-sl { bottom: 0; left: 50%; transform:translateX(24px); }
+    .check-m3 { top: 50%; left: -2px; transform:translateY(-24px); }
+    .check-sn { top: 14%; right: 14%; transform:translate(8px,-8px); }
+    .check-zm { top: 14%; left: 14%; transform:translate(-8px,-8px); }
+
+    /* ── CHAPTER STRIP ── */
+    .chapter-strip {
+      display:flex; align-items:stretch;
+      border-top:1px solid var(--panel-border);
+      background:rgba(3,30,18,0.50);
+      backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      flex-shrink: 0;
+    }
+    .chapter { flex:1; padding:0.85rem 1.2rem; border-right:1px solid var(--panel-border); display:flex; align-items:center; gap:0.65rem; text-decoration:none; color:inherit; }
+    .chapter:last-child { border-right:none; }
+    .chapter-num { font-size:1rem; font-weight:800; color:rgba(255,255,255,0.14); flex-shrink:0; }
+    .chapter-title { font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.60); margin-bottom:0.1rem; }
+    .chapter-sub { font-size:0.63rem; color:var(--text-muted); }
+    .chapter.done .chapter-num { color: var(--emerald); }
+    .chapter.done .chapter-title { color: rgba(255,255,255,0.80); }
+    .chapter.active .chapter-num { color: var(--amber); }
+    .chapter.active .chapter-title { color: var(--white); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-left">
+      <div class="boomi-wordmark">boomi<span class="dot">.</span></div>
+      <div class="header-divider"></div>
+      <div class="header-label">Meridian <span>HR Onboarding</span></div>
+    </div>
+    <div class="header-complete">
+      <div class="complete-dot"></div>
+      Demo complete
+    </div>
+  </header>
+
+  <section class="hero">
+
+    <div class="hero-left">
+      <div class="chapter-label">The Result</div>
+      <div class="hero-headline">From offer accepted<br>to day one ready.</div>
+      <div class="amber-rule"></div>
+
+      <p class="hero-tagline">"Sarah didn't raise a ticket. Neither did IT."</p>
+      <p class="hero-sub">Six systems. One orchestration platform. No manual steps. This is what modern onboarding looks like when the integration layer works.</p>
+
+      <div class="outcomes">
+        <div class="outcome">
+          <div class="outcome-icon">⚡</div>
+          <div class="outcome-text"><strong>Provisioning that used to take weeks happens in minutes.</strong> Because every system speaks the same orchestration language.</div>
+        </div>
+        <div class="outcome">
+          <div class="outcome-icon">🔒</div>
+          <div class="outcome-text"><strong>Compliance is automatic, not manual.</strong> The policy gate fires, the DocuSign is sent, nothing activates until it's signed — all without a human in the loop.</div>
+        </div>
+        <div class="outcome">
+          <div class="outcome-icon">🤖</div>
+          <div class="outcome-text"><strong>The agent does things, not just says things.</strong> Because it's connected to the integration layer. It can check status, re-trigger failed steps, and answer real questions.</div>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <a href="mailto:michael.price@boomi.com?subject=HR Onboarding Demo Follow-up" class="btn-primary">
+          Talk to an expert
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="04-docs.html" class="btn-hood">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M5 4l-3 4 3 4M11 4l3 4-3 4M9 2l-2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Under the hood
+        </a>
+        <a href="01-intro.html" class="btn-secondary">Restart</a>
+      </div>
+    </div>
+
+    <!-- Hub diagram -->
+    <div class="hero-right">
+      <div class="hub-diagram">
+
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+
+        <div class="node node-wd">WORKDAY</div>
+        <div class="node node-ok">OKTA</div>
+        <div class="node node-sl">SLACK</div>
+        <div class="node node-m3">M365</div>
+        <div class="node node-sn">SERVICENOW</div>
+        <div class="node node-zm">ZOOM</div>
+
+        <div class="check check-wd">✓</div>
+        <div class="check check-ok">✓</div>
+        <div class="check check-sl">✓</div>
+        <div class="check check-m3">✓</div>
+        <div class="check check-sn">✓</div>
+        <div class="check check-zm">✓</div>
+
+        <div class="hub-center">
+          <div class="hub-glow"></div>
+          <div class="hub-bg"></div>
+          <div class="hub-em">👤</div>
+          <div class="hub-lbl">All active</div>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <div class="chapter-strip">
+    <div class="chapter done">
+      <div class="chapter-num">01</div>
+      <div class="chapter-info"><div class="chapter-title">Welcome</div><div class="chapter-sub">Meet Sarah Chen</div></div>
+    </div>
+    <div class="chapter done">
+      <div class="chapter-num">02</div>
+      <div class="chapter-info"><div class="chapter-title">Profile</div><div class="chapter-sub">Trigger confirmed</div></div>
+    </div>
+    <div class="chapter done">
+      <div class="chapter-num">03</div>
+      <div class="chapter-info"><div class="chapter-title">Provisioning</div><div class="chapter-sub">6 systems, in parallel</div></div>
+    </div>
+    <div class="chapter done">
+      <div class="chapter-num">04</div>
+      <div class="chapter-info"><div class="chapter-title">Compliance</div><div class="chapter-sub">Policy gate</div></div>
+    </div>
+    <div class="chapter done">
+      <div class="chapter-num">05</div>
+      <div class="chapter-info"><div class="chapter-title">Day One</div><div class="chapter-sub">Fully ready</div></div>
+    </div>
+    <div class="chapter active">
+      <div class="chapter-num">06</div>
+      <div class="chapter-info"><div class="chapter-title">The Result</div><div class="chapter-sub">Platform in action</div></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

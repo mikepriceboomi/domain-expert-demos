@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meridian HR Onboarding — Interactive Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest:       #031e12;
+      --emerald:      #059669;
+      --amber:        #f59e0b;
+      --white:        #FFFFFF;
+      --text-muted:   rgba(255,255,255,0.50);
+      --panel-border: rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--forest);
+      color: var(--white);
+      overflow: hidden;
+    }
+
+    .page {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(3,30,18,0.92);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0; z-index: 10;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+
+    .boomi-wordmark { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
+    .boomi-wordmark .dot { color: var(--amber); }
+
+    .header-divider { width: 1px; height: 22px; background: rgba(255,255,255,0.18); }
+
+    .header-label {
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .header-label span { color: var(--amber); }
+
+    .live-badge {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--emerald); letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--emerald);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)} }
+
+    /* ── NAVATTIC IFRAME ── */
+    .embed-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .embed-container iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.65rem 2.5rem;
+      border-top: 1px solid var(--panel-border);
+      background: rgba(3,30,18,0.92);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+
+    .chapter-links { display: flex; align-items: center; gap: 1.5rem; }
+
+    .chapter-link {
+      font-size: 0.68rem; font-weight: 600;
+      color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase;
+      text-decoration: none; transition: color 0.15s;
+    }
+    .chapter-link:hover { color: var(--white); }
+    .chapter-link.active { color: var(--amber); }
+
+    .footer-cta {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--emerald); letter-spacing: 0.05em; text-transform: uppercase;
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-cta:hover { color: #34d399; }
+    .footer-cta svg { transition: transform 0.15s; }
+    .footer-cta:hover svg { transform: translateX(3px); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-left">
+      <div class="boomi-wordmark">boomi<span class="dot">.</span></div>
+      <div class="header-divider"></div>
+      <div class="header-label">Meridian <span>HR Onboarding</span></div>
+    </div>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Live Demo Environment
+    </div>
+  </header>
+
+  <div class="embed-container">
+    <iframe
+      data-navattic-src="https://capture.navattic.com/cmq5ysrr6000a04k0h41j74rf"
+      data-navattic-placeholder-src="https://app.navattic.com/api/poster/cmq5ysrr6000a04k0h41j74rf"
+      data-navattic-button-text="Start the experience"
+      style="border:none;width:100%;height:100%;position:relative;"
+      data-navattic-demo-id="cmq5ysrr6000a04k0h41j74rf"
+      allow="fullscreen">
+    </iframe>
+  </div>
+
+  <footer>
+    <div class="chapter-links">
+      <a href="01-intro.html" class="chapter-link">← Back to intro</a>
+      <span style="color:rgba(255,255,255,0.12)">|</span>
+      <span class="chapter-link active">HR Onboarding · Walkthrough</span>
+      <span style="color:rgba(255,255,255,0.12)">|</span>
+      <a href="04-docs.html" class="chapter-link">How it's built</a>
+    </div>
+    <a href="03-close.html" class="footer-cta">
+      See the results
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </footer>
+
+</div>
+
+<script>
+  // Navattic embed loader — same pattern as DataHub
+  var d = document,
+      w = "https://js.navattic.com/embeds.js",
+      v = function() {
+        "undefined" != typeof NavatticEmbed
+          ? NavatticEmbed.loadEmbeds()
+          : d.querySelectorAll("iframe[data-navattic-src]:not([src])").forEach(function(e) {
+              e.src = e.dataset.navatticSrc;
+            });
+      };
+  if ("undefined" != typeof NavatticEmbed) v();
+  else if (d.querySelector('script[src="' + w + '"]') == null) {
+    var s = d.createElement("script");
+    s.src = w; s.onload = v; s.onerror = v; d.body.appendChild(s);
+  }
+</script>
+
+</body>
+</html>
