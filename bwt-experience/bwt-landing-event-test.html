@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boomi World Tour London — Hands-On Experiences</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #050505;
+      --card-bg: rgba(255,255,255,0.04);
+      --navy:    #000000;
+      --coral:   #FF7C66;
+      --purple:  #A03291;
+      --white:   #FFFFFF;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      overflow: hidden;
+    }
+
+    /* Subtle ambient — warm dark hint only, matching template's pure black bg */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 500px 380px at 100% 0%, rgba(100,25,15,0.14) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── FLUID GRAPHIC — Boomi World dark planar swirl ── */
+    .fluid-bg {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 660px;
+      height: 490px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.94;
+    }
+
+    /* ── FLOATING SPHERES — translucent glassy pink ── */
+    .sphere {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    /* shared glassy translucent pink gradient */
+    .sp1, .sp2, .sp3, .sp4, .sp5 {
+      background: radial-gradient(circle at 38% 30%,
+        rgba(255,215,210,0.96) 0%,
+        rgba(255,145,128,0.88) 26%,
+        rgba(235,82,68,0.72) 50%,
+        rgba(178,52,46,0.46) 70%,
+        rgba(120,32,32,0.18) 88%,
+        transparent 100%
+      );
+    }
+    .sp1 { width: 72px; height: 72px; top: 128px; right: 172px; box-shadow: 0 0 24px rgba(255,100,80,0.22), inset 0 0 14px rgba(255,200,180,0.10); }
+    .sp2 { width: 38px; height: 38px; top:  78px; right: 250px; box-shadow: 0 0 14px rgba(255,100,80,0.18); }
+    .sp3 { width: 24px; height: 24px; top:  52px; right: 152px; box-shadow: 0 0 10px rgba(255,100,80,0.14); }
+    .sp4 { width: 52px; height: 52px; top: 316px; right:  22px; box-shadow: 0 0 18px rgba(255,100,80,0.20), inset 0 0 10px rgba(255,180,160,0.08); }
+    .sp5 { width: 16px; height: 16px; top: 104px; right: 104px; box-shadow: 0 0  8px rgba(255,100,80,0.12); }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 2.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      background: rgba(5,5,5,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .boomi-logo  { height: 26px; width: auto; }
+
+    .header-divider {
+      width: 1px; height: 26px;
+      background: rgba(255,255,255,0.14);
+    }
+
+    .event-name {
+      font-size: 0.82rem; font-weight: 600;
+      color: rgba(255,255,255,0.55); letter-spacing: 0.03em;
+    }
+    .event-name span { color: var(--coral); }
+
+    .header-right { display: flex; align-items: center; gap: 0.6rem; }
+
+    .header-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--coral);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .header-live {
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--coral); letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    /* ── HERO ── */
+    .hero { text-align: center; padding: 0.85rem 2rem 0.5rem; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.65rem; font-weight: 700;
+      color: var(--coral); text-transform: uppercase; letter-spacing: 0.14em;
+      margin-bottom: 0.65rem;
+      background: rgba(255,124,102,0.08); border: 1px solid rgba(255,124,102,0.24);
+      padding: 4px 12px; border-radius: 20px;
+    }
+
+    .hero-title {
+      font-size: 1.65rem; font-weight: 800;
+      line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 0.5rem;
+    }
+
+    /* Template-accurate: coral accent text — no purple in the gradient */
+    .hero-title em {
+      font-style: normal;
+      color: var(--coral);
+    }
+
+    .hero-sub {
+      font-size: 0.9rem; color: rgba(255,255,255,0.38);
+      max-width: 460px; margin: 0 auto; line-height: 1.65;
+    }
+
+    /* ── GRID ── */
+    .grid-wrap {
+      flex: 1; padding: 0 2rem 0.75rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem; width: 100%; max-width: 920px;
+    }
+
+    /* ── CARD — true black foundation, template style ── */
+    .grid-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px; padding: 1.25rem;
+      cursor: pointer; text-decoration: none; color: inherit;
+      display: flex; flex-direction: column;
+      transition: transform 0.22s ease, border-color 0.22s ease,
+                  background 0.22s ease, box-shadow 0.22s ease;
+      position: relative; overflow: hidden;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+
+    .grid-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; border-radius: 20px 20px 0 0;
+      opacity: 0; transition: opacity 0.22s ease;
+    }
+
+    .grid-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.07);
+      box-shadow: 0 28px 64px rgba(0,0,0,0.70);
+    }
+
+    .grid-card:hover::before { opacity: 1; }
+
+    .card--coral::before  { background: var(--coral); }
+    .card--purple::before { background: var(--purple); }
+    .card--grad::before   { background: linear-gradient(90deg, var(--coral), var(--purple)); }
+    .card--mono::before   { background: rgba(255,255,255,0.35); }
+
+    /* Coral card hover border */
+    .card--coral:hover  { border-color: rgba(255,124,102,0.30); box-shadow: 0 28px 64px rgba(0,0,0,0.70), 0 0 40px rgba(255,124,102,0.08); }
+    .card--purple:hover { border-color: rgba(160,50,145,0.30); }
+    .card--grad:hover   { border-color: rgba(255,124,102,0.25); }
+
+    /* ── ICON ORBIT SYSTEM ── */
+    .card-icon-wrap {
+      width: 72px; height: 72px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; margin-bottom: 1rem; flex-shrink: 0;
+      background: none;
+    }
+
+    .icon-ring-a, .icon-ring-b {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    .ring-outer { fill: none; stroke-width: 1; }
+    .ring-dot   { stroke: none; }
+    .ring-inner { fill: none; stroke-width: 1; }
+
+    .card--coral .ring-outer { stroke: rgba(255,124,102,0.30); }
+    .card--coral .ring-dot   { fill: rgba(255,124,102,0.50); }
+    .card--coral .ring-inner { stroke: rgba(255,124,102,0.18); }
+
+    .card--purple .ring-outer { stroke: rgba(160,50,145,0.32); }
+    .card--purple .ring-dot   { fill: rgba(160,50,145,0.52); }
+    .card--purple .ring-inner { stroke: rgba(160,50,145,0.20); }
+
+    .card--grad .ring-outer { stroke: rgba(255,124,102,0.28); }
+    .card--grad .ring-dot   { fill: rgba(220,90,130,0.48); }
+    .card--grad .ring-inner { stroke: rgba(160,50,145,0.20); }
+
+    .card--mono .ring-outer { stroke: rgba(255,255,255,0.16); }
+    .card--mono .ring-dot   { fill: rgba(255,255,255,0.28); }
+    .card--mono .ring-inner { stroke: rgba(255,255,255,0.10); }
+
+    .icon-ring-a { animation: spin-cw  16s linear infinite; }
+    .icon-ring-b { animation: spin-ccw 10s linear infinite; }
+
+    @keyframes spin-cw  { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes spin-ccw { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+
+    .card-icon {
+      width: 38px; height: 38px; object-fit: contain;
+      position: relative; z-index: 2;
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .card--coral:hover  .card-icon { filter: drop-shadow(0 4px 14px rgba(255,124,102,0.65)); transform: scale(1.08) translateY(-1px); }
+    .card--purple:hover .card-icon { filter: drop-shadow(0 4px 14px rgba(160,50,145,0.65));  transform: scale(1.08) translateY(-1px); }
+    .card--grad:hover   .card-icon { filter: drop-shadow(0 4px 14px rgba(220,90,130,0.60));  transform: scale(1.08) translateY(-1px); }
+    .card--mono:hover   .card-icon { filter: drop-shadow(0 4px 14px rgba(255,255,255,0.32)); transform: scale(1.08) translateY(-1px); }
+
+    /* ── REST OF CARD ── */
+    .card-tag {
+      font-size: 0.6rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.45rem;
+    }
+    .card--coral  .card-tag { color: rgba(255,124,102,0.82); }
+    .card--purple .card-tag { color: rgba(200,80,170,0.82); }
+    .card--grad   .card-tag { color: rgba(255,124,102,0.82); }
+    .card--mono   .card-tag { color: rgba(255,255,255,0.42); }
+
+    .card-title {
+      font-size: 0.92rem; font-weight: 700;
+      line-height: 1.3; letter-spacing: -0.015em; margin-bottom: 0.5rem;
+    }
+
+    .card-desc {
+      font-size: 0.78rem; color: rgba(255,255,255,0.40);
+      line-height: 1.65; flex: 1; margin-bottom: 0.85rem;
+    }
+
+    .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+
+    .card-pills { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+    .card-pill {
+      font-size: 0.58rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      padding: 3px 8px; border-radius: 10px;
+      background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.32);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .card-arrow {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
+      color: rgba(255,255,255,0.36); font-size: 0.85rem; flex-shrink: 0;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .card--coral:hover  .card-arrow { background: var(--coral);  border-color: var(--coral);  color: #fff; }
+    .card--purple:hover .card-arrow { background: var(--purple); border-color: var(--purple); color: #fff; }
+    .card--grad:hover   .card-arrow { background: linear-gradient(135deg, var(--coral), var(--purple)); border-color: var(--coral); color: #fff; }
+    .card--mono:hover   .card-arrow { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.28); color: #fff; }
+
+    .card-docs-link {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      margin-top: 0.85rem; font-size: 0.65rem; font-weight: 600;
+      color: rgba(255,255,255,0.22); text-decoration: none;
+      letter-spacing: 0.04em; transition: color 0.15s; width: fit-content;
+    }
+    .card-docs-link:hover { color: rgba(255,255,255,0.58); }
+
+    div.grid-card { cursor: pointer; }
+
+    /* ── BOTTOM STRIP ── */
+    .bottom-strip {
+      display: flex; align-items: stretch;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      background: #000000; flex-shrink: 0;
+    }
+
+    .strip-item {
+      flex: 1; display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.6rem 1.1rem;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      text-decoration: none; color: inherit;
+      transition: background 0.15s; cursor: pointer;
+    }
+    .strip-item:last-child { border-right: none; }
+    .strip-item:hover { background: rgba(255,255,255,0.04); }
+
+    .strip-num { font-size: 1rem; font-weight: 800; color: rgba(255,255,255,0.10); flex-shrink: 0; line-height: 1; }
+    .strip-item.coral  .strip-num { color: var(--coral); }
+    .strip-item.purple .strip-num { color: var(--purple); }
+    .strip-item.grad   .strip-num {
+      background: linear-gradient(135deg, var(--coral), var(--purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .strip-item.mono   .strip-num { color: rgba(255,255,255,0.42); }
+
+    .strip-info  { display: flex; flex-direction: column; }
+    .strip-title { font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.68); margin-bottom: 0.05rem; }
+    .strip-sub   { font-size: 0.6rem; font-weight: 500; color: rgba(255,255,255,0.28); letter-spacing: 0.02em; }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px; padding: 3px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .theme-toggle:hover { background: rgba(255,255,255,0.14); }
+    .toggle-option {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 22px; border-radius: 16px; font-size: 0.75rem;
+      transition: background 0.25s ease, color 0.2s;
+      color: rgba(255,255,255,0.35);
+    }
+    .toggle-option.sun.active  { background: rgba(255,200,80,0.22); color: #FFD060; }
+    .toggle-option.moon.active { background: rgba(160,50,145,0.28); color: #D080CC; }
+
+    /* ── LIGHT MODE ── */
+    body.light { background: #EEF3F8; color: #072B55; }
+    body.light::before {
+      background:
+        radial-gradient(ellipse 800px 600px at 95%  -5%,  rgba(255,124,102,0.10) 0%, transparent 52%),
+        radial-gradient(ellipse 400px 350px at 105% 85%,  rgba(200,60,40,0.06)   0%, transparent 50%),
+        radial-gradient(ellipse 350px 300px at -5%  90%,  rgba(255,100,70,0.04)  0%, transparent 50%);
+    }
+    body.light .fluid-bg { opacity: 0.07; }
+    body.light .sp1, body.light .sp2, body.light .sp3,
+    body.light .sp4, body.light .sp5 { opacity: 0.30; }
+
+    /* Header and strip stay dark in both modes — Boomi World brand */
+    body.light header        { background: rgba(5,5,5,0.92); }
+    body.light .bottom-strip { background: #000000; }
+    /* Hero */
+    body.light .hero-sub { color: rgba(7,43,85,0.50); }
+    /* Cards */
+    body.light .grid-card {
+      background: #ffffff; border-color: rgba(7,43,85,0.09);
+      box-shadow: 0 2px 12px rgba(7,43,85,0.06);
+    }
+    body.light .grid-card:hover {
+      background: rgba(7,43,85,0.02); border-color: rgba(7,43,85,0.12);
+      box-shadow: 0 20px 55px rgba(7,43,85,0.12);
+    }
+    body.light .card--coral:hover  { border-color: rgba(255,124,102,0.32); }
+    body.light .card--purple:hover { border-color: rgba(160,50,145,0.32); }
+    body.light .card--grad:hover   { border-color: rgba(255,124,102,0.28); }
+    body.light .card--mono:hover   { border-color: rgba(7,43,85,0.16); }
+    body.light .card-desc  { color: rgba(7,43,85,0.50); }
+    body.light .card-pill  { background: rgba(7,43,85,0.05); border-color: rgba(7,43,85,0.09); color: rgba(7,43,85,0.42); }
+    body.light .card-arrow { background: rgba(7,43,85,0.05); border-color: rgba(7,43,85,0.10); color: rgba(7,43,85,0.38); }
+    body.light .card-docs-link       { color: rgba(7,43,85,0.28); }
+    body.light .card-docs-link:hover { color: rgba(7,43,85,0.62); }
+    /* Card tag text — darker on light bg */
+    body.light .card--coral  .card-tag { color: rgba(200,70,50,0.85); }
+    body.light .card--purple .card-tag { color: rgba(130,35,115,0.85); }
+    body.light .card--grad   .card-tag { color: rgba(200,70,50,0.85); }
+    body.light .card--mono   .card-tag { color: rgba(7,43,85,0.52); }
+    /* Arrow hover colors */
+    body.light .card--coral:hover  .card-arrow { background: var(--coral);  border-color: var(--coral);  color: #fff; }
+    body.light .card--purple:hover .card-arrow { background: var(--purple); border-color: var(--purple); color: #fff; }
+    body.light .card--grad:hover   .card-arrow { background: linear-gradient(135deg, var(--coral), var(--purple)); border-color: var(--coral); color: #fff; }
+    body.light .card--mono:hover   .card-arrow { background: rgba(7,43,85,0.12); border-color: rgba(7,43,85,0.22); color: #072B55; }
+    /* Ring colors — slightly more saturated on white cards */
+    body.light .card--coral  .ring-outer { stroke: rgba(255,124,102,0.42); }
+    body.light .card--coral  .ring-dot   { fill:   rgba(255,124,102,0.62); }
+    body.light .card--coral  .ring-inner { stroke: rgba(255,124,102,0.28); }
+    body.light .card--purple .ring-outer { stroke: rgba(160,50,145,0.44); }
+    body.light .card--purple .ring-dot   { fill:   rgba(160,50,145,0.64); }
+    body.light .card--purple .ring-inner { stroke: rgba(160,50,145,0.28); }
+    body.light .card--grad   .ring-outer { stroke: rgba(255,124,102,0.40); }
+    body.light .card--grad   .ring-dot   { fill:   rgba(220,90,130,0.60); }
+    body.light .card--grad   .ring-inner { stroke: rgba(160,50,145,0.28); }
+    body.light .card--mono   .ring-outer { stroke: rgba(7,43,85,0.16); }
+    body.light .card--mono   .ring-dot   { fill:   rgba(7,43,85,0.26); }
+    body.light .card--mono   .ring-inner { stroke: rgba(7,43,85,0.10); }
+    /* Icon drop-shadows on light */
+    body.light .card--coral:hover  .card-icon { filter: drop-shadow(0 4px 14px rgba(255,124,102,0.45)); }
+    body.light .card--purple:hover .card-icon { filter: drop-shadow(0 4px 14px rgba(160,50,145,0.45)); }
+    body.light .card--grad:hover   .card-icon { filter: drop-shadow(0 4px 14px rgba(220,90,130,0.40)); }
+    body.light .card--mono:hover   .card-icon { filter: drop-shadow(0 4px 14px rgba(7,43,85,0.22)); }
+
+  </style>
+</head>
+<body>
+
+<!-- ── BOOMI WORLD FLUID GRAPHIC — dark overlapping planar surfaces ── -->
+<div class="fluid-bg" aria-hidden="true">
+  <svg viewBox="0 0 660 490" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Plane fills — very dark chocolate-brown, slightly warmer toward center -->
+      <linearGradient id="pl-c" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#0C0404"/>
+        <stop offset="55%"  stop-color="#1E0A06"/>
+        <stop offset="100%" stop-color="#080302"/>
+      </linearGradient>
+      <linearGradient id="pl-b" x1="5%" y1="0%" x2="95%" y2="100%">
+        <stop offset="0%"   stop-color="#120606"/>
+        <stop offset="45%"  stop-color="#2E1008"/>
+        <stop offset="100%" stop-color="#0E0404"/>
+      </linearGradient>
+      <linearGradient id="pl-a" x1="8%" y1="0%" x2="92%" y2="100%">
+        <stop offset="0%"   stop-color="#1A0808"/>
+        <stop offset="40%"  stop-color="#3C1610"/>
+        <stop offset="100%" stop-color="#160606"/>
+      </linearGradient>
+      <!-- Specular catch-light gradients (fade at each end of the edge) -->
+      <linearGradient id="hi-a" x1="5%" y1="0%" x2="95%" y2="0%">
+        <stop offset="0%"   stop-color="rgba(255,242,228,0)"/>
+        <stop offset="18%"  stop-color="rgba(255,238,220,0.64)"/>
+        <stop offset="55%"  stop-color="rgba(255,228,208,0.50)"/>
+        <stop offset="100%" stop-color="rgba(248,215,195,0)"/>
+      </linearGradient>
+      <linearGradient id="hi-b" x1="5%" y1="0%" x2="95%" y2="0%">
+        <stop offset="0%"   stop-color="rgba(240,205,185,0)"/>
+        <stop offset="22%"  stop-color="rgba(240,212,192,0.54)"/>
+        <stop offset="65%"  stop-color="rgba(228,192,172,0.36)"/>
+        <stop offset="100%" stop-color="rgba(218,180,162,0)"/>
+      </linearGradient>
+      <linearGradient id="hi-c" x1="10%" y1="0%" x2="90%" y2="0%">
+        <stop offset="0%"   stop-color="rgba(195,148,128,0)"/>
+        <stop offset="38%"  stop-color="rgba(195,148,128,0.30)"/>
+        <stop offset="100%" stop-color="rgba(175,130,110,0)"/>
+      </linearGradient>
+      <!-- Warm inner-valley bounce light between planes -->
+      <radialGradient id="valley" cx="38%" cy="58%" r="44%">
+        <stop offset="0%"   stop-color="rgba(165,65,35,0.16)"/>
+        <stop offset="100%" stop-color="rgba(165,65,35,0)"/>
+      </radialGradient>
+    </defs>
+
+    <!-- PLANE C — background, large base surface, fills lower frame -->
+    <path d="
+      M -60 490 L 680 490 L 680 185
+      C 540 152, 338 182, 96 278
+      C 18 314, -30 358, -60 408 Z
+    " fill="url(#pl-c)"/>
+
+    <!-- PLANE B — middle band, main visible surface -->
+    <path d="
+      M -60 312
+      C 56 256, 196 192, 374 132
+      C 496 92, 596 66, 680 50
+      L 680 185
+      C 540 152, 338 182, 96 278
+      C 18 314, -30 358, -60 408 Z
+    " fill="url(#pl-b)"/>
+
+    <!-- PLANE A — topmost thin surface, facing most directly toward light -->
+    <path d="
+      M -60 207
+      C 38 157, 156 102, 316 52
+      C 444 10, 566 -14, 680 -28
+      L 680 50
+      C 596 66, 496 92, 374 132
+      C 196 192, 56 256, -60 312 Z
+    " fill="url(#pl-a)"/>
+
+    <!-- Warm bounce light between planes -->
+    <rect x="0" y="0" width="660" height="490" fill="url(#valley)"/>
+
+    <!-- SPECULAR CATCH-LIGHTS — the defining visual element -->
+
+    <!-- Plane A top edge: sharpest, brightest catch-light -->
+    <path d="M -60 207 C 38 157, 156 102, 316 52 C 444 10, 566 -14, 680 -28"
+          stroke="url(#hi-a)" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+    <!-- Soft glow halo around Plane A edge -->
+    <path d="M -60 207 C 38 157, 156 102, 316 52 C 444 10, 566 -14, 680 -28"
+          stroke="rgba(255,232,215,0.16)" stroke-width="16" fill="none" stroke-linecap="round"/>
+
+    <!-- Plane B top edge: slightly softer -->
+    <path d="M -60 312 C 56 256, 196 192, 374 132 C 496 92, 596 66, 680 50"
+          stroke="url(#hi-b)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <path d="M -60 312 C 56 256, 196 192, 374 132 C 496 92, 596 66, 680 50"
+          stroke="rgba(238,202,182,0.11)" stroke-width="13" fill="none" stroke-linecap="round"/>
+
+    <!-- Plane C top edge: subtlest, deepest in shadow -->
+    <path d="M -60 408 C -30 358, 18 314, 96 278 C 338 182, 540 152, 680 185"
+          stroke="url(#hi-c)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+
+    <!-- Tight concave valley sheen — bright zone between Plane A and B edges -->
+    <path d="M 20 275 C 160 218, 310 162, 470 118 C 560 95, 630 80, 680 70"
+          stroke="rgba(190,100,70,0.20)" stroke-width="22" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<!-- ── FLOATING SPHERES — glassy translucent pink ── -->
+<div class="sphere sp1" aria-hidden="true"></div>
+<div class="sphere sp2" aria-hidden="true"></div>
+<div class="sphere sp3" aria-hidden="true"></div>
+<div class="sphere sp4" aria-hidden="true"></div>
+<div class="sphere sp5" aria-hidden="true"></div>
+
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <header>
+    <div class="header-left">
+      <svg class="boomi-logo" id="Logos" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224.24 90.19" aria-label="Boomi">
+        <defs><style>.cls-1{fill:#fff;}</style></defs>
+        <circle class="cls-1" cx="190.49" cy="22.52" r="3.71"/>
+        <path class="cls-1" d="M81.29,31.26a15.06,15.06,0,1,1,0,30.11,15.06,15.06,0,1,1,0-30.11Zm0,24.51a9.2,9.2,0,0,0,9.39-9.46,9.39,9.39,0,1,0-18.78,0A9.2,9.2,0,0,0,81.29,55.77Z"/>
+        <path class="cls-1" d="M115.53,31.26a15.06,15.06,0,1,1-15.35,15.05A14.92,14.92,0,0,1,115.53,31.26Zm0,24.51a9.2,9.2,0,0,0,9.39-9.46,9.39,9.39,0,1,0-18.78,0A9.2,9.2,0,0,0,115.53,55.77Z"/>
+        <path class="cls-1" d="M187.51,60.11V31.92a.66.66,0,0,1,.66-.66h4.65a.65.65,0,0,1,.65.66V60.11a.66.66,0,0,1-.65.66h-4.65A.67.67,0,0,1,187.51,60.11Z"/>
+        <path class="cls-1" d="M170.1,31.26a12,12,0,0,0-10.33,5.39c-1.83-3.34-5.33-5.39-10.29-5.39s-7.83,2.77-8.76,4.25V30.93a.65.65,0,0,0-1-.56l-4.84,2.79a.35.35,0,0,0-.18.3V60.11a.67.67,0,0,0,.66.66h4.68a.67.67,0,0,0,.66-.66V44.48c0-4.79,3.52-7.56,7.82-7.56s6.81,2.77,6.81,7.56V60.11a.66.66,0,0,0,.65.66h4.69a.66.66,0,0,0,.65-.66v-16c.15-4.55,3.61-7.2,7.83-7.2s6.8,2.77,6.8,7.56V60.11a.66.66,0,0,0,.65.66h4.69a.66.66,0,0,0,.65-.66V43.21C182,36.2,177.81,31.26,170.1,31.26Z"/>
+        <path class="cls-1" d="M46.66,31.26A15.46,15.46,0,0,0,36,35.32V15.38a.66.66,0,0,0-1-.57l-4.81,2.78a.34.34,0,0,0-.17.3V60.11a.65.65,0,0,0,.65.65h4.66a.65.65,0,0,0,.65-.65v-2.8a15.46,15.46,0,0,0,10.66,4.06,15.06,15.06,0,1,0,0-30.11Zm0,24.51a9.2,9.2,0,0,1-9.39-9.46,9.39,9.39,0,1,1,18.78,0A9.2,9.2,0,0,1,46.66,55.77Z"/>
+      </svg>
+      <div class="header-divider"></div>
+      <span class="event-name">World Tour &nbsp;<span>London</span></span>
+    </div>
+    <div class="header-right">
+      <div class="header-dot"></div>
+      <span class="header-live">Live Demos</span>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+        <span class="toggle-option sun active" id="sunIcon">☀</span>
+        <span class="toggle-option moon" id="moonIcon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.5v3l1.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Pick an experience &mdash; takes about 90 seconds
+    </div>
+    <h1 class="hero-title">See the platform<br>work in <em>your</em> world.</h1>
+    <p class="hero-sub">Four real business scenarios. Click through and see what Boomi makes possible.</p>
+  </section>
+
+  <!-- ── EXPERIENCE CARDS ── -->
+  <div class="grid-wrap">
+    <div class="grid">
+
+      <!-- 1. HR Onboarding — coral -->
+      <div class="grid-card card--coral" onclick="window.location='hr-onboarding/01-intro.html'">
+        <div class="card-icon-wrap">
+          <svg class="icon-ring-a" viewBox="0 0 72 72" fill="none" aria-hidden="true">
+            <circle class="ring-outer" cx="36" cy="36" r="32"/>
+            <circle class="ring-dot" cx="36" cy="4" r="2.8"/>
+            <circle class="ring-dot" cx="63.7" cy="52" r="2.8"/>
+            <circle class="ring-dot" cx="8.3" cy="52" r="2.8"/>
+          </svg>
+          <svg class="icon-ring-b" viewBox="0 0 72 72" fill="none" aria-hidden="true">
+            <circle class="ring-inner" cx="36" cy="36" r="22" stroke-dasharray="3 5"/>
+          </svg>
+          <img class="card-icon" src="../assets/Icon Integration.png" alt="Integration" onerror="this.style.opacity='0'">
+        </div>
+        <div class="card-tag">iPaaS · Flow · AgentStudio</div>
+        <div class="card-title">New hire, ready on day one — automatically</div>
+        <div class="card-desc">Sarah Chen walked in on Monday and everything worked. Six systems provisioned before she arrived — automatically, with zero IT tickets and zero manual steps.</div>
+        <div class="card-footer">
+          <div class="card-pills">
+            <span class="card-pill">iPaaS</span>
+            <span class="card-pill">Flow</span>
+            <span class="card-pill">AgentStudio</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </div>
+        <a class="card-docs-link" href="hr-onboarding/04-docs.html" onclick="event.stopPropagation()">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M5 4l-3 4 3 4M11 4l3 4-3 4M9 2l-2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          How it's built
+        </a>
+      </div>
+
+      <!-- 2. APIM / MCP — purple -->
+      <a class="grid-card card--purple" href="apim/01-intro.html">
+        <div class="card-icon-wrap">
+          <svg class="icon-ring-a" viewBox="0 0 72 72" fill="none" aria-hidden="true">
+            <circle class="ring-outer" cx="36" cy="36" r="32"/>
+            <circle class="ring-dot" cx="36" cy="4" r="2.8"/>
+            <circle class="ring-dot" cx="63.7" cy="52" r="2.8"/>
+            <circle class="ring-dot" cx="8.3" cy="52" r="2.8"/>
+          </svg>
+          <svg class="icon-ring-b" viewBox="0 0 72 72" fill="none" aria-hidden="true">
+            <circle class="ring-inner" cx="36" cy="36" r="22" stroke-dasharray="3 5"/>
+          </svg>
+          <img class="card-icon" src="../assets/Icon APIM API Gateway.png" alt="APIM" onerror="this.style.opacity='0'">
+        </div>
+        <div class="card-tag">API Management · MCP</div>
+        <div class="card-title">One toggle. Your APIs become AI tools.</div>
+        <div class="card-desc">Flip a switch and Boomi publishes your enterprise APIs as governed MCP tools — instantly available to any AI agent, with full security and auditability intact.</div>
+        <div class="card-footer">
+          <div class="card-pills">
+            <span class="card-pill">APIM</span>
+            <span class="card-pill">MCP</span>
+            <span class="card-pill">Agents</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </div>
+      </a>
+
+      <!-- 3. DataHub — coral→purple gradient -->
+      <a class="grid-card card--grad" href="datahub/01-intro.html">
+        <div class="card-icon-wrap">
+          <svg class="icon-ring-a" viewBox="0 0 72 72" fill="none" aria-hidden="true">
+            <circle class="ring-outer" cx="36" cy="36" r="32"/>
+            <circle class="ring-dot" cx="36" cy="4" r="2.8"/>
+            <circle class="ring-dot" cx="63.7" cy="52" r="2.8"/>
+            <circle class="ring-dot" cx="8.3" cy="52" r="2.8"/>
+          </svg>
+          <svg class="icon-ring-b" viewBox="0 0 72 72" fill="none" aria-hidden="true">
+            <circle class="ring-inner" cx="36" cy="36" r="22" stroke-dasharray="3 5"/>
+          </svg>
+          <img class="card-icon" src="../assets/datahub-icon.png" alt="DataHub" onerror="this.style.opacity='0'">
+        </div>
+        <div class="card-tag">DataHub · HubGen · Resolve</div>
+        <div class="card-title">Bad data doesn't reach AI. Ever.</div>
+        <div class="card-desc">Boomi ingests fragmented records, Resolve matches and deduplicates, HubGen enriches with AI — and DataHub publishes a clean golden record your models can actually trust.</div>
+        <div class="card-footer">
+          <div class="card-pills">
+            <span class="card-pill">DataHub</span>
+            <span class="card-pill">HubGen</span>
+            <span class="card-pill">Resolve</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </div>
+      </a>
+
+      <!-- 4. MFT / EDI — mono white -->
+      <a class="grid-card card--mono" href="mft/01-intro.html">
+        <div class="card-icon-wrap">
+          <svg class="icon-ring-a" viewBox="0 0 72 72" fill="none" aria-hidden="true">
+            <circle class="ring-outer" cx="36" cy="36" r="32"/>
+            <circle class="ring-dot" cx="36" cy="4" r="2.8"/>
+            <circle class="ring-dot" cx="63.7" cy="52" r="2.8"/>
+            <circle class="ring-dot" cx="8.3" cy="52" r="2.8"/>
+          </svg>
+          <svg class="icon-ring-b" viewBox="0 0 72 72" fill="none" aria-hidden="true">
+            <circle class="ring-inner" cx="36" cy="36" r="22" stroke-dasharray="3 5"/>
+          </svg>
+          <img class="card-icon" src="../assets/Icon MFT.png" alt="MFT" onerror="this.style.opacity='0'">
+        </div>
+        <div class="card-tag">MFT · EDI · B2B</div>
+        <div class="card-title">Files and trading partner data, moved and acted on.</div>
+        <div class="card-desc">A document arrives from a trading partner. Boomi validates the EDI, routes it to the right team, and triggers downstream workflows — securely, compliantly, without a human in the loop.</div>
+        <div class="card-footer">
+          <div class="card-pills">
+            <span class="card-pill">MFT</span>
+            <span class="card-pill">EDI</span>
+            <span class="card-pill">B2B</span>
+          </div>
+          <div class="card-arrow">→</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── BOTTOM STRIP ── -->
+  <div class="bottom-strip">
+    <div class="strip-item coral" onclick="window.location='hr-onboarding/01-intro.html'">
+      <div class="strip-num">01</div>
+      <div class="strip-info">
+        <div class="strip-title">HR Onboarding</div>
+        <div class="strip-sub">iPaaS · Flow · AgentStudio</div>
+      </div>
+    </div>
+    <a class="strip-item purple" href="apim/01-intro.html">
+      <div class="strip-num">02</div>
+      <div class="strip-info">
+        <div class="strip-title">APIM &amp; MCP</div>
+        <div class="strip-sub">API Management · AI Agents</div>
+      </div>
+    </a>
+    <a class="strip-item grad" href="datahub/01-intro.html">
+      <div class="strip-num">03</div>
+      <div class="strip-info">
+        <div class="strip-title">DataHub</div>
+        <div class="strip-sub">Data Governance · HubGen</div>
+      </div>
+    </a>
+    <a class="strip-item mono" href="mft/01-intro.html">
+      <div class="strip-num">04</div>
+      <div class="strip-info">
+        <div class="strip-title">MFT &amp; EDI</div>
+        <div class="strip-sub">B2B · Trading Partners</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+<script>
+  (function() {
+    var body = document.body;
+    var btn = document.getElementById('themeToggle');
+    var sunIcon = document.getElementById('sunIcon');
+    var moonIcon = document.getElementById('moonIcon');
+    var isLight = true;
+    body.classList.add('light'); // default to light
+    btn.addEventListener('click', function() {
+      isLight = !isLight;
+      if (isLight) {
+        body.classList.add('light');
+        sunIcon.classList.add('active');
+        moonIcon.classList.remove('active');
+      } else {
+        body.classList.remove('light');
+        sunIcon.classList.remove('active');
+        moonIcon.classList.add('active');
+      }
+    });
+  })();
+</script>
+</body>
+</html>
