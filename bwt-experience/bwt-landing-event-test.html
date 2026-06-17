@@ -25,51 +25,60 @@
       overflow: hidden;
     }
 
-    /* Subtle ambient — warm dark hint only, matching template's pure black bg */
+    /* Full-page ambient — warm dark tint that spans the entire background */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background: radial-gradient(ellipse 500px 380px at 100% 0%, rgba(100,25,15,0.14) 0%, transparent 55%);
+      background:
+        /* Strong warm concentration upper-right (behind the planes) */
+        radial-gradient(ellipse 72% 58% at 96% 2%,  rgba(88,20,8,0.52)  0%, transparent 62%),
+        /* Wide sweep across the full top — gives warmth on the left too */
+        radial-gradient(ellipse 110% 42% at 50% -4%, rgba(30,9,4,0.32)   0%, transparent 82%),
+        /* Subtle lower-left warmth so bottom doesn't go cold */
+        radial-gradient(ellipse 38% 28% at 2% 88%,  rgba(22,6,3,0.18)   0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ── FLUID GRAPHIC — Boomi World dark planar swirl ── */
+    /* ── FLUID GRAPHIC — Boomi World dark planar swirl — full-width ── */
     .fluid-bg {
       position: fixed;
       top: 0;
+      left: 0;
       right: 0;
-      width: 660px;
-      height: 490px;
+      width: 100%;
+      height: 560px;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.94;
+      opacity: 0.92;
     }
 
-    /* ── FLOATING SPHERES — translucent glassy pink ── */
-    .sphere {
+    /* ── OFFICIAL SPHERE ASSETS — real Boomi World 3D renders ── */
+    .sphere-img {
       position: fixed;
-      border-radius: 50%;
       pointer-events: none;
-      z-index: 1;
+      z-index: 2;
+      user-select: none;
     }
-    /* shared glassy translucent pink gradient */
-    .sp1, .sp2, .sp3, .sp4, .sp5 {
-      background: radial-gradient(circle at 38% 30%,
-        rgba(255,215,210,0.96) 0%,
-        rgba(255,145,128,0.88) 26%,
-        rgba(235,82,68,0.72) 50%,
-        rgba(178,52,46,0.46) 70%,
-        rgba(120,32,32,0.18) 88%,
-        transparent 100%
-      );
+    /* Main sphere cluster — official animated Boomi sphere render, upper right */
+    .sphere-cluster {
+      width: 580px;
+      height: auto;
+      top: -30px;
+      right: -120px;
+      opacity: 0.92;
+      mix-blend-mode: screen;
+      transition: opacity 1.2s ease;
     }
-    .sp1 { width: 72px; height: 72px; top: 128px; right: 172px; box-shadow: 0 0 24px rgba(255,100,80,0.22), inset 0 0 14px rgba(255,200,180,0.10); }
-    .sp2 { width: 38px; height: 38px; top:  78px; right: 250px; box-shadow: 0 0 14px rgba(255,100,80,0.18); }
-    .sp3 { width: 24px; height: 24px; top:  52px; right: 152px; box-shadow: 0 0 10px rgba(255,100,80,0.14); }
-    .sp4 { width: 52px; height: 52px; top: 316px; right:  22px; box-shadow: 0 0 18px rgba(255,100,80,0.20), inset 0 0 10px rgba(255,180,160,0.08); }
-    .sp5 { width: 16px; height: 16px; top: 104px; right: 104px; box-shadow: 0 0  8px rgba(255,100,80,0.12); }
+    /* Lone accent sphere — lower left, diagonal counterpoint to the cluster */
+    .sphere-accent {
+      width: 240px;
+      height: 240px;
+      bottom: 48px;
+      left: -70px;
+      opacity: 0.68;
+    }
 
     .page {
       position: relative;
@@ -150,7 +159,7 @@
     }
 
     .hero-sub {
-      font-size: 0.9rem; color: rgba(255,255,255,0.38);
+      font-size: 0.9rem; color: rgba(255,255,255,0.65);
       max-width: 460px; margin: 0 auto; line-height: 1.65;
     }
 
@@ -165,10 +174,10 @@
       gap: 0.85rem; width: 100%; max-width: 920px;
     }
 
-    /* ── CARD — true black foundation, template style ── */
+    /* ── CARD — warm dark glass, enough opacity to anchor text ── */
     .grid-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(8,3,2,0.68);
+      border: 1px solid rgba(255,255,255,0.11);
       border-radius: 20px; padding: 1.25rem;
       cursor: pointer; text-decoration: none; color: inherit;
       display: flex; flex-direction: column;
@@ -263,7 +272,7 @@
     .card--coral  .card-tag { color: rgba(255,124,102,0.82); }
     .card--purple .card-tag { color: rgba(200,80,170,0.82); }
     .card--grad   .card-tag { color: rgba(255,124,102,0.82); }
-    .card--mono   .card-tag { color: rgba(255,255,255,0.42); }
+    .card--mono   .card-tag { color: rgba(255,255,255,0.58); }
 
     .card-title {
       font-size: 0.92rem; font-weight: 700;
@@ -271,7 +280,7 @@
     }
 
     .card-desc {
-      font-size: 0.78rem; color: rgba(255,255,255,0.40);
+      font-size: 0.78rem; color: rgba(255,255,255,0.72);
       line-height: 1.65; flex: 1; margin-bottom: 0.85rem;
     }
 
@@ -283,8 +292,8 @@
       font-size: 0.58rem; font-weight: 600;
       text-transform: uppercase; letter-spacing: 0.07em;
       padding: 3px 8px; border-radius: 10px;
-      background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.32);
-      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.60);
+      border: 1px solid rgba(255,255,255,0.12);
     }
 
     .card-arrow {
@@ -337,8 +346,8 @@
     .strip-item.mono   .strip-num { color: rgba(255,255,255,0.42); }
 
     .strip-info  { display: flex; flex-direction: column; }
-    .strip-title { font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.68); margin-bottom: 0.05rem; }
-    .strip-sub   { font-size: 0.6rem; font-weight: 500; color: rgba(255,255,255,0.28); letter-spacing: 0.02em; }
+    .strip-title { font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.82); margin-bottom: 0.05rem; }
+    .strip-sub   { font-size: 0.6rem; font-weight: 500; color: rgba(255,255,255,0.52); letter-spacing: 0.02em; }
 
     /* ── THEME TOGGLE ── */
     .theme-toggle {
@@ -365,9 +374,9 @@
         radial-gradient(ellipse 400px 350px at 105% 85%,  rgba(200,60,40,0.06)   0%, transparent 50%),
         radial-gradient(ellipse 350px 300px at -5%  90%,  rgba(255,100,70,0.04)  0%, transparent 50%);
     }
-    body.light .fluid-bg { opacity: 0.07; }
-    body.light .sp1, body.light .sp2, body.light .sp3,
-    body.light .sp4, body.light .sp5 { opacity: 0.30; }
+    body.light .fluid-bg { opacity: 0.06; }
+    body.light .sphere-cluster { opacity: 0.18; }
+    body.light .sphere-accent  { opacity: 0.12; }
 
     /* Header and strip stay dark in both modes — Boomi World brand */
     body.light header        { background: rgba(5,5,5,0.92); }
@@ -427,7 +436,7 @@
 
 <!-- ── BOOMI WORLD FLUID GRAPHIC — dark overlapping planar surfaces ── -->
 <div class="fluid-bg" aria-hidden="true">
-  <svg viewBox="0 0 660 490" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 660 490" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <!-- Plane fills — very dark chocolate-brown, slightly warmer toward center -->
       <linearGradient id="pl-c" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -525,12 +534,12 @@
   </svg>
 </div>
 
-<!-- ── FLOATING SPHERES — glassy translucent pink ── -->
-<div class="sphere sp1" aria-hidden="true"></div>
-<div class="sphere sp2" aria-hidden="true"></div>
-<div class="sphere sp3" aria-hidden="true"></div>
-<div class="sphere sp4" aria-hidden="true"></div>
-<div class="sphere sp5" aria-hidden="true"></div>
+<!-- ── OFFICIAL BOOMI WORLD SPHERES — animated intro, settles to static ── -->
+<video id="sphere-cluster-video" class="sphere-img sphere-cluster" autoplay muted playsinline aria-hidden="true" draggable="false">
+  <source src="sphere-cluster-video.mp4" type="video/mp4">
+</video>
+<img id="sphere-cluster-static" class="sphere-img sphere-cluster" src="sphere-group.png" alt="" aria-hidden="true" draggable="false" style="opacity:0;transition:opacity 1.2s ease;">
+<img class="sphere-img sphere-accent"  src="sphere-single.png" alt="" aria-hidden="true" draggable="false">
 
 <div class="page">
 
@@ -587,14 +596,13 @@
           </svg>
           <img class="card-icon" src="../assets/Icon Integration.png" alt="Integration" onerror="this.style.opacity='0'">
         </div>
-        <div class="card-tag">iPaaS · Flow · AgentStudio</div>
+        <div class="card-tag">iPaaS · Flow</div>
         <div class="card-title">New hire, ready on day one — automatically</div>
         <div class="card-desc">Sarah Chen walked in on Monday and everything worked. Six systems provisioned before she arrived — automatically, with zero IT tickets and zero manual steps.</div>
         <div class="card-footer">
           <div class="card-pills">
             <span class="card-pill">iPaaS</span>
             <span class="card-pill">Flow</span>
-            <span class="card-pill">AgentStudio</span>
           </div>
           <div class="card-arrow">→</div>
         </div>
@@ -694,7 +702,7 @@
       <div class="strip-num">01</div>
       <div class="strip-info">
         <div class="strip-title">HR Onboarding</div>
-        <div class="strip-sub">iPaaS · Flow · AgentStudio</div>
+        <div class="strip-sub">iPaaS · Flow</div>
       </div>
     </div>
     <a class="strip-item purple" href="apim/01-intro.html">
@@ -727,8 +735,10 @@
     var btn = document.getElementById('themeToggle');
     var sunIcon = document.getElementById('sunIcon');
     var moonIcon = document.getElementById('moonIcon');
-    var isLight = true;
-    body.classList.add('light'); // default to light
+    var isLight = false;
+    // default to dark / night mode
+    sunIcon.classList.remove('active');
+    moonIcon.classList.add('active');
     btn.addEventListener('click', function() {
       isLight = !isLight;
       if (isLight) {
@@ -740,6 +750,17 @@
         sunIcon.classList.remove('active');
         moonIcon.classList.add('active');
       }
+    });
+  })();
+
+  // Sphere cluster: play once, then crossfade to static PNG
+  (function() {
+    var vid = document.getElementById('sphere-cluster-video');
+    var img = document.getElementById('sphere-cluster-static');
+    if (!vid) return;
+    vid.addEventListener('ended', function() {
+      vid.style.opacity = '0';
+      img.style.opacity = '0.92';
     });
   })();
 </script>
