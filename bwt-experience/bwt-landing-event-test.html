@@ -63,10 +63,10 @@
     }
     /* Main sphere cluster — official animated Boomi sphere render, upper right */
     .sphere-cluster {
-      width: 580px;
+      width: 380px;
       height: auto;
-      top: -30px;
-      right: -120px;
+      top: -10px;
+      right: -80px;
       opacity: 0.92;
       mix-blend-mode: screen;
       transition: opacity 1.2s ease;
@@ -377,6 +377,12 @@
     body.light .fluid-bg { opacity: 0.06; }
     body.light .sphere-cluster { opacity: 0.18; }
     body.light .sphere-accent  { opacity: 0.12; }
+
+    /* ── Chromebook / smaller laptop scaling ── */
+    @media (max-width: 1366px) {
+      .sphere-cluster { width: 300px; right: -65px; }
+      .sphere-accent  { width: 180px; }
+    }
 
     /* Header and strip stay dark in both modes — Boomi World brand */
     body.light header        { background: rgba(5,5,5,0.92); }
