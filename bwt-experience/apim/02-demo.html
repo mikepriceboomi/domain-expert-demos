@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boomi API Control Plane — Live Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark:         #020F1A;
+      --coral:        #FF7C66;
+      --teal:         #0EC38B;
+      --indigo:       #4B4FE2;
+      --white:        #FFFFFF;
+      --text-muted:   rgba(255,255,255,0.50);
+      --panel-border: rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--dark);
+      color: var(--white);
+      overflow: hidden;
+    }
+
+    .page {
+      height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.65rem 2.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(2,15,26,0.95);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-label {
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .header-label span { color: var(--coral); }
+    .chapter-pills {
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .pill {
+      font-size: 0.60rem; font-weight: 600; color: rgba(255,255,255,0.35);
+      letter-spacing: 0.05em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      text-decoration: none; transition: color 0.15s, border-color 0.15s;
+      cursor: default;
+    }
+    .pill-sep { color: rgba(255,255,255,0.15); font-size: 0.60rem; }
+
+    /* ── EMBED ── */
+    .embed-container {
+      flex: 1; position: relative; overflow: hidden;
+    }
+    .embed-container iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; border: none;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.60rem 2.5rem;
+      border-top: 1px solid var(--panel-border);
+      background: rgba(2,15,26,0.95);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+    .footer-left { display: flex; align-items: center; gap: 1.2rem; }
+    .nav-link {
+      font-size: 0.70rem; font-weight: 600;
+      color: var(--text-muted); letter-spacing: 0.04em;
+      text-decoration: none; transition: color 0.15s;
+      display: inline-flex; align-items: center; gap: 0.3rem;
+    }
+    .nav-link:hover { color: var(--white); }
+    .footer-sep { color: rgba(255,255,255,0.12); }
+
+    .footer-context {
+      font-size: 0.65rem; color: rgba(255,255,255,0.32);
+      letter-spacing: 0.04em;
+    }
+    .footer-context strong { color: rgba(255,255,255,0.55); font-weight: 600; }
+
+    .footer-cta {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--coral); letter-spacing: 0.05em;
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-cta:hover { color: #ffb3a7; }
+    .footer-cta svg { transition: transform 0.15s; }
+    .footer-cta:hover svg { transform: translateX(3px); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-left">
+      <a href="../bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;">
+        <img src="../../assets/boomi-logo.svg" height="20" style="width:auto;display:block;" alt="Boomi">
+      </a>
+      <div class="header-label">API Control Plane &nbsp;<span>Walkthrough</span></div>
+    </div>
+    <div class="chapter-pills">
+      <span class="pill-sep">Chapters:</span>
+      <span class="pill">01 Federation</span>
+      <span class="pill-sep">·</span>
+      <span class="pill">02 Catalog</span>
+      <span class="pill-sep">·</span>
+      <span class="pill">03 Design</span>
+      <span class="pill-sep">·</span>
+      <span class="pill">04 Deploy</span>
+      <span class="pill-sep">·</span>
+      <span class="pill">05 Portals</span>
+      <span class="pill-sep">·</span>
+      <span class="pill">06 Orchestrate</span>
+      <span class="pill-sep">·</span>
+      <span class="pill">07 Analytics</span>
+    </div>
+  </header>
+
+  <div class="embed-container">
+    <iframe
+      src="https://capture.navattic.com/cm6fq7ep0000003jo75js7ggy"
+      aria-label="Interactive demo"
+      style="border:none;width:100%;height:100%;"
+      data-navattic-demo-id="cm6fq7ep0000003jo75js7ggy"
+      allow="fullscreen">
+    </iframe>
+  </div>
+
+  <footer>
+    <div class="footer-left">
+      <a href="01-intro.html" class="nav-link">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back to intro
+      </a>
+      <span class="footer-sep">|</span>
+      <div class="footer-context">
+        Scenario: <strong>LumeTech × BrightBrand</strong> · Get Contacts API · BAG / CAM / AWS
+      </div>
+    </div>
+    <a href="03-close.html" class="footer-cta">
+      See the outcomes
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </footer>
+
+</div>
+</body>
+</html>

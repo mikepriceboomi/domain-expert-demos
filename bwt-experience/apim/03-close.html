@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boomi API Control Plane — The Outcome</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark:         #020F1A;
+      --mid:          #071828;
+      --coral:        #FF7C66;
+      --teal:         #0EC38B;
+      --indigo:       #4B4FE2;
+      --white:        #FFFFFF;
+      --text-muted:   rgba(255,255,255,0.50);
+      --panel-border: rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--dark);
+      color: var(--white);
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 700px 500px at -5% 30%, rgba(255,124,102,0.06) 0%, transparent 65%),
+        radial-gradient(ellipse 500px 400px at 105% 20%, rgba(75,79,226,0.07) 0%, transparent 65%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      height: 100vh; display: flex; flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 2.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(2,15,26,0.92);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-label {
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .header-label span { color: var(--coral); }
+    .header-badge {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.68rem; font-weight: 600; color: var(--teal);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid rgba(14,195,139,0.25);
+      border-radius: 20px; background: rgba(14,195,139,0.07);
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--teal);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+    /* ── MAIN ── */
+    .main { flex: 1; display: flex; overflow: hidden; }
+
+    /* LEFT */
+    .left-panel {
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+      padding: 1.5rem 2.5rem 1.5rem 4rem;
+      border-right: 1px solid var(--panel-border);
+      overflow-y: auto;
+    }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.62rem; font-weight: 700;
+      color: var(--teal); text-transform: uppercase; letter-spacing: 0.16em;
+      margin-bottom: 0.85rem;
+      background: rgba(14,195,139,0.08); border: 1px solid rgba(14,195,139,0.18);
+      padding: 4px 10px; border-radius: 20px; width: fit-content;
+    }
+
+    h1 {
+      font-size: clamp(1.5rem, 2.2vw, 2.4rem);
+      font-weight: 800; line-height: 1.1; letter-spacing: -0.03em;
+      margin-bottom: 0.6rem;
+    }
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--coral), #ffb3a7);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .coral-rule { width: 40px; height: 3px; background: var(--coral); border-radius: 2px; margin: 0.75rem 0; }
+
+    .outcome-desc {
+      font-size: 0.84rem; color: rgba(255,255,255,0.60); line-height: 1.70;
+      max-width: 480px; margin-bottom: 1.3rem;
+    }
+    .outcome-desc strong { color: rgba(255,255,255,0.88); }
+
+    /* Persona cards */
+    .persona-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.6rem; margin-bottom: 1.4rem; max-width: 520px;
+    }
+    .persona-card {
+      padding: 0.7rem 0.85rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      transition: border-color 0.15s;
+    }
+    .persona-card:hover { border-color: rgba(255,255,255,0.14); }
+    .persona-card:nth-child(1) { border-top: 2px solid var(--coral); }
+    .persona-card:nth-child(2) { border-top: 2px solid var(--indigo); }
+    .persona-card:nth-child(3) { border-top: 2px solid var(--teal); }
+    .persona-card:nth-child(4) { border-top: 2px solid rgba(255,184,0,0.8); }
+
+    .persona-role {
+      font-size: 0.58rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; margin-bottom: 0.35rem;
+    }
+    .persona-card:nth-child(1) .persona-role { color: var(--coral); }
+    .persona-card:nth-child(2) .persona-role { color: #9b9fff; }
+    .persona-card:nth-child(3) .persona-role { color: var(--teal); }
+    .persona-card:nth-child(4) .persona-role { color: #ffcf4d; }
+
+    .persona-name {
+      font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.88);
+      margin-bottom: 0.3rem;
+    }
+    .persona-win {
+      font-size: 0.68rem; color: rgba(255,255,255,0.52); line-height: 1.55;
+    }
+
+    /* Buttons */
+    .btn-row { display: flex; align-items: center; gap: 0.85rem; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.4rem;
+      background: var(--coral); color: #1a0600;
+      font-family: 'Poppins', sans-serif; font-size: 0.82rem; font-weight: 700;
+      border: none; border-radius: 10px; cursor: pointer; text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(255,124,102,0.28);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,124,102,0.40); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.4rem;
+      background: transparent; color: rgba(255,255,255,0.55);
+      font-family: 'Poppins', sans-serif; font-size: 0.82rem; font-weight: 600;
+      border: 1px solid var(--panel-border); border-radius: 10px;
+      cursor: pointer; text-decoration: none; transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-secondary:hover { color: var(--white); border-color: rgba(255,255,255,0.20); }
+
+    /* RIGHT */
+    .right-panel {
+      flex: 0 0 340px; display: flex; flex-direction: column; justify-content: center;
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+    }
+
+    .result-label {
+      font-size: 0.60rem; font-weight: 700; color: var(--coral);
+      text-transform: uppercase; letter-spacing: 0.16em; margin-bottom: 0.85rem;
+    }
+
+    /* Platform stack visual */
+    .stack-visual { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1rem; }
+
+    .stack-layer {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.6rem 0.85rem;
+      border-radius: 9px; border: 1px solid;
+      position: relative;
+    }
+
+    .layer-acp {
+      background: rgba(255,124,102,0.08); border-color: rgba(255,124,102,0.28);
+    }
+    .layer-gateways {
+      background: rgba(75,79,226,0.07); border-color: rgba(75,79,226,0.22);
+    }
+    .layer-catalog {
+      background: rgba(14,195,139,0.07); border-color: rgba(14,195,139,0.20);
+    }
+    .layer-portals {
+      background: rgba(255,184,0,0.06); border-color: rgba(255,184,0,0.20);
+    }
+
+    .layer-icon { font-size: 0.95rem; flex-shrink: 0; }
+    .layer-name { font-size: 0.74rem; font-weight: 700; }
+    .layer-desc { font-size: 0.62rem; color: var(--text-muted); line-height: 1.4; margin-top: 1px; }
+
+    .layer-acp .layer-name { color: var(--coral); }
+    .layer-gateways .layer-name { color: #9b9fff; }
+    .layer-catalog .layer-name { color: var(--teal); }
+    .layer-portals .layer-name { color: #ffcf4d; }
+
+    /* Stack connector */
+    .stack-connector {
+      width: 1px; height: 12px; background: rgba(255,255,255,0.10);
+      margin: 0 auto; flex-shrink: 0;
+    }
+
+    /* Outcome stats */
+    .stat-row {
+      display: flex; gap: 0.6rem; margin-top: 0.85rem;
+    }
+    .stat-box {
+      flex: 1; padding: 0.65rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--panel-border);
+      border-radius: 9px; text-align: center;
+    }
+    .stat-num {
+      font-size: 1.35rem; font-weight: 800; color: var(--coral);
+      letter-spacing: -0.03em; line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.56rem; color: var(--text-muted);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-top: 3px; line-height: 1.4;
+    }
+
+    /* ── CHAPTER STRIP ── */
+    .chapter-strip {
+      display: flex; align-items: stretch;
+      border-top: 1px solid var(--panel-border);
+      background: rgba(2,15,26,0.85);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      flex-shrink: 0;
+    }
+    .chapter {
+      flex: 1; padding: 0.52rem 0.65rem; border-right: 1px solid var(--panel-border);
+      display: flex; align-items: center; gap: 0.45rem;
+      text-decoration: none; transition: background 0.15s; cursor: pointer;
+      color: inherit;
+    }
+    .chapter:last-child { border-right: none; }
+    .chapter:hover { background: rgba(255,255,255,0.03); }
+    .chapter-num { font-size: 0.90rem; font-weight: 800; color: rgba(255,255,255,0.13); flex-shrink: 0; }
+    .chapter-info { min-width: 0; }
+    .chapter-title-s { font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.58); margin-bottom: 0.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chapter-sub-s { font-size: 0.54rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chapter.active .chapter-num { color: var(--coral); }
+    .chapter.active .chapter-title-s { color: var(--white); }
+    .chapter.done .chapter-num { color: rgba(14,195,139,0.50); }
+    .chapter.done .chapter-title-s { color: rgba(255,255,255,0.72); }
+    .chapter:hover .chapter-title-s { color: var(--white); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-left">
+      <a href="../bwt-landing.html" style="display:inline-flex;align-items:center;text-decoration:none;">
+        <img src="../../assets/boomi-logo.svg" height="22" style="width:auto;display:block;" alt="Boomi">
+      </a>
+      <div class="header-label">API Control Plane &nbsp;<span>The Outcome</span></div>
+    </div>
+    <div class="header-badge">
+      <div class="badge-dot"></div>
+      Governed
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- LEFT -->
+    <div class="left-panel">
+      <div class="eyebrow">✓ Control Plane Active</div>
+
+      <h1>Federated. Governed.<br><em>Delivered at speed.</em></h1>
+      <div class="coral-rule"></div>
+
+      <p class="outcome-desc">
+        LumeTech's API program director walks into the board meeting with one view across all three gateways. BrightBrand developers find what they need in a single catalog. Policy enforcement runs automatically — no tickets, no waiting. <strong>The 90-day mandate is done in weeks.</strong>
+      </p>
+
+      <div class="persona-grid">
+        <div class="persona-card">
+          <div class="persona-role">API Program Director</div>
+          <div class="persona-name">Unified governance</div>
+          <div class="persona-win">One dashboard across BAG, CAM, and AWS. Board-ready visibility from day one.</div>
+        </div>
+        <div class="persona-card">
+          <div class="persona-role">BrightBrand Developers</div>
+          <div class="persona-name">Self-service discovery</div>
+          <div class="persona-win">Get Contacts API — found, versioned, documented, and ready to consume. No tickets.</div>
+        </div>
+        <div class="persona-card">
+          <div class="persona-role">Knowledge Workers</div>
+          <div class="persona-name">AI agents, governed</div>
+          <div class="persona-win">Agents surface the right API automatically. Policies enforced before the call is made.</div>
+        </div>
+        <div class="persona-card">
+          <div class="persona-role">Ops &amp; Platform Team</div>
+          <div class="persona-name">Analytics &amp; control</div>
+          <div class="persona-win">Rate limits, health monitoring, and usage analytics across every gateway from one place.</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <a href="../bwt-landing.html" class="btn-primary">
+          Explore another experience
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="01-intro.html" class="btn-secondary">Restart</a>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-panel">
+      <div class="result-label">Platform Stack</div>
+
+      <div class="stack-visual">
+        <div class="stack-layer layer-acp">
+          <div class="layer-icon">🎛️</div>
+          <div>
+            <div class="layer-name">Boomi API Control Plane</div>
+            <div class="layer-desc">Federation · Catalog · Governance · Portals</div>
+          </div>
+        </div>
+        <div class="stack-connector"></div>
+        <div class="stack-layer layer-gateways">
+          <div class="layer-icon">⚡</div>
+          <div>
+            <div class="layer-name">Multi-Gateway Estate</div>
+            <div class="layer-desc">BAG · Camunda (CAM) · AWS API Gateway</div>
+          </div>
+        </div>
+        <div class="stack-connector"></div>
+        <div class="stack-layer layer-catalog">
+          <div class="layer-icon">📋</div>
+          <div>
+            <div class="layer-name">Unified API Catalog</div>
+            <div class="layer-desc">Discovery · Metadata · Quality scoring</div>
+          </div>
+        </div>
+        <div class="stack-connector"></div>
+        <div class="stack-layer layer-portals">
+          <div class="layer-icon">🌐</div>
+          <div>
+            <div class="layer-name">Developer Portals</div>
+            <div class="layer-desc">Self-service · Embeddable · Role-based access</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Gateways<br>federated</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">1</div>
+          <div class="stat-label">Control<br>plane</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">90<span style="font-size:0.85rem">d</span></div>
+          <div class="stat-label">Mandate<br>delivered</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHAPTER STRIP -->
+  <div class="chapter-strip">
+    <a href="01-intro.html" class="chapter done">
+      <div class="chapter-num">01</div>
+      <div class="chapter-info">
+        <div class="chapter-title-s">The Scenario</div>
+        <div class="chapter-sub-s">LumeTech · BrightBrand</div>
+      </div>
+    </a>
+    <a href="02-demo.html" class="chapter done">
+      <div class="chapter-num">02</div>
+      <div class="chapter-info">
+        <div class="chapter-title-s">Federation</div>
+        <div class="chapter-sub-s">Discover · Connect</div>
+      </div>
+    </a>
+    <a href="02-demo.html" class="chapter done">
+      <div class="chapter-num">03</div>
+      <div class="chapter-info">
+        <div class="chapter-title-s">Catalog & Quality</div>
+        <div class="chapter-sub-s">Metadata · Standards</div>
+      </div>
+    </a>
+    <a href="02-demo.html" class="chapter done">
+      <div class="chapter-num">04</div>
+      <div class="chapter-info">
+        <div class="chapter-title-s">Design & Build</div>
+        <div class="chapter-sub-s">Mock · Test · Publish</div>
+      </div>
+    </a>
+    <a href="02-demo.html" class="chapter done">
+      <div class="chapter-num">05</div>
+      <div class="chapter-info">
+        <div class="chapter-title-s">Deploy & Secure</div>
+        <div class="chapter-sub-s">Policies · Governance</div>
+      </div>
+    </a>
+    <a href="02-demo.html" class="chapter done">
+      <div class="chapter-num">06</div>
+      <div class="chapter-info">
+        <div class="chapter-title-s">Portals & Embed</div>
+        <div class="chapter-sub-s">Self-service · Adoption</div>
+      </div>
+    </a>
+    <a href="03-close.html" class="chapter active">
+      <div class="chapter-num">07</div>
+      <div class="chapter-info">
+        <div class="chapter-title-s">The Outcome</div>
+        <div class="chapter-sub-s">Federated · Governed</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+</body>
+</html>
