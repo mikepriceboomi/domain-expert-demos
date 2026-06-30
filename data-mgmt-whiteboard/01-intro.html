@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sources · Boomi Data Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%; overflow: hidden;
+      background: #0b1520;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.9rem; position: relative;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(200,218,245,0.09) 0%, rgba(200,218,245,0.04) 8%, transparent 28%),
+        linear-gradient(0deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.08) 14%, transparent 30%),
+        radial-gradient(ellipse 105% 75% at 50% 50%, transparent 38%, rgba(0,0,0,0.62) 100%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: ''; position: fixed; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 0%, rgba(160,190,230,0.08) 20%, rgba(160,190,230,0.12) 50%, rgba(160,190,230,0.08) 80%, transparent 100%);
+      pointer-events: none; z-index: 0;
+    }
+    .wb-frame, .wb-nav { position: relative; z-index: 1; }
+    .wb-frame {
+      background: #1c2f42; border-radius: 6px 6px 5px 5px;
+      padding: 9px 9px 20px 9px;
+      box-shadow: 0 2px 0 rgba(255,255,255,0.06) inset, 0 0 120px 24px rgba(210,228,255,0.035), 0 40px 100px rgba(0,0,0,0.72), 0 8px 28px rgba(0,0,0,0.46);
+      width: 64vw;
+    }
+    .wb-surface {
+      background: #f6f5f1; border-radius: 2px;
+      width: 100%; aspect-ratio: 16 / 9;
+      position: relative; overflow: hidden;
+    }
+    .wb-surface::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(0,0,0,0.020) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.020) 1px, transparent 1px);
+      background-size: 46px 46px; pointer-events: none;
+    }
+    .wb-surface::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 95% 92% at 50% 50%, transparent 65%, rgba(0,0,0,0.05) 100%);
+      pointer-events: none;
+    }
+    .wb-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .wb-nav { display: flex; align-items: center; gap: 2.5rem; }
+    .wb-nav a { font-family: 'Poppins', sans-serif; font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.22); text-decoration: none; letter-spacing: 0.10em; text-transform: uppercase; transition: color 0.15s; }
+    .wb-nav a:hover { color: rgba(255,255,255,0.60); }
+    .wb-brand { height: 20px; opacity: 0.55; display: block; }
+    @keyframes wb-in { from { opacity:0 } to { opacity:1 } }
+    .wb-frame { animation: wb-in 0.4s ease both; }
+  </style>
+</head>
+<body>
+
+<div class="wb-frame">
+  <div class="wb-surface">
+    <svg class="wb-svg" viewBox="0 0 1400 788" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-ghost" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+          <polygon points="0 0,6 3.5,0 7" fill="rgba(40,100,200,0.22)"/>
+        </marker>
+      </defs>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- BOOMI LOGO — kickoff moment                 -->
+      <!-- ═══════════════════════════════════════════ -->
+      <image id="logo-wb" href="../assets/boomi-logo-positive.svg"
+        x="540" y="310" width="320" height="129" style="opacity:0"/>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- SOURCES — animated draw sequence            -->
+      <!-- ═══════════════════════════════════════════ -->
+
+      <!-- Title + underline -->
+      <text id="src-title" x="90" y="58"
+        font-family="'Patrick Hand', sans-serif" font-size="40" font-weight="700" fill="#1a1a2e">Sources</text>
+      <line id="src-rule" x1="90" y1="68" x2="320" y2="68"
+        stroke="#1a1a2e" stroke-width="2.5" fill="none"/>
+
+      <!-- API cylinder -->
+      <ellipse id="api-ell" cx="205" cy="100" rx="115" ry="28"
+        fill="#f6f5f1" stroke="#1a1a2e" stroke-width="3.0"/>
+      <line id="api-L" x1="90" y1="100" x2="90" y2="210"
+        stroke="#1a1a2e" stroke-width="3.0"/>
+      <line id="api-R" x1="320" y1="100" x2="320" y2="210"
+        stroke="#1a1a2e" stroke-width="3.0"/>
+      <path id="api-arc" d="M 90 210 Q 91 238 205 238 Q 319 238 320 210"
+        fill="none" stroke="#1a1a2e" stroke-width="3.0"/>
+      <text id="api-lbl" x="205" y="162"
+        font-family="'Patrick Hand', sans-serif" font-size="44" font-weight="700"
+        fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">API</text>
+      <text id="api-sub1" x="90" y="268"
+        font-family="'Patrick Hand', sans-serif" font-size="17" fill="#555">SF · NS · Jira · Facebook</text>
+      <text id="api-sub2" x="90" y="288"
+        font-family="'Patrick Hand', sans-serif" font-size="14" fill="#999">any API-based source</text>
+      <circle id="dot-a1" cx="205" cy="306" r="4" fill="#ccc"/>
+      <circle id="dot-a2" cx="205" cy="318" r="4" fill="#ccc"/>
+      <circle id="dot-a3" cx="205" cy="330" r="4" fill="#ccc"/>
+
+      <!-- DBs cylinder -->
+      <ellipse id="dbs-ell" cx="205" cy="358" rx="115" ry="28"
+        fill="#f6f5f1" stroke="#1a1a2e" stroke-width="3.0"/>
+      <line id="dbs-L" x1="90" y1="358" x2="90" y2="468"
+        stroke="#1a1a2e" stroke-width="3.0"/>
+      <line id="dbs-R" x1="320" y1="358" x2="320" y2="468"
+        stroke="#1a1a2e" stroke-width="3.0"/>
+      <path id="dbs-arc" d="M 90 468 Q 91 496 205 496 Q 319 496 320 468"
+        fill="none" stroke="#1a1a2e" stroke-width="3.0"/>
+      <text id="dbs-lbl" x="205" y="420"
+        font-family="'Patrick Hand', sans-serif" font-size="44" font-weight="700"
+        fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">DBs</text>
+      <text id="dbs-sub1" x="90" y="516"
+        font-family="'Patrick Hand', sans-serif" font-size="17" fill="#555">SQL Server · Oracle · MySQL</text>
+      <text id="dbs-sub2" x="90" y="536"
+        font-family="'Patrick Hand', sans-serif" font-size="14" fill="#999">on-prem production databases</text>
+      <circle id="dot-b1" cx="205" cy="554" r="4" fill="#ccc"/>
+      <circle id="dot-b2" cx="205" cy="566" r="4" fill="#ccc"/>
+
+      <!-- SAP rect -->
+      <rect id="sap-rect" x="90" y="582" width="230" height="80" rx="6"
+        fill="none" stroke="#1a1a2e" stroke-width="3.0"/>
+      <text id="sap-lbl" x="205" y="626"
+        font-family="'Patrick Hand', sans-serif" font-size="42" font-weight="700"
+        fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">SAP</text>
+      <text id="sap-sub" x="90" y="678"
+        font-family="'Patrick Hand', sans-serif" font-size="17" fill="#555">BW · ecosystem · SAP Data Connector</text>
+      <circle id="dot-c1" cx="205" cy="696" r="4" fill="#ccc"/>
+
+      <!-- Files rect -->
+      <rect id="files-rect" x="90" y="712" width="230" height="56" rx="6"
+        fill="none" stroke="#1a1a2e" stroke-width="3.0"/>
+      <text id="files-lbl" x="205" y="745"
+        font-family="'Patrick Hand', sans-serif" font-size="36" font-weight="700"
+        fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">Files</text>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- BDI GHOST — fades in at end to hint at ch2 -->
+      <!-- ═══════════════════════════════════════════ -->
+      <g id="bdi-ghost">
+        <text x="498" y="58"
+          font-family="'Patrick Hand', sans-serif" font-size="36" font-weight="700"
+          fill="rgba(40,100,200,0.20)" text-anchor="middle">BDI</text>
+        <rect x="360" y="72" width="276" height="688" rx="5"
+          fill="none" stroke="rgba(40,100,200,0.13)" stroke-width="1.8" stroke-dasharray="8 6"/>
+        <line x1="476" y1="72" x2="476" y2="760"
+          stroke="rgba(40,100,200,0.09)" stroke-width="1.2" stroke-dasharray="6 5"/>
+        <text x="416" y="94"
+          font-family="'Patrick Hand', sans-serif" font-size="18" fill="rgba(40,100,200,0.22)" text-anchor="middle">Ingestion</text>
+        <text x="556" y="94"
+          font-family="'Patrick Hand', sans-serif" font-size="18" fill="rgba(40,100,200,0.22)" text-anchor="middle">Transform</text>
+      </g>
+
+      <!-- Ghost arrows: Sources → BDI -->
+      <g id="src-arrows-ghost">
+        <path d="M 320 162 L 358 162" fill="none" stroke="rgba(40,100,200,0.15)" stroke-width="1.6" marker-end="url(#arr-ghost)"/>
+        <path d="M 320 408 L 358 408" fill="none" stroke="rgba(40,100,200,0.15)" stroke-width="1.6" marker-end="url(#arr-ghost)"/>
+        <path d="M 320 626 L 358 626" fill="none" stroke="rgba(40,100,200,0.15)" stroke-width="1.6" marker-end="url(#arr-ghost)"/>
+        <path d="M 320 745 L 358 745" fill="none" stroke="rgba(40,100,200,0.15)" stroke-width="1.6" marker-end="url(#arr-ghost)"/>
+      </g>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- DESTINATIONS GHOST                          -->
+      <!-- ═══════════════════════════════════════════ -->
+      <g id="dest-ghost">
+        <text x="790" y="58"
+          font-family="'Patrick Hand', sans-serif" font-size="34" font-weight="700"
+          fill="rgba(40,100,200,0.18)" text-anchor="middle">Destinations</text>
+        <line x1="650" y1="68" x2="980" y2="68" stroke="rgba(40,100,200,0.10)" stroke-width="1.2"/>
+        <rect x="654" y="82" width="210" height="102" rx="5"
+          fill="none" stroke="rgba(40,100,200,0.12)" stroke-width="1.6" stroke-dasharray="7 5"/>
+        <text x="759" y="137"
+          font-family="'Patrick Hand', sans-serif" font-size="18" fill="rgba(40,100,200,0.20)" text-anchor="middle">DWH / Data Lake</text>
+        <rect x="654" y="210" width="210" height="112" rx="5"
+          fill="none" stroke="rgba(40,100,200,0.12)" stroke-width="1.6" stroke-dasharray="7 5"/>
+        <text x="759" y="272"
+          font-family="'Patrick Hand', sans-serif" font-size="18" fill="rgba(40,100,200,0.20)" text-anchor="middle">Knowledge Hub</text>
+        <rect x="654" y="352" width="210" height="112" rx="5"
+          fill="none" stroke="rgba(40,100,200,0.12)" stroke-width="1.6" stroke-dasharray="7 5"/>
+        <text x="759" y="412"
+          font-family="'Patrick Hand', sans-serif" font-size="18" fill="rgba(40,100,200,0.20)" text-anchor="middle">Data Hub</text>
+        <path d="M 636 133 L 652 133" fill="none" stroke="rgba(40,100,200,0.11)" stroke-width="1.3" marker-end="url(#arr-ghost)"/>
+        <path d="M 636 266 L 652 266" fill="none" stroke="rgba(40,100,200,0.11)" stroke-width="1.3" marker-end="url(#arr-ghost)"/>
+        <path d="M 636 408 L 652 408" fill="none" stroke="rgba(40,100,200,0.11)" stroke-width="1.3" marker-end="url(#arr-ghost)"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<nav class="wb-nav">
+  <img class="wb-brand" src="../assets/boomi-logo.svg" alt="Boomi">
+  <a href="02-bdi.html">Next →</a>
+</nav>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+
+// Stroke-reveal for shapes (lines, rects, ellipses, paths)
+function draw(id, delay, dur) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let len = 4000;
+  try { if (el.getTotalLength) len = el.getTotalLength(); } catch(e) {}
+  el.style.strokeDasharray = `${len} ${len}`;
+  el.style.strokeDashoffset = String(len);
+  setTimeout(() => {
+    el.style.transition = `stroke-dashoffset ${dur}s cubic-bezier(0.35, 0, 0.25, 1)`;
+    el.style.strokeDashoffset = '0';
+  }, delay * 1000);
+}
+
+// Left-to-right clip sweep — simulates handwriting
+function write(id, delay, dur) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  try {
+    const bbox = el.getBBox();
+    const pad = 5;
+    const clipId = 'wc-' + id;
+    const defs = el.closest('svg').querySelector('defs');
+    const cp = document.createElementNS(NS, 'clipPath');
+    cp.id = clipId;
+    const r = document.createElementNS(NS, 'rect');
+    r.setAttribute('x', bbox.x - pad);
+    r.setAttribute('y', bbox.y - pad);
+    r.setAttribute('height', String(bbox.height + pad * 2));
+    r.style.width = '0px';
+    cp.appendChild(r);
+    defs.appendChild(cp);
+    el.setAttribute('clip-path', `url(#${clipId})`);
+    setTimeout(() => {
+      r.style.transition = `width ${dur}s linear`;
+      r.style.width = (bbox.width + pad * 2) + 'px';
+    }, delay * 1000);
+  } catch(e) { fade(id, delay, dur); }
+}
+
+// Simple opacity fade — for ghosts, sub-labels, dots
+function fade(id, delay, dur, targetOpacity = 1) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.opacity = '0';
+  setTimeout(() => {
+    el.style.transition = `opacity ${dur}s ease`;
+    el.style.opacity = String(targetOpacity);
+  }, delay * 1000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Boomi logo — kicks off the whole sequence, then fades before Sources builds
+  fade('logo-wb',     0.2,  0.80);
+  fade('logo-wb',     1.3,  0.70, 0);
+
+  // Sources title written first, underline draws beneath
+  write('src-title',  2.0,  0.50);
+  draw('src-rule',    2.5,  0.40);
+
+  // API cylinder — shape draws, then text written in
+  draw('api-ell',     3.0,  0.75);
+  draw('api-L',       3.8,  0.30);
+  draw('api-R',       3.8,  0.30);
+  draw('api-arc',     4.2,  0.45);
+  write('api-lbl',    4.8,  0.45);
+  fade('api-sub1',    5.3,  0.35);
+  fade('api-sub2',    5.7,  0.30);
+  fade('dot-a1',      6.05, 0.20);
+  fade('dot-a2',      6.25, 0.20);
+  fade('dot-a3',      6.45, 0.20);
+
+  // DBs cylinder
+  draw('dbs-ell',     6.8,  0.75);
+  draw('dbs-L',       7.6,  0.30);
+  draw('dbs-R',       7.6,  0.30);
+  draw('dbs-arc',     8.0,  0.45);
+  write('dbs-lbl',    8.55, 0.45);
+  fade('dbs-sub1',    9.05, 0.35);
+  fade('dbs-sub2',    9.45, 0.30);
+  fade('dot-b1',      9.8,  0.20);
+  fade('dot-b2',      10.0, 0.20);
+
+  // SAP
+  draw('sap-rect',    10.35,0.65);
+  write('sap-lbl',    11.1, 0.40);
+  fade('sap-sub',     11.55,0.35);
+  fade('dot-c1',      12.0, 0.20);
+
+  // Files
+  draw('files-rect',  12.3, 0.55);
+  write('files-lbl',  12.95,0.35);
+
+  // Ghost hints — BDI and Destinations fade in softly
+  fade('bdi-ghost',        13.45, 1.1);
+  fade('src-arrows-ghost', 13.7,  0.9);
+  fade('dest-ghost',       14.0,  1.1);
+});
+</script>
+</body>
+</html>

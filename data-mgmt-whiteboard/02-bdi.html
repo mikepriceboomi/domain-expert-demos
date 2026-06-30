@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BDI · Boomi Data Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%; overflow: hidden;
+      background: #0b1520;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.9rem; position: relative;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(200,218,245,0.09) 0%, rgba(200,218,245,0.04) 8%, transparent 28%),
+        linear-gradient(0deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.08) 14%, transparent 30%),
+        radial-gradient(ellipse 105% 75% at 50% 50%, transparent 38%, rgba(0,0,0,0.62) 100%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: ''; position: fixed; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 0%, rgba(160,190,230,0.08) 20%, rgba(160,190,230,0.12) 50%, rgba(160,190,230,0.08) 80%, transparent 100%);
+      pointer-events: none; z-index: 0;
+    }
+    .wb-frame, .wb-nav { position: relative; z-index: 1; }
+    .wb-frame {
+      background: #1c2f42; border-radius: 6px 6px 5px 5px;
+      padding: 9px 9px 20px 9px;
+      box-shadow: 0 2px 0 rgba(255,255,255,0.06) inset, 0 0 120px 24px rgba(210,228,255,0.035), 0 40px 100px rgba(0,0,0,0.72), 0 8px 28px rgba(0,0,0,0.46);
+      width: 64vw;
+    }
+    .wb-surface {
+      background: #f6f5f1; border-radius: 2px;
+      width: 100%; aspect-ratio: 16 / 9;
+      position: relative; overflow: hidden;
+    }
+    .wb-surface::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(0,0,0,0.020) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.020) 1px, transparent 1px);
+      background-size: 46px 46px; pointer-events: none;
+    }
+    .wb-surface::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 95% 92% at 50% 50%, transparent 65%, rgba(0,0,0,0.05) 100%);
+      pointer-events: none;
+    }
+    .wb-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .wb-nav { display: flex; align-items: center; gap: 2.5rem; }
+    .wb-nav a { font-family: 'Poppins', sans-serif; font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.22); text-decoration: none; letter-spacing: 0.10em; text-transform: uppercase; transition: color 0.15s; }
+    .wb-nav a:hover { color: rgba(255,255,255,0.60); }
+    .wb-brand { height: 20px; opacity: 0.55; display: block; }
+    @keyframes wb-in { from { opacity:0 } to { opacity:1 } }
+    .wb-frame { animation: wb-in 0.4s ease both; }
+  </style>
+</head>
+<body>
+
+<div class="wb-frame">
+  <div class="wb-surface">
+    <svg class="wb-svg" viewBox="0 0 1400 788" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-done" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+          <polygon points="0 0,6 3.5,0 7" fill="rgba(26,26,46,0.30)"/>
+        </marker>
+        <marker id="arr-ghost" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+          <polygon points="0 0,6 3.5,0 7" fill="rgba(40,100,200,0.22)"/>
+        </marker>
+      </defs>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- DONE — Sources (faded, visible from start)  -->
+      <!-- ═══════════════════════════════════════════ -->
+      <text x="90" y="58"
+        font-family="'Patrick Hand', sans-serif" font-size="30" fill="rgba(26,26,46,0.22)">Sources</text>
+
+      <ellipse cx="205" cy="100" rx="115" ry="28" fill="none" stroke="rgba(26,26,46,0.24)" stroke-width="1.8"/>
+      <line x1="90" y1="100" x2="90" y2="210" stroke="rgba(26,26,46,0.24)" stroke-width="1.8"/>
+      <line x1="320" y1="100" x2="320" y2="210" stroke="rgba(26,26,46,0.24)" stroke-width="1.8"/>
+      <path d="M 90 210 Q 91 238 205 238 Q 319 238 320 210" fill="none" stroke="rgba(26,26,46,0.24)" stroke-width="1.8"/>
+      <text x="205" y="162" font-family="'Patrick Hand', sans-serif" font-size="38"
+        fill="rgba(26,26,46,0.22)" text-anchor="middle" dominant-baseline="middle">API</text>
+
+      <ellipse cx="205" cy="330" rx="115" ry="28" fill="none" stroke="rgba(26,26,46,0.24)" stroke-width="1.8"/>
+      <line x1="90" y1="330" x2="90" y2="440" stroke="rgba(26,26,46,0.24)" stroke-width="1.8"/>
+      <line x1="320" y1="330" x2="320" y2="440" stroke="rgba(26,26,46,0.24)" stroke-width="1.8"/>
+      <path d="M 90 440 Q 91 468 205 468 Q 319 468 320 440" fill="none" stroke="rgba(26,26,46,0.24)" stroke-width="1.8"/>
+      <text x="205" y="392" font-family="'Patrick Hand', sans-serif" font-size="38"
+        fill="rgba(26,26,46,0.22)" text-anchor="middle" dominant-baseline="middle">DBs</text>
+
+      <rect x="90" y="536" width="230" height="80" rx="6" fill="none" stroke="rgba(26,26,46,0.24)" stroke-width="1.8"/>
+      <text x="205" y="582" font-family="'Patrick Hand', sans-serif" font-size="36"
+        fill="rgba(26,26,46,0.22)" text-anchor="middle" dominant-baseline="middle">SAP</text>
+
+      <rect x="90" y="644" width="230" height="56" rx="6" fill="none" stroke="rgba(26,26,46,0.24)" stroke-width="1.8"/>
+      <text x="205" y="677" font-family="'Patrick Hand', sans-serif" font-size="30"
+        fill="rgba(26,26,46,0.22)" text-anchor="middle" dominant-baseline="middle">Files</text>
+
+      <g id="src-arrows">
+        <path d="M 320 162 L 358 162" fill="none" stroke="rgba(26,26,46,0.28)" stroke-width="1.8" marker-end="url(#arr-done)"/>
+        <path d="M 320 392 L 358 392" fill="none" stroke="rgba(26,26,46,0.28)" stroke-width="1.8" marker-end="url(#arr-done)"/>
+        <path d="M 320 576 L 358 576" fill="none" stroke="rgba(26,26,46,0.28)" stroke-width="1.8" marker-end="url(#arr-done)"/>
+        <path d="M 320 672 L 358 672" fill="none" stroke="rgba(26,26,46,0.28)" stroke-width="1.8" marker-end="url(#arr-done)"/>
+      </g>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- ACTIVE — BDI                                -->
+      <!-- Chapter 2 scope: the two-halves concept     -->
+      <!-- Connector detail is Chapter 3               -->
+      <!-- ═══════════════════════════════════════════ -->
+
+      <image id="icon-bdi" href="../assets/Icon Data Integration.png" x="424" y="18" width="34" height="34" style="opacity:0"/>
+      <text id="bdi-title" x="498" y="46"
+        font-family="'Patrick Hand', sans-serif" font-size="40" font-weight="700"
+        fill="#1a1a2e" text-anchor="middle">BDI</text>
+      <text id="bdi-subtitle" x="498" y="66"
+        font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="#555" text-anchor="middle">Boomi Data Integration</text>
+
+      <!-- Outer rect — full height to match sources column -->
+      <rect id="bdi-rect" x="360" y="76" width="276" height="640" rx="5"
+        fill="none" stroke="#1a1a2e" stroke-width="3.0"/>
+
+      <!-- Vertical divider -->
+      <line id="bdi-divider" x1="476" y1="76" x2="476" y2="716"
+        stroke="#1a1a2e" stroke-width="2.0"/>
+
+      <!-- Column headers -->
+      <text id="hdr-ingest" x="418" y="102"
+        font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700"
+        fill="#1a1a2e" text-anchor="middle">Ingestion</text>
+      <text id="hdr-transform" x="556" y="102"
+        font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700"
+        fill="#1a1a2e" text-anchor="middle">Transform</text>
+
+      <line id="hdr-line-L" x1="368" y1="114" x2="474" y2="114"
+        stroke="rgba(26,26,46,0.28)" stroke-width="1.2"/>
+      <line id="hdr-line-R" x1="478" y1="114" x2="628" y2="114"
+        stroke="rgba(26,26,46,0.28)" stroke-width="1.2"/>
+
+      <!-- Ingestion: tease Ch3 without detail — two short lines to stay inside 116px column -->
+      <text id="ing-connectors" x="418" y="155"
+        font-family="'Patrick Hand', sans-serif" font-size="18"
+        fill="#1a1a2e" text-anchor="middle">5 connector</text>
+      <text id="ing-connectors-b" x="418" y="178"
+        font-family="'Patrick Hand', sans-serif" font-size="18"
+        fill="#1a1a2e" text-anchor="middle">types</text>
+      <text id="ing-connectors-sub" x="418" y="200"
+        font-family="'Patrick Hand', sans-serif" font-size="13"
+        fill="#888" text-anchor="middle">→ next chapter</text>
+
+      <!-- Transform: Clean / Enrich / Orchestrate — script calls these out explicitly -->
+      <text id="trx-clean" x="556" y="155"
+        font-family="'Patrick Hand', sans-serif" font-size="22"
+        fill="#1a1a2e" text-anchor="middle">→ Transform</text>
+      <text id="trx-orchestrate" x="556" y="190"
+        font-family="'Patrick Hand', sans-serif" font-size="22"
+        fill="#1a1a2e" text-anchor="middle">→ Orchestrate</text>
+
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- GHOST — Destinations                        -->
+      <!-- ═══════════════════════════════════════════ -->
+      <g id="dest-ghost">
+        <text x="790" y="46"
+          font-family="'Patrick Hand', sans-serif" font-size="34" font-weight="700"
+          fill="rgba(40,100,200,0.18)" text-anchor="middle">Destinations</text>
+        <rect x="654" y="82" width="210" height="100" rx="5"
+          fill="none" stroke="rgba(40,100,200,0.12)" stroke-width="1.6" stroke-dasharray="7 5"/>
+        <text x="759" y="136"
+          font-family="'Patrick Hand', sans-serif" font-size="18"
+          fill="rgba(40,100,200,0.20)" text-anchor="middle">DWH / Data Lake</text>
+        <rect x="654" y="204" width="210" height="100" rx="5"
+          fill="none" stroke="rgba(40,100,200,0.12)" stroke-width="1.6" stroke-dasharray="7 5"/>
+        <text x="759" y="258"
+          font-family="'Patrick Hand', sans-serif" font-size="18"
+          fill="rgba(40,100,200,0.20)" text-anchor="middle">Knowledge Hub</text>
+        <rect x="654" y="326" width="210" height="100" rx="5"
+          fill="none" stroke="rgba(40,100,200,0.12)" stroke-width="1.6" stroke-dasharray="7 5"/>
+        <text x="759" y="380"
+          font-family="'Patrick Hand', sans-serif" font-size="18"
+          fill="rgba(40,100,200,0.20)" text-anchor="middle">Data Hub</text>
+        <path d="M 636 136 L 652 136" fill="none" stroke="rgba(40,100,200,0.11)" stroke-width="1.3" marker-end="url(#arr-ghost)"/>
+        <path d="M 636 258 L 652 258" fill="none" stroke="rgba(40,100,200,0.11)" stroke-width="1.3" marker-end="url(#arr-ghost)"/>
+        <path d="M 636 380 L 652 380" fill="none" stroke="rgba(40,100,200,0.11)" stroke-width="1.3" marker-end="url(#arr-ghost)"/>
+      </g>
+
+    </svg>
+  </div>
+</div>
+
+<nav class="wb-nav">
+  <img class="wb-brand" src="../assets/boomi-logo.svg" alt="Boomi">
+  <a href="01-intro.html">← Prev</a>
+  <a href="03-connectors.html">Next →</a>
+</nav>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+
+function draw(id, delay, dur) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let len = 4000;
+  try { if (el.getTotalLength) len = el.getTotalLength(); } catch(e) {}
+  el.style.strokeDasharray = `${len} ${len}`;
+  el.style.strokeDashoffset = String(len);
+  setTimeout(() => {
+    el.style.transition = `stroke-dashoffset ${dur}s cubic-bezier(0.35, 0, 0.25, 1)`;
+    el.style.strokeDashoffset = '0';
+  }, delay * 1000);
+}
+
+function write(id, delay, dur) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  try {
+    const bbox = el.getBBox();
+    const pad = 5;
+    const clipId = 'wc-' + id;
+    const defs = el.closest('svg').querySelector('defs');
+    const cp = document.createElementNS(NS, 'clipPath');
+    cp.id = clipId;
+    const r = document.createElementNS(NS, 'rect');
+    r.setAttribute('x', bbox.x - pad);
+    r.setAttribute('y', bbox.y - pad);
+    r.setAttribute('height', String(bbox.height + pad * 2));
+    r.style.width = '0px';
+    cp.appendChild(r);
+    defs.appendChild(cp);
+    el.setAttribute('clip-path', `url(#${clipId})`);
+    setTimeout(() => {
+      r.style.transition = `width ${dur}s linear`;
+      r.style.width = (bbox.width + pad * 2) + 'px';
+    }, delay * 1000);
+  } catch(e) { fade(id, delay, dur); }
+}
+
+function fade(id, delay, dur, targetOpacity = 1) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.opacity = '0';
+  setTimeout(() => {
+    el.style.transition = `opacity ${dur}s ease`;
+    el.style.opacity = String(targetOpacity);
+  }, delay * 1000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  fade('src-arrows',          0.1,  0.5);
+
+  fade('icon-bdi',            0.4,  0.45);
+  write('bdi-title',          0.4,  0.45);
+  fade('bdi-subtitle',        0.9,  0.30);
+
+  draw('bdi-rect',            1.2,  1.40);
+  draw('bdi-divider',         2.65, 0.50);
+
+  // — Ingestion side first
+  write('hdr-ingest',         3.2,  0.40);
+  draw('hdr-line-L',          3.65, 0.25);
+  write('ing-connectors',     3.95, 0.45);
+  write('ing-connectors-b',   4.45, 0.35);
+  fade('ing-connectors-sub',  4.85, 0.35);
+
+  // — Transform side after ingestion is done
+  write('hdr-transform',      5.25, 0.40);
+  draw('hdr-line-R',          5.7,  0.25);
+  write('trx-clean',          6.0,  0.35);
+  write('trx-orchestrate',    6.4,  0.40);
+
+  fade('dest-ghost',          7.1,  1.1);
+});
+</script>
+</body>
+</html>

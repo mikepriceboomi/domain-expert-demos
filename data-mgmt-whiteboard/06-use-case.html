@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Use Case · Boomi Data Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%; overflow: hidden;
+      background: #0b1520;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.9rem; position: relative;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(200,218,245,0.09) 0%, rgba(200,218,245,0.04) 8%, transparent 28%),
+        linear-gradient(0deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.08) 14%, transparent 30%),
+        radial-gradient(ellipse 105% 75% at 50% 50%, transparent 38%, rgba(0,0,0,0.62) 100%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: ''; position: fixed; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 0%, rgba(160,190,230,0.08) 20%, rgba(160,190,230,0.12) 50%, rgba(160,190,230,0.08) 80%, transparent 100%);
+      pointer-events: none; z-index: 0;
+    }
+    .wb-frame, .wb-nav { position: relative; z-index: 1; }
+    .wb-frame {
+      background: #1c2f42; border-radius: 6px 6px 5px 5px;
+      padding: 9px 9px 20px 9px;
+      box-shadow: 0 2px 0 rgba(255,255,255,0.06) inset, 0 0 120px 24px rgba(210,228,255,0.035), 0 40px 100px rgba(0,0,0,0.72), 0 8px 28px rgba(0,0,0,0.46);
+      width: 64vw;
+    }
+    .wb-surface {
+      background: #f6f5f1; border-radius: 2px;
+      width: 100%; aspect-ratio: 16 / 9;
+      position: relative; overflow: hidden;
+    }
+    .wb-surface::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(0,0,0,0.020) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.020) 1px, transparent 1px);
+      background-size: 46px 46px; pointer-events: none;
+    }
+    .wb-surface::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 95% 92% at 50% 50%, transparent 65%, rgba(0,0,0,0.05) 100%);
+      pointer-events: none;
+    }
+    .wb-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .wb-nav { display: flex; align-items: center; gap: 2.5rem; }
+    .wb-nav a { font-family: 'Poppins', sans-serif; font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.22); text-decoration: none; letter-spacing: 0.10em; text-transform: uppercase; transition: color 0.15s; }
+    .wb-nav a:hover { color: rgba(255,255,255,0.60); }
+    .wb-brand { height: 20px; opacity: 0.55; display: block; }
+    @keyframes wb-in { from { opacity:0 } to { opacity:1 } }
+    .wb-frame { animation: wb-in 0.4s ease both; }
+  </style>
+</head>
+<body>
+
+<div class="wb-frame">
+  <div class="wb-surface">
+    <svg class="wb-svg" viewBox="0 0 1400 788" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-ink" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0 0,7 4,0 8" fill="#1a3a5c"/></marker>
+        <marker id="arr-purple" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0 0,7 4,0 8" fill="#A03291"/></marker>
+        <marker id="arr-coral" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0 0,7 4,0 8" fill="#FF7C66"/></marker>
+        <marker id="arr-teal" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0 0,7 4,0 8" fill="#0EC38B"/></marker>
+      </defs>
+
+      <!-- ══ SOURCES ══ -->
+      <text id="uc-banner" x="90" y="32" font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700" fill="#1B6FD8" style="opacity:0">Retailer Use Case</text>
+      <text id="src-title" x="90" y="60" font-family="'Patrick Hand', sans-serif" font-size="36" font-weight="700" fill="#1a1a2e" style="opacity:0">Sources</text>
+      <line id="src-line" x1="90" y1="68" x2="320" y2="68" stroke="#1a1a2e" stroke-width="2.0" style="opacity:0"/>
+
+      <g id="src-api" style="opacity:0">
+        <ellipse cx="205" cy="100" rx="115" ry="28" fill="#f6f5f1" stroke="#1a1a2e" stroke-width="2.8"/>
+        <line x1="90" y1="100" x2="90" y2="210" stroke="#1a1a2e" stroke-width="2.8"/>
+        <line x1="320" y1="100" x2="320" y2="210" stroke="#1a1a2e" stroke-width="2.8"/>
+        <path d="M 90 210 Q 91 238 205 238 Q 319 238 320 210" fill="none" stroke="#1a1a2e" stroke-width="2.8"/>
+        <text x="205" y="162" font-family="'Patrick Hand', sans-serif" font-size="40" font-weight="700" fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">API</text>
+      </g>
+      <text id="src-api-sub" x="90" y="258" font-family="'Patrick Hand', sans-serif" font-size="17" fill="#1B6FD8" style="opacity:0">SF · CRM + marketing</text>
+
+      <g id="src-dbs" style="opacity:0">
+        <ellipse cx="205" cy="346" rx="115" ry="28" fill="#f6f5f1" stroke="#1a1a2e" stroke-width="2.8"/>
+        <line x1="90" y1="346" x2="90" y2="456" stroke="#1a1a2e" stroke-width="2.8"/>
+        <line x1="320" y1="346" x2="320" y2="456" stroke="#1a1a2e" stroke-width="2.8"/>
+        <path d="M 90 456 Q 91 484 205 484 Q 319 484 320 456" fill="none" stroke="#1a1a2e" stroke-width="2.8"/>
+        <text x="205" y="408" font-family="'Patrick Hand', sans-serif" font-size="40" font-weight="700" fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">DBs</text>
+      </g>
+      <text id="src-dbs-sub" x="90" y="504" font-family="'Patrick Hand', sans-serif" font-size="17" fill="#1B6FD8" style="opacity:0">inventory · purchase history</text>
+
+      <g id="src-sap" style="opacity:0">
+        <rect x="90" y="564" width="230" height="84" rx="6" fill="none" stroke="#1a1a2e" stroke-width="2.8"/>
+        <text x="205" y="612" font-family="'Patrick Hand', sans-serif" font-size="38" font-weight="700" fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">SAP</text>
+      </g>
+      <text id="src-sap-sub" x="90" y="660" font-family="'Patrick Hand', sans-serif" font-size="17" fill="#1B6FD8" style="opacity:0">logistics · finance</text>
+
+      <g id="src-files" style="opacity:0">
+        <rect x="90" y="686" width="230" height="56" rx="6" fill="none" stroke="#1a1a2e" stroke-width="2.8"/>
+        <text x="205" y="719" font-family="'Patrick Hand', sans-serif" font-size="32" font-weight="700" fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">Files</text>
+      </g>
+      <text id="src-files-sub" x="90" y="756" font-family="'Patrick Hand', sans-serif" font-size="17" fill="#1B6FD8" style="opacity:0">photos · PDFs · location data</text>
+
+      <g id="src-arrows" style="opacity:0">
+        <path d="M 320 162 L 358 162" fill="none" stroke="#1a3a5c" stroke-width="2.4" marker-end="url(#arr-ink)"/>
+        <path d="M 320 408 L 358 408" fill="none" stroke="#1a3a5c" stroke-width="2.4" marker-end="url(#arr-ink)"/>
+        <path d="M 320 606 L 358 606" fill="none" stroke="#1a3a5c" stroke-width="2.4" marker-end="url(#arr-ink)"/>
+        <path d="M 320 714 L 358 714" fill="none" stroke="#1a3a5c" stroke-width="2.4" marker-end="url(#arr-ink)"/>
+      </g>
+
+      <!-- ══ BDI ══ -->
+      <image id="icon-bdi" href="../assets/Icon Data Integration.png" x="426" y="38" width="30" height="30" style="opacity:0"/>
+      <text id="bdi-title" x="498" y="60" font-family="'Patrick Hand', sans-serif" font-size="36" font-weight="700" fill="#1a1a2e" text-anchor="middle" style="opacity:0">BDI</text>
+      <line id="bdi-line" x1="360" y1="68" x2="636" y2="68" stroke="#1a1a2e" stroke-width="2.0" style="opacity:0"/>
+      <rect id="bdi-rect" x="360" y="72" width="276" height="688" rx="5" fill="none" stroke="#1a1a2e" stroke-width="2.5" style="opacity:0"/>
+      <line id="bdi-divider" x1="476" y1="72" x2="476" y2="760" stroke="#1a1a2e" stroke-width="1.3" stroke-dasharray="6 5" style="opacity:0"/>
+
+      <text id="bdi-hdr-ing" x="418" y="92" font-family="'Patrick Hand', sans-serif" font-size="20" font-weight="700" fill="#1a1a2e" text-anchor="middle" style="opacity:0">Ingestion</text>
+      <text id="bdi-hdr-trx" x="556" y="92" font-family="'Patrick Hand', sans-serif" font-size="20" font-weight="700" fill="#1a1a2e" text-anchor="middle" style="opacity:0">Transform</text>
+
+      <g id="bdi-ing-content" style="opacity:0">
+        <text x="368" y="118" font-family="'Patrick Hand', sans-serif" font-size="15" fill="#333">→ Native · CDC</text>
+        <text x="368" y="140" font-family="'Patrick Hand', sans-serif" font-size="15" fill="#333">→ SAP Connector</text>
+        <text x="368" y="162" font-family="'Patrick Hand', sans-serif" font-size="15" fill="#333">→ MFT (files)</text>
+        <image href="../assets/Icon MFT.png" x="462" y="149" width="20" height="20"/>
+      </g>
+
+      <g id="bdi-trx-content" style="opacity:0">
+        <text x="484" y="118" font-family="'Patrick Hand', sans-serif" font-size="15" fill="#333">Transform</text>
+        <text x="484" y="140" font-family="'Patrick Hand', sans-serif" font-size="15" fill="#333">Orchestrate</text>
+      </g>
+
+      <!-- ══ DESTINATIONS ══ -->
+      <text id="dest-title" x="790" y="60" font-family="'Patrick Hand', sans-serif" font-size="34" font-weight="700" fill="#1a1a2e" text-anchor="middle" style="opacity:0">Destinations</text>
+      <line id="dest-line" x1="650" y1="68" x2="980" y2="68" stroke="#1a1a2e" stroke-width="1.8" style="opacity:0"/>
+
+      <!-- BDI → Destinations arrows -->
+      <path id="arr-to-dwh"  d="M 636 133 L 652 133" fill="none" stroke="#1a3a5c" stroke-width="2.2" marker-end="url(#arr-ink)" style="opacity:0"/>
+      <path id="arr-to-khub" d="M 636 295 L 652 295" fill="none" stroke="#A03291" stroke-width="2.2" marker-end="url(#arr-purple)" style="opacity:0"/>
+      <path id="arr-to-dhub" d="M 636 455 L 652 455" fill="none" stroke="#FF7C66" stroke-width="2.2" marker-end="url(#arr-coral)" style="opacity:0"/>
+
+      <!-- DWH -->
+      <rect id="dwh-rect" x="654" y="82" width="210" height="102" rx="5" fill="none" stroke="#1a1a2e" stroke-width="2.2" style="opacity:0"/>
+      <text id="dwh-title" x="759" y="122" font-family="'Patrick Hand', sans-serif" font-size="20" font-weight="700" fill="#1a1a2e" text-anchor="middle" style="opacity:0">DWH / Data Lake</text>
+      <text id="dwh-sub"   x="759" y="148" font-family="'Patrick Hand', sans-serif" font-size="15" fill="#888" text-anchor="middle" style="opacity:0">analytics · reporting</text>
+
+      <!-- Knowledge Hub (purple) -->
+      <rect id="khub-rect" x="654" y="210" width="230" height="168" rx="5" fill="none" stroke="#A03291" stroke-width="2.4" style="opacity:0"/>
+      <text id="khub-title" x="769" y="232" font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700" fill="#A03291" text-anchor="middle" style="opacity:0">Knowledge Hub</text>
+      <text id="khub-d1"   x="662" y="264" font-family="'Patrick Hand', sans-serif" font-size="17" fill="#A03291" style="opacity:0">PDFs · photos · location</text>
+      <text id="khub-d2"   x="662" y="288" font-family="'Patrick Hand', sans-serif" font-size="17" fill="#A03291" style="opacity:0">unstructured data</text>
+      <text id="khub-sub1" x="662" y="316" font-family="'Patrick Hand', sans-serif" font-size="14" fill="#888" style="opacity:0">DCA feeds this</text>
+      <text id="khub-sub2" x="662" y="338" font-family="'Patrick Hand', sans-serif" font-size="14" fill="#888" style="opacity:0">semantic context for agent</text>
+      <text id="khub-sub3" x="662" y="364" font-family="'Patrick Hand', sans-serif" font-size="14" fill="#888" style="opacity:0">native BDI extension</text>
+
+      <!-- Arrow KHub → Agent Studio -->
+      <path id="arr-khub-agent" d="M 884 295 L 916 295" fill="none" stroke="#A03291" stroke-width="2.2" marker-end="url(#arr-purple)" style="opacity:0"/>
+
+      <!-- Data Hub (coral) -->
+      <rect id="dhub-rect" x="654" y="408" width="230" height="188" rx="5" fill="none" stroke="#FF7C66" stroke-width="2.4" style="opacity:0"/>
+      <image id="icon-dhub" href="../assets/datahub-icon.png" x="688" y="415" width="28" height="28" style="opacity:0"/>
+      <text id="dhub-title" x="769" y="430" font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700" fill="#FF7C66" text-anchor="middle" style="opacity:0">Data Hub</text>
+      <text id="dhub-d1"   x="662" y="462" font-family="'Patrick Hand', sans-serif" font-size="17" fill="rgba(26,26,46,0.50)" style="opacity:0">golden record — employee</text>
+      <text id="dhub-d2"   x="662" y="488" font-family="'Patrick Hand', sans-serif" font-size="17" fill="rgba(26,26,46,0.50)" style="opacity:0">golden record — driver</text>
+      <text id="dhub-sub1" x="662" y="516" font-family="'Patrick Hand', sans-serif" font-size="14" fill="#888" style="opacity:0">API + DB + SAP feed this</text>
+      <text id="dhub-sub2" x="662" y="538" font-family="'Patrick Hand', sans-serif" font-size="14" fill="#888" style="opacity:0">deduped · governed</text>
+      <text id="dhub-sub3" x="662" y="560" font-family="'Patrick Hand', sans-serif" font-size="14" fill="#888" style="opacity:0">BDI ↔ native</text>
+
+      <!-- Arrow DataHub → Agent Studio (diagonal) -->
+      <path id="arr-dhub-agent" d="M 884 500 L 916 390" fill="none" stroke="#FF7C66" stroke-width="2.2" marker-end="url(#arr-coral)" style="opacity:0"/>
+
+      <!-- ══ AGENT STUDIO — the climax ══ -->
+      <rect id="agent-rect" x="918" y="226" width="170" height="198" rx="5"
+        fill="rgba(14,195,139,0.06)" stroke="#0EC38B" stroke-width="2.4" style="opacity:0"/>
+      <image id="icon-agent" href="../assets/Icon AI Studio.png" x="989" y="229" width="28" height="28" style="opacity:0"/>
+      <text id="agent-t1" x="1003" y="267" font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700"
+        fill="#0EC38B" text-anchor="middle" style="opacity:0">Agent</text>
+      <text id="agent-t2" x="1003" y="291" font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700"
+        fill="#0EC38B" text-anchor="middle" style="opacity:0">Studio</text>
+      <line id="agent-rule" x1="926" y1="302" x2="1080" y2="302"
+        stroke="rgba(14,195,139,0.30)" stroke-width="1.0" style="opacity:0"/>
+      <rect id="agent-bubble" x="928" y="300" width="152" height="60" rx="4"
+        fill="rgba(14,195,139,0.10)" stroke="rgba(14,195,139,0.28)" stroke-width="1.2" style="opacity:0"/>
+      <text id="agent-q1" x="1004" y="320" font-family="'Patrick Hand', sans-serif" font-size="13"
+        fill="#0EC38B" text-anchor="middle" style="opacity:0">"Optimize tomorrow's</text>
+      <text id="agent-q2" x="1004" y="338" font-family="'Patrick Hand', sans-serif" font-size="13"
+        fill="#0EC38B" text-anchor="middle" style="opacity:0">delivery routes?"</text>
+      <text id="agent-ans" x="1004" y="356" font-family="'Patrick Hand', sans-serif" font-size="12"
+        fill="#888" text-anchor="middle" style="opacity:0">→ AI-grounded answer</text>
+      <text id="agent-feed1" x="1003" y="384" font-family="'Patrick Hand', sans-serif" font-size="13"
+        fill="rgba(14,195,139,0.55)" text-anchor="middle" style="opacity:0">KHub + DataHub</text>
+      <text id="agent-feed2" x="1003" y="402" font-family="'Patrick Hand', sans-serif" font-size="13"
+        fill="rgba(14,195,139,0.55)" text-anchor="middle" style="opacity:0">feed this agent</text>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- BOOMI LOGO — close / sign-off               -->
+      <!-- ═══════════════════════════════════════════ -->
+      <image id="logo-close" href="../assets/boomi-logo-positive.svg"
+        x="1058" y="648" width="260" height="105" style="opacity:0"/>
+
+    </svg>
+  </div>
+</div>
+
+<nav class="wb-nav">
+  <img class="wb-brand" src="../assets/boomi-logo.svg" alt="Boomi">
+  <a href="05-data-hub.html">← Prev</a>
+  <a href="01-intro.html">Start over</a>
+</nav>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+
+function write(id, delay, dur) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  try {
+    const bbox = el.getBBox();
+    const pad = 5;
+    const clipId = 'wc-' + id;
+    const defs = el.closest('svg').querySelector('defs');
+    const cp = document.createElementNS(NS, 'clipPath');
+    cp.id = clipId;
+    const r = document.createElementNS(NS, 'rect');
+    r.setAttribute('x', bbox.x - pad);
+    r.setAttribute('y', bbox.y - pad);
+    r.setAttribute('height', String(bbox.height + pad * 2));
+    r.style.width = '0px';
+    cp.appendChild(r);
+    defs.appendChild(cp);
+    el.setAttribute('clip-path', `url(#${clipId})`);
+    el.style.opacity = '1';
+    setTimeout(() => {
+      r.style.transition = `width ${dur}s linear`;
+      r.style.width = (bbox.width + pad * 2) + 'px';
+    }, delay * 1000);
+  } catch(e) { fade(id, delay, dur); }
+}
+
+function draw(id, delay, dur) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let len = 4000;
+  try { if (el.getTotalLength) len = el.getTotalLength(); } catch(e) {}
+  el.style.strokeDasharray = `${len} ${len}`;
+  el.style.strokeDashoffset = String(len);
+  setTimeout(() => {
+    el.style.opacity = '1';
+    requestAnimationFrame(() => {
+      el.style.transition = `stroke-dashoffset ${dur}s cubic-bezier(0.35, 0, 0.25, 1)`;
+      el.style.strokeDashoffset = '0';
+    });
+  }, delay * 1000);
+}
+
+function fade(id, delay, dur, targetOpacity = 1) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  setTimeout(() => {
+    el.style.transition = `opacity ${dur}s ease`;
+    el.style.opacity = String(targetOpacity);
+  }, delay * 1000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  // — Sources
+  fade('src-title',   0.3,  0.45);
+  fade('src-line',    1.4,  0.35);
+  fade('src-api',     1.8,  0.55);
+  fade('src-dbs',     2.4,  0.55);
+  fade('src-sap',     3.0,  0.55);
+  fade('src-files',   3.6,  0.55);
+  fade('src-arrows',  4.2,  0.50);
+
+  // — BDI
+  fade('icon-bdi',         4.8,  0.50);
+  write('bdi-title',       4.8,  0.50);
+  fade('bdi-line',         5.4,  0.35);
+  draw('bdi-rect',         5.85, 1.40);
+  draw('bdi-divider',      7.35, 0.50);
+  fade('bdi-hdr-ing',      7.95, 0.35);
+  fade('bdi-ing-content',  8.35, 0.45);
+  fade('bdi-hdr-trx',      8.85, 0.35);
+  fade('bdi-trx-content',  9.25, 0.45);
+
+  // — Destinations header
+  write('dest-title',  9.85, 0.55);
+  fade('dest-line',   10.45, 0.35);
+
+  // — DWH
+  fade('arr-to-dwh',  10.85, 0.35);
+  draw('dwh-rect',    11.25, 0.65);
+  write('dwh-title',  12.0,  0.45);
+  fade('dwh-sub',     12.5,  0.35);
+
+  // — Knowledge Hub
+  fade('arr-to-khub', 12.9,  0.40);
+  draw('khub-rect',   13.35, 0.80);
+  write('khub-title', 14.25, 0.50);
+  write('khub-d1',    14.85, 0.45);
+  write('khub-d2',    15.35, 0.45);
+  fade('khub-sub1',   15.85, 0.35);
+  fade('khub-sub2',   16.25, 0.35);
+  fade('khub-sub3',   16.65, 0.35);
+
+  // — Data Hub
+  fade('arr-to-dhub', 17.1,  0.40);
+  draw('dhub-rect',   17.6,  0.80);
+  fade('icon-dhub',   18.5,  0.50);
+  write('dhub-title', 18.5,  0.50);
+  write('dhub-d1',    19.1,  0.45);
+  write('dhub-d2',    19.6,  0.45);
+  fade('dhub-sub1',   20.1,  0.35);
+  fade('dhub-sub2',   20.5,  0.35);
+  fade('dhub-sub3',   20.9,  0.35);
+
+  // — Arrows into Agent Studio
+  draw('arr-khub-agent', 21.35, 0.45);
+  draw('arr-dhub-agent', 21.85, 0.55);
+
+  // — Agent Studio: the payoff
+  fade('agent-rect',   22.45, 0.60);
+  fade('icon-agent',   22.45, 0.60);
+  write('agent-t1',    23.1,  0.45);
+  write('agent-t2',    23.6,  0.45);
+  fade('agent-rule',   24.1,  0.35);
+  fade('agent-bubble', 24.5,  0.50);
+  write('agent-q1',    25.05, 0.50);
+  write('agent-q2',    25.6,  0.50);
+  fade('agent-ans',    26.15, 0.55);
+  fade('agent-feed1',  26.75, 0.50);
+  fade('agent-feed2',  27.3,  0.50);
+
+  // — Retailer annotations: second pass, after full architecture is on the board
+  write('uc-banner',     28.2,  0.65);
+  write('src-api-sub',   28.9,  0.45);
+  write('src-dbs-sub',   29.4,  0.45);
+  write('src-sap-sub',   29.9,  0.45);
+  write('src-files-sub', 30.4,  0.45);
+
+  // Boomi logo — closes the sequence
+  fade('logo-close',     31.8,  1.2);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presenter Storyboard | Boomi Data Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f3ef;
+      color: #02283B;
+      padding: 32px 36px 60px;
+    }
+
+    /* ── Header ── */
+    .sb-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 36px;
+      border-bottom: 2.5px solid #02283B;
+      padding-bottom: 14px;
+    }
+    .sb-header-dot { width:12px; height:12px; background:#FF7C66; border-radius:50%; flex-shrink:0; }
+    .sb-header-title { font-size:1.15rem; font-weight:800; color:#02283B; flex-shrink:0; }
+    .sb-header-sep { width:1px; height:18px; background:rgba(2,40,59,0.20); flex-shrink:0; }
+    .sb-header-sub { font-size:0.68rem; font-weight:600; color:rgba(2,40,59,0.45); letter-spacing:0.08em; text-transform:uppercase; }
+    .view-toggle { display:flex; gap:4px; margin-left:auto; }
+    .view-btn {
+      font-family:'Poppins',sans-serif; font-size:0.67rem; font-weight:700;
+      letter-spacing:0.06em; text-transform:uppercase;
+      border:1.5px solid rgba(2,40,59,0.20); border-radius:4px;
+      padding:4px 12px; cursor:pointer; background:transparent;
+      color:rgba(2,40,59,0.45); transition:all 0.15s;
+    }
+    .view-btn.active { background:#02283B; color:#fff; border-color:#02283B; }
+
+    /* ── View switching ── */
+    .board-view.hidden { display:none; }
+    .script-view { display:none; }
+    .script-view.visible { display:block; }
+
+    /* ════════════════════════════
+       STORYBOARD VIEW
+    ════════════════════════════ */
+    .chapter { margin-bottom:28px; }
+    .chapter-label {
+      display:flex; align-items:center; gap:10px; margin-bottom:10px;
+    }
+    .ch-num {
+      font-size:0.58rem; font-weight:700; letter-spacing:0.10em;
+      text-transform:uppercase; color:#fff; background:var(--ch-color);
+      border-radius:3px; padding:2px 7px; flex-shrink:0;
+    }
+    .ch-name { font-size:0.78rem; font-weight:700; color:var(--ch-color); text-transform:uppercase; letter-spacing:0.04em; }
+    .chapter-strip { display:flex; flex-wrap:wrap; gap:8px; }
+
+    /* Beat card */
+    .beat {
+      background:#fff; border-radius:6px;
+      border:1.5px solid rgba(2,40,59,0.10);
+      width:170px; display:flex; flex-direction:column; overflow:hidden;
+    }
+    .beat-visual {
+      height:64px; background:rgba(2,40,59,0.03);
+      border-bottom:1px solid rgba(2,40,59,0.07);
+      display:flex; align-items:center; justify-content:center;
+      position:relative; padding:8px; flex-shrink:0;
+    }
+    .beat-num {
+      position:absolute; top:4px; left:6px;
+      font-size:0.52rem; font-weight:700; letter-spacing:0.05em;
+      color:var(--ch-color); opacity:0.75;
+    }
+    .beat-body { padding:7px 9px 9px; flex:1; display:flex; flex-direction:column; gap:4px; position:relative; }
+    .beat-label { font-size:0.60rem; font-weight:700; color:var(--ch-color); letter-spacing:0.01em; line-height:1.3; flex-shrink:0; }
+
+    /* Text preview with clamp + fade */
+    .beat-note {
+      font-size:0.60rem; font-weight:400; color:rgba(2,40,59,0.72);
+      line-height:1.50;
+      display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .beat-body::after {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:20px;
+      background:linear-gradient(transparent, #fff);
+      pointer-events:none;
+    }
+
+    /* Chapter color vars */
+    .ch01 { --ch-color:#4B4FE2; }
+    .ch02 { --ch-color:#02283B; }
+    .ch03 { --ch-color:#0EC38B; }
+    .ch04 { --ch-color:#A03291; }
+    .ch05 { --ch-color:#FF7C66; }
+    .ch06 { --ch-color:#02283B; }
+
+    /* ════════════════════════════
+       SCRIPT VIEW
+    ════════════════════════════ */
+    .script-chapter { max-width:720px; margin-bottom:44px; }
+    .script-chapter-heading {
+      display:flex; align-items:center; gap:10px;
+      margin-bottom:18px; padding-bottom:10px; border-bottom:2px solid var(--ch-color);
+    }
+    .script-body { font-size:0.95rem; line-height:1.80; color:#02283B; }
+    .script-body p { margin-bottom:1em; }
+    .script-body p:last-child { margin-bottom:0; }
+
+    @media print {
+      body { padding:16px 20px; background:#fff; }
+      .view-toggle { display:none; }
+      .beat-body::after { display:none; }
+      .beat-note { -webkit-line-clamp:unset; overflow:visible; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="sb-header">
+  <div class="sb-header-dot"></div>
+  <span class="sb-header-title">Presenter Storyboard</span>
+  <div class="sb-header-sep"></div>
+  <span class="sb-header-sub">Boomi Solution Engineering · Domain Expert Team · Field Enablement</span>
+  <div class="view-toggle">
+    <button class="view-btn active" id="btn-board" onclick="setView('board')">Storyboard</button>
+    <button class="view-btn" id="btn-script" onclick="setView('script')">Script</button>
+  </div>
+</header>
+
+
+<!-- ════════════════════════════════════════════
+     STORYBOARD VIEW
+════════════════════════════════════════════ -->
+<div class="board-view" id="board-view">
+
+
+<!-- CH01 -->
+<section class="chapter ch01">
+  <div class="chapter-label">
+    <span class="ch-num">Ch 01</span>
+    <span class="ch-name">Sources</span>
+  </div>
+  <div class="chapter-strip">
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">1</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="18" y="12" width="94" height="20" rx="3" fill="none" stroke="#4B4FE2" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.4"/>
+          <text x="65" y="23" font-family="'Poppins',sans-serif" font-size="11" font-weight="800" fill="#02283B" text-anchor="middle" dominant-baseline="middle">Boomi</text>
+          <circle cx="115" cy="16" r="6" fill="#FF7C66" opacity="0.9"/>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Boomi logo reveals</div>
+        <div class="beat-note">Every enterprise runs on fragmented data. Thousands of sources. Each with its own credentials, its own endpoints, its own quirks. Before you can analyze data, move it, or run AI on top of it — you have to be able to get to it.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">2</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <text x="65" y="22" font-family="'Poppins',sans-serif" font-size="16" font-weight="700" fill="#4B4FE2" text-anchor="middle" dominant-baseline="middle">Sources</text>
+          <line x1="20" y1="36" x2="110" y2="36" stroke="#4B4FE2" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">"Sources" writes</div>
+        <div class="beat-note">There are four categories that matter here.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">3</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="65" cy="12" rx="42" ry="11" fill="none" stroke="#4B4FE2" stroke-width="1.5"/>
+          <line x1="23" y1="12" x2="23" y2="38" stroke="#4B4FE2" stroke-width="1.5"/>
+          <line x1="107" y1="12" x2="107" y2="38" stroke="#4B4FE2" stroke-width="1.5"/>
+          <path d="M23 38 Q23 48 65 48 Q107 48 107 38" fill="none" stroke="#4B4FE2" stroke-width="1.5"/>
+          <text x="65" y="27" font-family="'Poppins',sans-serif" font-size="10" font-weight="700" fill="#4B4FE2" text-anchor="middle" dominant-baseline="middle">API</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">API cylinder draws</div>
+        <div class="beat-note">APIs. Systems like Salesforce, NetSuite, Jira, and marketing platforms. Each one behaves differently, and a typical enterprise runs dozens of them.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">4</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="65" cy="12" rx="42" ry="11" fill="none" stroke="#4B4FE2" stroke-width="1.5"/>
+          <line x1="23" y1="12" x2="23" y2="38" stroke="#4B4FE2" stroke-width="1.5"/>
+          <line x1="107" y1="12" x2="107" y2="38" stroke="#4B4FE2" stroke-width="1.5"/>
+          <path d="M23 38 Q23 48 65 48 Q107 48 107 38" fill="none" stroke="#4B4FE2" stroke-width="1.5"/>
+          <text x="65" y="27" font-family="'Poppins',sans-serif" font-size="10" font-weight="700" fill="#4B4FE2" text-anchor="middle" dominant-baseline="middle">DBs</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">DBs cylinder draws</div>
+        <div class="beat-note">Databases. SQL Server, Oracle, MySQL, PostgreSQL. These are the operational core — often running on-prem, often the most sensitive, and the hardest to replicate without disrupting the business.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">5</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="22" y="10" width="86" height="30" rx="4" fill="none" stroke="#4B4FE2" stroke-width="1.5"/>
+          <text x="65" y="26" font-family="'Poppins',sans-serif" font-size="13" font-weight="700" fill="#4B4FE2" text-anchor="middle" dominant-baseline="middle">SAP</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">SAP box draws</div>
+        <div class="beat-note">SAP. A category on its own, and for good reason. You'll see why shortly.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">6</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="22" y="14" width="86" height="22" rx="4" fill="none" stroke="#4B4FE2" stroke-width="1.5"/>
+          <text x="65" y="26" font-family="'Poppins',sans-serif" font-size="11" font-weight="700" fill="#4B4FE2" text-anchor="middle" dominant-baseline="middle">Files</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Files box draws</div>
+        <div class="beat-note">Files. CSV, SFTP, FTP, and managed file transfer at scale.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">7</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="8" width="44" height="34" rx="3" fill="none" stroke="rgba(2,40,59,0.18)" stroke-width="1" stroke-dasharray="3 2"/>
+          <text x="26" y="26" font-family="'Poppins',sans-serif" font-size="7" fill="rgba(2,40,59,0.28)" text-anchor="middle" dominant-baseline="middle">Sources</text>
+          <line x1="48" y1="25" x2="62" y2="25" stroke="rgba(2,40,59,0.18)" stroke-width="1" stroke-dasharray="2 2"/>
+          <polygon points="60,22 66,25 60,28" fill="rgba(2,40,59,0.18)"/>
+          <rect x="66" y="8" width="58" height="34" rx="3" fill="none" stroke="rgba(2,40,59,0.18)" stroke-width="1" stroke-dasharray="3 2"/>
+          <text x="95" y="26" font-family="'Poppins',sans-serif" font-size="7" fill="rgba(2,40,59,0.28)" text-anchor="middle" dominant-baseline="middle">BDI</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Ghost hints fade in</div>
+        <div class="beat-note">This is the starting point: fragmented sources, and the need to do something intelligent with what's inside them.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- CH02 -->
+<section class="chapter ch02">
+  <div class="chapter-label">
+    <span class="ch-num">Ch 02</span>
+    <span class="ch-name">Boomi Data Integration</span>
+  </div>
+  <div class="chapter-strip">
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">1</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="10" width="18" height="18" rx="2" fill="#02283B" opacity="0.12"/>
+          <text x="17" y="20" font-family="'Poppins',sans-serif" font-size="7" font-weight="800" fill="#02283B" text-anchor="middle" dominant-baseline="middle">BDI</text>
+          <text x="78" y="19" font-family="'Poppins',sans-serif" font-size="10" font-weight="700" fill="#02283B" text-anchor="middle">BDI</text>
+          <text x="78" y="32" font-family="'Poppins',sans-serif" font-size="6" fill="rgba(2,40,59,0.50)" text-anchor="middle">Boomi Data Integration</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">BDI icon + title</div>
+        <div class="beat-note">BDI — Boomi Data Integration — is how we bridge from fragmented sources to everything downstream.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">2</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="110" height="30" rx="4" fill="none" stroke="#02283B" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">BDI box draws</div>
+        <div class="beat-note">Think of it in two halves.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">3</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="110" height="30" rx="4" fill="none" stroke="#02283B" stroke-width="1.5"/>
+          <line x1="65" y1="10" x2="65" y2="40" stroke="#02283B" stroke-width="1" stroke-dasharray="3 2"/>
+          <text x="37" y="21" font-family="'Poppins',sans-serif" font-size="7" font-weight="700" fill="#02283B" text-anchor="middle">Ingest</text>
+          <text x="37" y="31" font-family="'Poppins',sans-serif" font-size="5.5" fill="rgba(2,40,59,0.55)" text-anchor="middle">5 connector types</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Ingestion panel fills</div>
+        <div class="beat-note">The left side is ingestion: reading data from your sources and getting it into your environment. There are five connector types on the ingestion side, each designed for a different class of source.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">4</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="110" height="30" rx="4" fill="none" stroke="#02283B" stroke-width="1.5"/>
+          <line x1="65" y1="10" x2="65" y2="40" stroke="#02283B" stroke-width="1" stroke-dasharray="3 2"/>
+          <text x="93" y="21" font-family="'Poppins',sans-serif" font-size="7" font-weight="700" fill="#02283B" text-anchor="middle">Transform</text>
+          <text x="93" y="31" font-family="'Poppins',sans-serif" font-size="5.5" fill="rgba(2,40,59,0.55)" text-anchor="middle">+ Orchestrate</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Transform panel fills</div>
+        <div class="beat-note">The right side is transformation and orchestration: shaping that data and coordinating what happens to it once it's there.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">5</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="64" height="30" rx="3" fill="none" stroke="rgba(2,40,59,0.20)" stroke-width="1.5" stroke-dasharray="4 2"/>
+          <text x="42" y="26" font-family="'Poppins',sans-serif" font-size="6.5" fill="rgba(2,40,59,0.28)" text-anchor="middle" dominant-baseline="middle">BDI done</text>
+          <line x1="74" y1="25" x2="88" y2="25" stroke="rgba(2,40,59,0.20)" stroke-width="1.2" stroke-dasharray="2 2"/>
+          <rect x="88" y="12" width="34" height="26" rx="2" fill="none" stroke="rgba(2,40,59,0.15)" stroke-width="1" stroke-dasharray="3 2"/>
+          <text x="105" y="26" font-family="'Poppins',sans-serif" font-size="6" fill="rgba(2,40,59,0.25)" text-anchor="middle" dominant-baseline="middle">Dest.</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Destinations ghost</div>
+        <div class="beat-note">We'll walk through all five next.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- CH03 -->
+<section class="chapter ch03">
+  <div class="chapter-label">
+    <span class="ch-num">Ch 03</span>
+    <span class="ch-name">Connector Types</span>
+  </div>
+  <div class="chapter-strip">
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">1</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="110" height="30" rx="4" fill="none" stroke="#0EC38B" stroke-width="1.5"/>
+          <line x1="65" y1="10" x2="65" y2="40" stroke="#0EC38B" stroke-width="1" stroke-dasharray="3 2"/>
+          <text x="37" y="22" font-family="'Poppins',sans-serif" font-size="7" font-weight="700" fill="#0EC38B" text-anchor="middle">Ingest</text>
+          <text x="93" y="22" font-family="'Poppins',sans-serif" font-size="7" font-weight="700" fill="#0EC38B" text-anchor="middle">Transform</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">BDI frame redraws</div>
+        <div class="beat-note">There are five connector types on the ingestion side, each designed for a different class of source.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">2</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#0EC38B" stroke-width="1.5"/>
+          <text x="65" y="20" font-family="'Poppins',sans-serif" font-size="8" font-weight="700" fill="#0EC38B" text-anchor="middle">Native</text>
+          <text x="65" y="30" font-family="'Poppins',sans-serif" font-size="6.5" fill="rgba(2,40,59,0.55)" text-anchor="middle">~200 connectors</text>
+          <text x="65" y="38" font-family="'Poppins',sans-serif" font-size="5.5" fill="rgba(2,40,59,0.40)" text-anchor="middle">SF · Workday · NetSuite · SAP</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Native connector card</div>
+        <div class="beat-note">Native connectors. Around two hundred of them, covering the most common API-based sources. When a vendor changes an endpoint, updates pagination, rotates credentials — Boomi maintains the connector. The data flow keeps running without intervention.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">3</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#0EC38B" stroke-width="1.5"/>
+          <text x="65" y="20" font-family="'Poppins',sans-serif" font-size="8" font-weight="700" fill="#0EC38B" text-anchor="middle">CDC</text>
+          <text x="65" y="30" font-family="'Poppins',sans-serif" font-size="6.5" fill="rgba(2,40,59,0.55)" text-anchor="middle">Database change streams</text>
+          <text x="65" y="38" font-family="'Poppins',sans-serif" font-size="5.5" fill="rgba(2,40,59,0.40)" text-anchor="middle">real-time · no polling · no prod load</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">CDC card</div>
+        <div class="beat-note">CDC — Change Data Capture. The most efficient way to get data out of operational databases. Instead of querying the database directly, CDC reads from the transaction logs. No load on the production system. No impact on the web and mobile applications running on top of it. For customers whose databases are load-bearing in production, this is the only acceptable approach.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">4</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#0EC38B" stroke-width="1.5"/>
+          <text x="65" y="20" font-family="'Poppins',sans-serif" font-size="8" font-weight="700" fill="#0EC38B" text-anchor="middle">SAP Data Connector</text>
+          <text x="65" y="30" font-family="'Poppins',sans-serif" font-size="6.5" fill="rgba(2,40,59,0.55)" text-anchor="middle">Native · certified · on-prem</text>
+          <text x="65" y="38" font-family="'Poppins',sans-serif" font-size="5.5" fill="rgba(2,40,59,0.40)" text-anchor="middle">effectively CDC for SAP</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">SAP Data Connector card</div>
+        <div class="beat-note">SAP Data Connector. Built natively into BDI, and paired with Boomi for SAP — which runs on-prem inside the SAP environment. Every table, every dataset, every trigger in SAP can be streamed through Boomi's event layer into BDI. It's effectively CDC for SAP. Very few vendors can offer this, and it's why SAP is its own category.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">5</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#0EC38B" stroke-width="1.5"/>
+          <text x="65" y="20" font-family="'Poppins',sans-serif" font-size="8" font-weight="700" fill="#0EC38B" text-anchor="middle">DCA</text>
+          <text x="65" y="30" font-family="'Poppins',sans-serif" font-size="6.5" fill="rgba(2,40,59,0.55)" text-anchor="middle">AI-generated connectors</text>
+          <text x="65" y="38" font-family="'Poppins',sans-serif" font-size="5.5" fill="rgba(2,40,59,0.40)" text-anchor="middle">any third-party system</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">DCA card</div>
+        <div class="beat-note">DCA — Data Connector Agent. Not every source has a native connector, and building one for every system in the world isn't scalable. DCA solves this with AI. Point it at any third-party system — say, GitHub — and it reads the vendor documentation, identifies the endpoints, credentials, and pagination patterns, and generates a working connector on the fly. This unlocks thousands of systems that would otherwise require custom development.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">6</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#0EC38B" stroke-width="1.5"/>
+          <text x="65" y="20" font-family="'Poppins',sans-serif" font-size="8" font-weight="700" fill="#0EC38B" text-anchor="middle">MFT</text>
+          <text x="65" y="30" font-family="'Poppins',sans-serif" font-size="6.5" fill="rgba(2,40,59,0.55)" text-anchor="middle">Managed File Transfer</text>
+          <text x="65" y="38" font-family="'Poppins',sans-serif" font-size="5.5" fill="rgba(2,40,59,0.40)" text-anchor="middle">SFTP · FTP · governed · at scale</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">MFT card</div>
+        <div class="beat-note">MFT — Managed File Transfer. Native connectors for FTP and SFTP, plus governed, secured file transfer at scale. MFT currently runs as a standalone console, with native BDI integration on the roadmap.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- CH04 -->
+<section class="chapter ch04">
+  <div class="chapter-label">
+    <span class="ch-num">Ch 04</span>
+    <span class="ch-name">Knowledge Hub</span>
+  </div>
+  <div class="chapter-strip">
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">1</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#A03291" stroke-width="2"/>
+          <text x="65" y="26" font-family="'Poppins',sans-serif" font-size="10" font-weight="700" fill="#A03291" text-anchor="middle" dominant-baseline="middle">Knowledge Hub</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Title + box draws</div>
+        <div class="beat-note">To run AI agents, you need more than structured data. You need context.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">2</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#A03291" stroke-width="1.5"/>
+          <text x="65" y="18" font-family="'Poppins',sans-serif" font-size="6.5" fill="#A03291" text-anchor="middle">Docs · PDFs · Images · Location</text>
+          <text x="65" y="28" font-family="'Poppins',sans-serif" font-size="6.5" fill="#A03291" text-anchor="middle">→ Vector embeddings</text>
+          <text x="65" y="37" font-family="'Poppins',sans-serif" font-size="6.5" fill="#A03291" text-anchor="middle">→ Semantic retrieval</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Capability lines write</div>
+        <div class="beat-note">That context lives in unstructured sources — documents, PDFs, images, location feeds. Traditional data warehouses weren't built for this. The Knowledge Hub was.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">3</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#A03291" stroke-width="1.5"/>
+          <text x="65" y="19" font-family="'Poppins',sans-serif" font-size="6" fill="rgba(160,50,145,0.70)" text-anchor="middle">native BDI extension</text>
+          <text x="65" y="28" font-family="'Poppins',sans-serif" font-size="6" fill="rgba(160,50,145,0.70)" text-anchor="middle">any BDI source → KHub</text>
+          <text x="65" y="37" font-family="'Poppins',sans-serif" font-size="6" fill="rgba(160,50,145,0.70)" text-anchor="middle">continuously updated</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Sub-labels fade in</div>
+        <div class="beat-note">It's a native extension of the data integration layer, not a separate product bolted on. Any source you can connect to in BDI, you can feed directly into the Knowledge Hub — where it's vectorized and made available for semantic retrieval. The retrieval is semantic, not keyword-based. A question about API timeout errors surfaces the runbook on connector latency troubleshooting — even if nobody tagged it that way.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">4</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="10" width="60" height="30" rx="3" fill="none" stroke="#A03291" stroke-width="1.5"/>
+          <text x="36" y="26" font-family="'Poppins',sans-serif" font-size="7" fill="#A03291" text-anchor="middle" dominant-baseline="middle">KHub</text>
+          <line x1="66" y1="25" x2="80" y2="25" stroke="#A03291" stroke-width="1.5"/>
+          <polygon points="78,22 84,25 78,28" fill="#A03291"/>
+          <rect x="84" y="10" width="42" height="30" rx="3" fill="none" stroke="#A03291" stroke-width="1" stroke-dasharray="3 2" opacity="0.45"/>
+          <text x="105" y="26" font-family="'Poppins',sans-serif" font-size="6.5" fill="rgba(160,50,145,0.45)" text-anchor="middle" dominant-baseline="middle">Agent</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Arrow → Agent Studio</div>
+        <div class="beat-note">Agents access only what they're authorized to see. Every query is logged. You can trace any AI output back to the exact data behind it. One governed source serves any agent or tool without rebuilding it each time. The result is a context layer your agents can trust — continuously updated, governed at the source, and accessible without custom pipelines.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- CH05 -->
+<section class="chapter ch05">
+  <div class="chapter-label">
+    <span class="ch-num">Ch 05</span>
+    <span class="ch-name">Data Hub</span>
+  </div>
+  <div class="chapter-strip">
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">1</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#FF7C66" stroke-width="2"/>
+          <text x="65" y="26" font-family="'Poppins',sans-serif" font-size="11" font-weight="700" fill="#FF7C66" text-anchor="middle" dominant-baseline="middle">Data Hub</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Icon + title + box</div>
+        <div class="beat-note">Data Hub is the golden record layer. Data stewardship, deduplication, and unified master data — all in one place.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">2</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#FF7C66" stroke-width="1.5"/>
+          <text x="65" y="18" font-family="'Poppins',sans-serif" font-size="6.5" fill="#FF7C66" text-anchor="middle">→ Golden records</text>
+          <text x="65" y="28" font-family="'Poppins',sans-serif" font-size="6.5" fill="#FF7C66" text-anchor="middle">→ Data stewardship</text>
+          <text x="65" y="37" font-family="'Poppins',sans-serif" font-size="6.5" fill="#FF7C66" text-anchor="middle">→ Deduplication</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Capability lines write</div>
+        <div class="beat-note">There's a field conversation worth having here. When you're implementing integrations across three or more systems, Data Hub belongs in the design. Point-to-point integrations between six or seven systems become an architectural tangle — hard to govern, expensive to change, impossible to scale. Data Hub in the middle keeps the architecture clean. Every system connects to one hub. Adding new systems becomes additive, not exponential.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">3</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#FF7C66" stroke-width="1.5"/>
+          <text x="65" y="22" font-family="'Poppins',sans-serif" font-size="7" font-style="italic" fill="#FF7C66" text-anchor="middle">↳ BDI ↔ Data Hub · native</text>
+          <text x="65" y="34" font-family="'Poppins',sans-serif" font-size="6" fill="rgba(255,124,102,0.65)" text-anchor="middle">as source · as target</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">"BDI ↔ native" note</div>
+        <div class="beat-note">A native integration between BDI and Data Hub makes this significantly more powerful in two directions. Data Hub as a source: golden record datasets flow directly into any data or AI service downstream. Data Hub as a target: point any BDI source at Data Hub in a few clicks — less configuration, faster time to value. Together, these capabilities turn Data Hub from a master data store into an active participant in the AI data architecture.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- CH06 -->
+<section class="chapter ch06">
+  <div class="chapter-label">
+    <span class="ch-num">Ch 06</span>
+    <span class="ch-name">Retailer Use Case</span>
+  </div>
+  <div class="chapter-strip">
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">1</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="26" cy="14" rx="18" ry="7" fill="none" stroke="#02283B" stroke-width="1.2"/>
+          <line x1="8" y1="14" x2="8" y2="30" stroke="#02283B" stroke-width="1.2"/>
+          <line x1="44" y1="14" x2="44" y2="30" stroke="#02283B" stroke-width="1.2"/>
+          <path d="M8 30 Q8 37 26 37 Q44 37 44 30" fill="none" stroke="#02283B" stroke-width="1.2"/>
+          <text x="26" y="24" font-family="'Poppins',sans-serif" font-size="6.5" fill="#02283B" text-anchor="middle" dominant-baseline="middle">API</text>
+          <ellipse cx="26" cy="43" rx="18" ry="6" fill="none" stroke="#02283B" stroke-width="1" opacity="0.45"/>
+          <text x="26" y="43" font-family="'Poppins',sans-serif" font-size="5.5" fill="rgba(2,40,59,0.45)" text-anchor="middle" dominant-baseline="middle">DBs</text>
+          <rect x="56" y="8" width="30" height="18" rx="2" fill="none" stroke="#02283B" stroke-width="1.2"/>
+          <text x="71" y="18" font-family="'Poppins',sans-serif" font-size="6.5" fill="#02283B" text-anchor="middle" dominant-baseline="middle">SAP</text>
+          <rect x="56" y="32" width="30" height="14" rx="2" fill="none" stroke="#02283B" stroke-width="1" opacity="0.45"/>
+          <text x="71" y="40" font-family="'Poppins',sans-serif" font-size="6" fill="rgba(2,40,59,0.45)" text-anchor="middle" dominant-baseline="middle">Files</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Sources reveal</div>
+        <div class="beat-note">Here's what this looks like end-to-end. A large retailer. Complex operations, multiple HR systems from years of acquisitions, logistics spanning dozens of distribution locations. They want to build an AI agent to optimize their distribution network — routes, schedules, driver assignments.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">2</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <line x1="6" y1="25" x2="36" y2="25" stroke="#02283B" stroke-width="1.5"/>
+          <polygon points="33,22 39,25 33,28" fill="#02283B"/>
+          <rect x="39" y="12" width="82" height="26" rx="3" fill="none" stroke="#02283B" stroke-width="2"/>
+          <line x1="80" y1="12" x2="80" y2="38" stroke="#02283B" stroke-width="0.8" stroke-dasharray="3 2"/>
+          <text x="59" y="26" font-family="'Poppins',sans-serif" font-size="7" font-weight="700" fill="#02283B" text-anchor="middle" dominant-baseline="middle">Ingest</text>
+          <text x="101" y="26" font-family="'Poppins',sans-serif" font-size="7" font-weight="700" fill="#02283B" text-anchor="middle" dominant-baseline="middle">Transform</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Arrows + BDI draws</div>
+        <div class="beat-note">Here's how it works. BDI ingests from every relevant source. Salesforce provides CRM and marketing data — via native connector. Operational databases carry inventory and purchase history — via CDC, with zero impact on production. SAP handles logistics and finance — via the SAP Data Connector. Photos, PDFs, and location data come in as files — via MFT.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">3</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <text x="65" y="26" font-family="'Poppins',sans-serif" font-size="11" font-weight="700" fill="#02283B" text-anchor="middle" dominant-baseline="middle">Destinations</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">"Destinations" writes</div>
+        <div class="beat-note">From there, the data splits by type.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">4</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#A03291" stroke-width="2"/>
+          <text x="65" y="21" font-family="'Poppins',sans-serif" font-size="8" font-weight="700" fill="#A03291" text-anchor="middle">Knowledge Hub</text>
+          <text x="65" y="32" font-family="'Poppins',sans-serif" font-size="6" fill="rgba(160,50,145,0.65)" text-anchor="middle">PDFs · location · photos</text>
+          <text x="65" y="40" font-family="'Poppins',sans-serif" font-size="5.5" fill="rgba(160,50,145,0.45)" text-anchor="middle">vectorized · semantic retrieval</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Knowledge Hub fills</div>
+        <div class="beat-note">Unstructured data — PDFs, location feeds, photos — flows into the Knowledge Hub, where it's vectorized and made available for semantic retrieval.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">5</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="114" height="34" rx="4" fill="none" stroke="#FF7C66" stroke-width="2"/>
+          <text x="65" y="20" font-family="'Poppins',sans-serif" font-size="8" font-weight="700" fill="#FF7C66" text-anchor="middle">Data Hub</text>
+          <text x="65" y="30" font-family="'Poppins',sans-serif" font-size="6" fill="rgba(255,124,102,0.75)" text-anchor="middle">employee · driver records</text>
+          <text x="65" y="39" font-family="'Poppins',sans-serif" font-size="5.5" fill="rgba(255,124,102,0.55)" text-anchor="middle">deduped → golden records</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Data Hub fills</div>
+        <div class="beat-note">Structured records — employee data, driver data — flow into Data Hub, where they're deduplicated and merged into clean golden records. The agent knows who every driver is, across every system that's ever touched that record.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">6</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="6" width="36" height="14" rx="2" fill="none" stroke="#A03291" stroke-width="1.2"/>
+          <text x="22" y="14" font-family="'Poppins',sans-serif" font-size="5.5" fill="#A03291" text-anchor="middle" dominant-baseline="middle">KHub</text>
+          <rect x="4" y="24" width="36" height="14" rx="2" fill="none" stroke="#FF7C66" stroke-width="1.2"/>
+          <text x="22" y="32" font-family="'Poppins',sans-serif" font-size="5.5" fill="#FF7C66" text-anchor="middle" dominant-baseline="middle">DataHub</text>
+          <line x1="40" y1="13" x2="54" y2="22" stroke="#02283B" stroke-width="1.2"/>
+          <line x1="40" y1="31" x2="54" y2="23" stroke="#02283B" stroke-width="1.2"/>
+          <polygon points="52,20 58,23 52,26" fill="#02283B"/>
+          <rect x="58" y="12" width="66" height="22" rx="3" fill="none" stroke="#02283B" stroke-width="1.5"/>
+          <text x="91" y="24" font-family="'Poppins',sans-serif" font-size="7" font-weight="700" fill="#02283B" text-anchor="middle" dominant-baseline="middle">Agent Studio</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Arrows + Agent Studio</div>
+        <div class="beat-note">The agent runs in Agent Studio. It draws on the Knowledge Hub for context, and on the Data Hub golden records for operational ground truth.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">7</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="8" width="118" height="22" rx="10" fill="none" stroke="#02283B" stroke-width="1.5"/>
+          <text x="65" y="20" font-family="'Poppins',sans-serif" font-size="7" fill="#02283B" text-anchor="middle" dominant-baseline="middle">Optimize tomorrow's routes?</text>
+          <rect x="16" y="34" width="98" height="12" rx="3" fill="#02283B" opacity="0.08"/>
+          <text x="65" y="41" font-family="'Poppins',sans-serif" font-size="6" fill="#02283B" text-anchor="middle" dominant-baseline="middle">→ AI-grounded answer</text>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Query + answer</div>
+        <div class="beat-note">The result is an agent that can answer real operational questions — not from stale exports or disconnected reports, but from a live, governed, unified data foundation built on every source the business runs on.</div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-visual">
+        <span class="beat-num">8</span>
+        <svg width="130" height="50" viewBox="0 0 130 50" xmlns="http://www.w3.org/2000/svg">
+          <rect x="16" y="12" width="98" height="22" rx="2" fill="none" stroke="#02283B" stroke-width="1" stroke-dasharray="3 2" opacity="0.30"/>
+          <text x="65" y="22" font-family="'Poppins',sans-serif" font-size="11" font-weight="800" fill="#02283B" text-anchor="middle" dominant-baseline="middle">Boomi</text>
+          <circle cx="117" cy="16" r="6" fill="#FF7C66" opacity="0.85"/>
+        </svg>
+      </div>
+      <div class="beat-body">
+        <div class="beat-label">Boomi logo closes</div>
+        <div class="beat-note">That's the data activation story: get the data, improve the data, activate it for AI.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+</div><!-- /board-view -->
+
+
+<!-- ════════════════════════════════════════════
+     SCRIPT VIEW — verbatim from talk-track.md
+════════════════════════════════════════════ -->
+<div class="script-view" id="script-view">
+
+  <section class="script-chapter ch01">
+    <div class="script-chapter-heading">
+      <span class="ch-num">Ch 01</span>
+      <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Sources</span>
+    </div>
+    <div class="script-body">
+      <p>Every enterprise runs on fragmented data. Thousands of sources. Each with its own credentials, its own endpoints, its own quirks. Before you can analyze data, move it, or run AI on top of it — you have to be able to get to it.</p>
+      <p>There are four categories that matter here.</p>
+      <p>APIs. Systems like Salesforce, NetSuite, Jira, and marketing platforms. Each one behaves differently, and a typical enterprise runs dozens of them.</p>
+      <p>Databases. SQL Server, Oracle, MySQL, PostgreSQL. These are the operational core — often running on-prem, often the most sensitive, and the hardest to replicate without disrupting the business.</p>
+      <p>SAP. A category on its own, and for good reason. You'll see why shortly.</p>
+      <p>Files. CSV, SFTP, FTP, and managed file transfer at scale.</p>
+      <p>This is the starting point: fragmented sources, and the need to do something intelligent with what's inside them.</p>
+    </div>
+  </section>
+
+  <section class="script-chapter ch02">
+    <div class="script-chapter-heading">
+      <span class="ch-num">Ch 02</span>
+      <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Boomi Data Integration</span>
+    </div>
+    <div class="script-body">
+      <p>BDI — Boomi Data Integration — is how we bridge from fragmented sources to everything downstream.</p>
+      <p>Think of it in two halves.</p>
+      <p>The left side is ingestion: reading data from your sources and getting it into your environment. There are five connector types on the ingestion side, each designed for a different class of source.</p>
+      <p>The right side is transformation and orchestration: shaping that data and coordinating what happens to it once it's there.</p>
+      <p>We'll walk through all five next.</p>
+    </div>
+  </section>
+
+  <section class="script-chapter ch03">
+    <div class="script-chapter-heading">
+      <span class="ch-num">Ch 03</span>
+      <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Connector Types</span>
+    </div>
+    <div class="script-body">
+      <p>Native connectors. Around two hundred of them, covering the most common API-based sources. When a vendor changes an endpoint, updates pagination, rotates credentials — Boomi maintains the connector. The data flow keeps running without intervention.</p>
+      <p>CDC — Change Data Capture. The most efficient way to get data out of operational databases. Instead of querying the database directly, CDC reads from the transaction logs. No load on the production system. No impact on the web and mobile applications running on top of it. For customers whose databases are load-bearing in production, this is the only acceptable approach.</p>
+      <p>SAP Data Connector. Built natively into BDI, and paired with Boomi for SAP — which runs on-prem inside the SAP environment. Every table, every dataset, every trigger in SAP can be streamed through Boomi's event layer into BDI. It's effectively CDC for SAP. Very few vendors can offer this, and it's why SAP is its own category.</p>
+      <p>DCA — Data Connector Agent. Not every source has a native connector, and building one for every system in the world isn't scalable. DCA solves this with AI. Point it at any third-party system — say, GitHub — and it reads the vendor documentation, identifies the endpoints, credentials, and pagination patterns, and generates a working connector on the fly. This unlocks thousands of systems that would otherwise require custom development.</p>
+      <p>MFT — Managed File Transfer. Native connectors for FTP and SFTP, plus governed, secured file transfer at scale. MFT currently runs as a standalone console, with native BDI integration on the roadmap.</p>
+    </div>
+  </section>
+
+  <section class="script-chapter ch04">
+    <div class="script-chapter-heading">
+      <span class="ch-num">Ch 04</span>
+      <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Knowledge Hub</span>
+    </div>
+    <div class="script-body">
+      <p>To run AI agents, you need more than structured data. You need context.</p>
+      <p>That context lives in unstructured sources — documents, PDFs, images, location feeds. Traditional data warehouses weren't built for this. The Knowledge Hub was.</p>
+      <p>It's a native extension of the data integration layer, not a separate product bolted on. Any source you can connect to in BDI, you can feed directly into the Knowledge Hub — where it's vectorized and made available for semantic retrieval.</p>
+      <p>The result is a context layer your agents can trust — continuously updated, governed at the source, and accessible without custom pipelines.</p>
+    </div>
+  </section>
+
+  <section class="script-chapter ch05">
+    <div class="script-chapter-heading">
+      <span class="ch-num">Ch 05</span>
+      <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Data Hub</span>
+    </div>
+    <div class="script-body">
+      <p>Data Hub is the golden record layer. Data stewardship, deduplication, and unified master data — all in one place.</p>
+      <p>There's a field conversation worth having here. When you're implementing integrations across three or more systems, Data Hub belongs in the design. Point-to-point integrations between six or seven systems become an architectural tangle — hard to govern, expensive to change, impossible to scale. Data Hub in the middle keeps the architecture clean. Every system connects to one hub. Adding new systems becomes additive, not exponential.</p>
+      <p>A native integration between BDI and Data Hub makes this significantly more powerful in two directions.</p>
+      <p>Data Hub as a source: customers want to analyze their golden records in their analytics environment and run agents on top of them. That native integration makes it seamless — golden record datasets flow directly into any data or AI service downstream.</p>
+      <p>Data Hub as a target: onboarding new sources into Data Hub should be fast. Point any BDI source at Data Hub in a few clicks — less configuration, faster time to value.</p>
+      <p>Together, these capabilities turn Data Hub from a master data store into an active participant in the AI data architecture.</p>
+    </div>
+  </section>
+
+  <section class="script-chapter ch06">
+    <div class="script-chapter-heading">
+      <span class="ch-num">Ch 06</span>
+      <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Retailer Use Case</span>
+    </div>
+    <div class="script-body">
+      <p>Here's what this looks like end-to-end.</p>
+      <p>A large retailer. Complex operations, multiple HR systems from years of acquisitions, logistics spanning dozens of distribution locations. They want to build an AI agent to optimize their distribution network — routes, schedules, driver assignments.</p>
+      <p>Here's how it works.</p>
+      <p>BDI ingests from every relevant source. Salesforce provides CRM and marketing data — via native connector. Operational databases carry inventory and purchase history — via CDC, with zero impact on production. SAP handles logistics and finance — via the SAP Data Connector. Photos, PDFs, and location data come in as files — via MFT.</p>
+      <p>From there, the data splits by type.</p>
+      <p>Unstructured data — PDFs, location feeds, photos — flows into the Knowledge Hub, where it's vectorized and made available for semantic retrieval.</p>
+      <p>Structured records — employee data, driver data — flow into Data Hub, where they're deduplicated and merged into clean golden records. The agent knows who every driver is, across every system that's ever touched that record.</p>
+      <p>The agent runs in Agent Studio. It draws on the Knowledge Hub for context, and on the Data Hub golden records for operational ground truth. The result is an agent that can answer real operational questions — not from stale exports or disconnected reports, but from a live, governed, unified data foundation built on every source the business runs on.</p>
+      <p>That's the data activation story: get the data, improve the data, activate it for AI.</p>
+    </div>
+  </section>
+
+</div><!-- /script-view -->
+
+
+<script>
+  function setView(v) {
+    const board = document.getElementById('board-view');
+    const script = document.getElementById('script-view');
+    const btnB = document.getElementById('btn-board');
+    const btnS = document.getElementById('btn-script');
+    if (v === 'board') {
+      board.classList.remove('hidden');
+      script.classList.remove('visible');
+      btnB.classList.add('active');
+      btnS.classList.remove('active');
+    } else {
+      board.classList.add('hidden');
+      script.classList.add('visible');
+      btnS.classList.add('active');
+      btnB.classList.remove('active');
+    }
+  }
+</script>
+
+</body>
+</html>

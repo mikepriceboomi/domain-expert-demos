@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connectors · Boomi Data Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%; overflow: hidden;
+      background: #0b1520;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.9rem; position: relative;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(200,218,245,0.09) 0%, rgba(200,218,245,0.04) 8%, transparent 28%),
+        linear-gradient(0deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.08) 14%, transparent 30%),
+        radial-gradient(ellipse 105% 75% at 50% 50%, transparent 38%, rgba(0,0,0,0.62) 100%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: ''; position: fixed; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 0%, rgba(160,190,230,0.08) 20%, rgba(160,190,230,0.12) 50%, rgba(160,190,230,0.08) 80%, transparent 100%);
+      pointer-events: none; z-index: 0;
+    }
+    .wb-frame, .wb-nav { position: relative; z-index: 1; }
+    .wb-frame {
+      background: #1c2f42; border-radius: 6px 6px 5px 5px;
+      padding: 9px 9px 20px 9px;
+      box-shadow: 0 2px 0 rgba(255,255,255,0.06) inset, 0 0 120px 24px rgba(210,228,255,0.035), 0 40px 100px rgba(0,0,0,0.72), 0 8px 28px rgba(0,0,0,0.46);
+      width: 64vw;
+    }
+    .wb-surface {
+      background: #f6f5f1; border-radius: 2px;
+      width: 100%; aspect-ratio: 16 / 9;
+      position: relative; overflow: hidden;
+    }
+    .wb-surface::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(0,0,0,0.020) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.020) 1px, transparent 1px);
+      background-size: 46px 46px; pointer-events: none;
+    }
+    .wb-surface::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 95% 92% at 50% 50%, transparent 65%, rgba(0,0,0,0.05) 100%);
+      pointer-events: none;
+    }
+    .wb-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .wb-nav { display: flex; align-items: center; gap: 2.5rem; }
+    .wb-nav a { font-family: 'Poppins', sans-serif; font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.22); text-decoration: none; letter-spacing: 0.10em; text-transform: uppercase; transition: color 0.15s; }
+    .wb-nav a:hover { color: rgba(255,255,255,0.60); }
+    .wb-brand { height: 20px; opacity: 0.55; display: block; }
+    @keyframes wb-in { from { opacity:0 } to { opacity:1 } }
+    .wb-frame { animation: wb-in 0.4s ease both; }
+  </style>
+</head>
+<body>
+
+<div class="wb-frame">
+  <div class="wb-surface">
+    <svg class="wb-svg" viewBox="0 0 1400 788" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-done" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+          <polygon points="0 0,6 3.5,0 7" fill="rgba(26,26,46,0.30)"/>
+        </marker>
+        <marker id="arr-ghost" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+          <polygon points="0 0,6 3.5,0 7" fill="rgba(40,100,200,0.18)"/>
+        </marker>
+      </defs>
+
+      <!-- ══ DONE — Sources (very faded) ══ -->
+      <text x="90" y="54" font-family="'Patrick Hand', sans-serif" font-size="28" fill="rgba(26,26,46,0.14)">Sources</text>
+      <ellipse cx="205" cy="98" rx="115" ry="26" fill="none" stroke="rgba(26,26,46,0.10)" stroke-width="1.2"/>
+      <line x1="90" y1="98" x2="90" y2="202" stroke="rgba(26,26,46,0.10)" stroke-width="1.2"/>
+      <line x1="320" y1="98" x2="320" y2="202" stroke="rgba(26,26,46,0.10)" stroke-width="1.2"/>
+      <path d="M 90 202 Q 91 228 205 228 Q 319 228 320 202" fill="none" stroke="rgba(26,26,46,0.10)" stroke-width="1.2"/>
+      <text x="205" y="158" font-family="'Patrick Hand', sans-serif" font-size="28" fill="rgba(26,26,46,0.12)" text-anchor="middle" dominant-baseline="middle">API</text>
+      <ellipse cx="205" cy="332" rx="115" ry="26" fill="none" stroke="rgba(26,26,46,0.10)" stroke-width="1.2"/>
+      <line x1="90" y1="332" x2="90" y2="436" stroke="rgba(26,26,46,0.10)" stroke-width="1.2"/>
+      <line x1="320" y1="332" x2="320" y2="436" stroke="rgba(26,26,46,0.10)" stroke-width="1.2"/>
+      <path d="M 90 436 Q 91 462 205 462 Q 319 462 320 436" fill="none" stroke="rgba(26,26,46,0.10)" stroke-width="1.2"/>
+      <text x="205" y="392" font-family="'Patrick Hand', sans-serif" font-size="28" fill="rgba(26,26,46,0.12)" text-anchor="middle" dominant-baseline="middle">DBs</text>
+      <rect x="90" y="540" width="230" height="80" rx="5" fill="none" stroke="rgba(26,26,46,0.10)" stroke-width="1.2"/>
+      <text x="205" y="586" font-family="'Patrick Hand', sans-serif" font-size="26" fill="rgba(26,26,46,0.12)" text-anchor="middle" dominant-baseline="middle">SAP</text>
+      <rect x="90" y="660" width="230" height="56" rx="5" fill="none" stroke="rgba(26,26,46,0.10)" stroke-width="1.2"/>
+      <text x="205" y="693" font-family="'Patrick Hand', sans-serif" font-size="22" fill="rgba(26,26,46,0.12)" text-anchor="middle" dominant-baseline="middle">Files</text>
+      <path d="M 320 158 L 338 158" fill="none" stroke="rgba(26,26,46,0.11)" stroke-width="1.1" marker-end="url(#arr-done)"/>
+      <path d="M 320 392 L 338 392" fill="none" stroke="rgba(26,26,46,0.11)" stroke-width="1.1" marker-end="url(#arr-done)"/>
+      <path d="M 320 580 L 338 580" fill="none" stroke="rgba(26,26,46,0.11)" stroke-width="1.1" marker-end="url(#arr-done)"/>
+      <path d="M 320 691 L 338 691" fill="none" stroke="rgba(26,26,46,0.11)" stroke-width="1.1" marker-end="url(#arr-done)"/>
+
+      <!-- ══ DONE — BDI label ══ -->
+      <text x="576" y="44" font-family="'Patrick Hand', sans-serif" font-size="26" fill="rgba(26,26,46,0.20)" text-anchor="middle">BDI</text>
+
+      <!-- ══ ACTIVE — BDI frame with connector cards ══ -->
+
+      <!-- BDI outer rect: x=340 y=56 w=480 h=692 -->
+      <rect id="bdi-rect" x="340" y="56" width="480" height="692" rx="5"
+        fill="none" stroke="rgba(26,26,46,0.30)" stroke-width="2.0" style="opacity:0"/>
+
+      <!-- Divider at x=562 — ingestion left, transform right -->
+      <line id="bdi-div" x1="562" y1="56" x2="562" y2="748"
+        stroke="rgba(26,26,46,0.16)" stroke-width="1.1" stroke-dasharray="7 5" style="opacity:0"/>
+
+      <!-- Section headers -->
+      <text id="ing-hdr" x="451" y="80" font-family="'Patrick Hand', sans-serif" font-size="22"
+        fill="rgba(26,26,46,0.45)" text-anchor="middle" style="opacity:0">Ingestion</text>
+      <text id="trn-hdr" x="691" y="80" font-family="'Patrick Hand', sans-serif" font-size="22"
+        fill="rgba(26,26,46,0.45)" text-anchor="middle" style="opacity:0">Transform</text>
+
+      <!-- ── Native (teal) ── -->
+      <rect id="nat-rect" x="348" y="96" width="206" height="100" rx="4"
+        fill="rgba(14,195,139,0.06)" stroke="rgba(14,195,139,0.55)" stroke-width="1.8" style="opacity:0"/>
+      <text id="nat-title" x="451" y="126" font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700"
+        fill="#0EC38B" text-anchor="middle" style="opacity:0">Native</text>
+      <text id="nat-d1" x="451" y="152" font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="rgba(14,195,139,0.80)" text-anchor="middle" style="opacity:0">~200 connectors</text>
+      <text id="nat-d2" x="451" y="176" font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="rgba(14,195,139,0.80)" text-anchor="middle" style="opacity:0">REST / API sources</text>
+
+      <!-- ── CDC (coral) ── -->
+      <rect id="cdc-rect" x="348" y="210" width="206" height="100" rx="4"
+        fill="rgba(255,124,102,0.06)" stroke="rgba(255,124,102,0.55)" stroke-width="1.8" style="opacity:0"/>
+      <text id="cdc-title" x="451" y="240" font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700"
+        fill="#FF7C66" text-anchor="middle" style="opacity:0">CDC</text>
+      <text id="cdc-d1" x="451" y="266" font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="rgba(255,124,102,0.80)" text-anchor="middle" style="opacity:0">log-based pull</text>
+      <text id="cdc-d2" x="451" y="290" font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="rgba(255,124,102,0.80)" text-anchor="middle" style="opacity:0">zero DB impact</text>
+
+      <!-- ── SAP Connector (indigo) ── -->
+      <rect id="sap-rect" x="348" y="324" width="206" height="100" rx="4"
+        fill="rgba(75,79,226,0.06)" stroke="rgba(75,79,226,0.55)" stroke-width="1.8" style="opacity:0"/>
+      <text id="sap-title" x="451" y="354" font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700"
+        fill="#4B4FE2" text-anchor="middle" style="opacity:0">SAP Conn.</text>
+      <text id="sap-d1" x="451" y="380" font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="rgba(75,79,226,0.80)" text-anchor="middle" style="opacity:0">Boomi for SAP</text>
+      <text id="sap-d2" x="451" y="404" font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="rgba(75,79,226,0.80)" text-anchor="middle" style="opacity:0">+ Data Connector</text>
+
+      <!-- ── DCA — hero connector (teal, taller) ── -->
+      <rect id="dca-rect" x="348" y="438" width="206" height="118" rx="4"
+        fill="rgba(14,195,139,0.09)" stroke="rgba(14,195,139,0.70)" stroke-width="2.2" style="opacity:0"/>
+      <text id="dca-title" x="451" y="470" font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700"
+        fill="#0EC38B" text-anchor="middle" style="opacity:0">DCA ⭐</text>
+      <text id="dca-d1" x="451" y="496" font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="rgba(14,195,139,0.80)" text-anchor="middle" style="opacity:0">reads vendor docs</text>
+      <text id="dca-d2" x="451" y="520" font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="rgba(14,195,139,0.80)" text-anchor="middle" style="opacity:0">generates connector</text>
+      <text id="dca-d3" x="451" y="544" font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="rgba(14,195,139,0.80)" text-anchor="middle" style="opacity:0">on the fly</text>
+
+      <!-- ── MFT (purple) ── -->
+      <rect id="mft-rect" x="348" y="570" width="206" height="100" rx="4"
+        fill="rgba(160,50,145,0.06)" stroke="rgba(160,50,145,0.55)" stroke-width="1.8" style="opacity:0"/>
+      <image id="icon-mft" href="../assets/Icon MFT.png" x="394" y="584" width="30" height="30" style="opacity:0"/>
+      <text id="mft-title" x="451" y="600" font-family="'Patrick Hand', sans-serif" font-size="22" font-weight="700"
+        fill="#A03291" text-anchor="middle" style="opacity:0">MFT</text>
+      <text id="mft-d1" x="451" y="626" font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="rgba(160,50,145,0.80)" text-anchor="middle" style="opacity:0">SFTP · FTP</text>
+      <text id="mft-d2" x="451" y="650" font-family="'Patrick Hand', sans-serif" font-size="16"
+        fill="rgba(160,50,145,0.80)" text-anchor="middle" style="opacity:0">governed files</text>
+
+      <!-- Transform side — static ghost, stays out of the connector zone -->
+      <text x="691" y="560" font-family="'Patrick Hand', sans-serif" font-size="19"
+        fill="rgba(26,26,46,0.18)" text-anchor="middle">→ Clean · Enrich</text>
+      <text x="691" y="588" font-family="'Patrick Hand', sans-serif" font-size="19"
+        fill="rgba(26,26,46,0.18)" text-anchor="middle">→ Transform</text>
+      <text x="691" y="616" font-family="'Patrick Hand', sans-serif" font-size="19"
+        fill="rgba(26,26,46,0.18)" text-anchor="middle">→ Orchestrate</text>
+
+
+<!-- ══ GHOST — Destinations ══ -->
+      <text x="1060" y="44" font-family="'Patrick Hand', sans-serif" font-size="26"
+        fill="rgba(40,100,200,0.14)" text-anchor="middle">Destinations</text>
+      <rect x="870" y="82" width="210" height="88" rx="5"
+        fill="none" stroke="rgba(40,100,200,0.10)" stroke-width="1.2" stroke-dasharray="7 5"/>
+      <text x="975" y="132" font-family="'Patrick Hand', sans-serif" font-size="17"
+        fill="rgba(40,100,200,0.16)" text-anchor="middle">DWH / Data Lake</text>
+      <rect x="870" y="198" width="210" height="110" rx="5"
+        fill="none" stroke="rgba(40,100,200,0.10)" stroke-width="1.2" stroke-dasharray="7 5"/>
+      <text x="975" y="258" font-family="'Patrick Hand', sans-serif" font-size="17"
+        fill="rgba(40,100,200,0.16)" text-anchor="middle">Knowledge Hub</text>
+      <rect x="870" y="336" width="210" height="110" rx="5"
+        fill="none" stroke="rgba(40,100,200,0.10)" stroke-width="1.2" stroke-dasharray="7 5"/>
+      <text x="975" y="396" font-family="'Patrick Hand', sans-serif" font-size="17"
+        fill="rgba(40,100,200,0.16)" text-anchor="middle">Data Hub</text>
+      <path d="M 822 128 L 868 128" fill="none" stroke="rgba(40,100,200,0.09)" stroke-width="1.1" marker-end="url(#arr-ghost)"/>
+      <path d="M 822 253 L 868 253" fill="none" stroke="rgba(40,100,200,0.09)" stroke-width="1.1" marker-end="url(#arr-ghost)"/>
+      <path d="M 822 391 L 868 391" fill="none" stroke="rgba(40,100,200,0.09)" stroke-width="1.1" marker-end="url(#arr-ghost)"/>
+
+    </svg>
+  </div>
+</div>
+
+<nav class="wb-nav">
+  <img class="wb-brand" src="../assets/boomi-logo.svg" alt="Boomi">
+  <a href="02-bdi.html">← Prev</a>
+  <a href="04-knowledge-hub.html">Next →</a>
+</nav>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+
+function write(id, delay, dur) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  try {
+    const bbox = el.getBBox();
+    const pad = 5;
+    const clipId = 'wc-' + id;
+    const defs = el.closest('svg').querySelector('defs');
+    const cp = document.createElementNS(NS, 'clipPath');
+    cp.id = clipId;
+    const r = document.createElementNS(NS, 'rect');
+    r.setAttribute('x', bbox.x - pad);
+    r.setAttribute('y', bbox.y - pad);
+    r.setAttribute('height', String(bbox.height + pad * 2));
+    r.style.width = '0px';
+    cp.appendChild(r);
+    defs.appendChild(cp);
+    el.setAttribute('clip-path', `url(#${clipId})`);
+    el.style.opacity = '1';
+    setTimeout(() => {
+      r.style.transition = `width ${dur}s linear`;
+      r.style.width = (bbox.width + pad * 2) + 'px';
+    }, delay * 1000);
+  } catch(e) { fade(id, delay, dur); }
+}
+
+function draw(id, delay, dur) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let len = 4000;
+  try { if (el.getTotalLength) len = el.getTotalLength(); } catch(e) {}
+  el.style.strokeDasharray = `${len} ${len}`;
+  el.style.strokeDashoffset = String(len);
+  setTimeout(() => {
+    el.style.opacity = '1';
+    requestAnimationFrame(() => {
+      el.style.transition = `stroke-dashoffset ${dur}s cubic-bezier(0.35, 0, 0.25, 1)`;
+      el.style.strokeDashoffset = '0';
+    });
+  }, delay * 1000);
+}
+
+function fade(id, delay, dur, targetOpacity = 1) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  setTimeout(() => {
+    el.style.transition = `opacity ${dur}s ease`;
+    el.style.opacity = String(targetOpacity);
+  }, delay * 1000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // BDI frame — draw the container first, give it room to breathe
+  draw('bdi-rect',    0.6,  1.8);
+  draw('bdi-div',     2.5,  0.7);
+  write('ing-hdr',    3.3,  0.55);
+  write('trn-hdr',    3.95, 0.55);
+
+  // Native — 1 of 5
+  draw('nat-rect',    4.65, 0.75);
+  write('nat-title',  5.5,  0.50);
+  write('nat-d1',     6.1,  0.50);
+  write('nat-d2',     6.7,  0.50);
+
+  // CDC — 2 of 5
+  draw('cdc-rect',    7.35, 0.75);
+  write('cdc-title',  8.2,  0.50);
+  write('cdc-d1',     8.8,  0.50);
+  write('cdc-d2',     9.4,  0.50);
+
+  // SAP Connector — 3 of 5
+  draw('sap-rect',   10.05, 0.75);
+  write('sap-title', 10.9,  0.50);
+  write('sap-d1',    11.5,  0.50);
+  write('sap-d2',    12.1,  0.50);
+
+  // DCA — 4 of 5, hero connector
+  draw('dca-rect',   12.75, 0.85);
+  write('dca-title', 13.7,  0.52);
+  write('dca-d1',    14.35, 0.50);
+  write('dca-d2',    14.95, 0.50);
+  write('dca-d3',    15.55, 0.50);
+
+  // MFT — 5 of 5
+  draw('mft-rect',   16.2,  0.75);
+  fade('icon-mft',   17.05, 0.50);
+  write('mft-title', 17.05, 0.50);
+  write('mft-d1',    17.65, 0.50);
+  write('mft-d2',    18.25, 0.50);
+});
+</script>
+</body>
+</html>
