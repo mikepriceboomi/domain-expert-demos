@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boomi Data Management — Domain Expert Series</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #02283B;
+      --navy-deep:  #011e2e;
+      --coral:      #FF7C66;
+      --teal:       #0EC38B;
+      --indigo:     #4B4FE2;
+      --purple:     #A03291;
+      --white:      #FFFFFF;
+      --muted:      rgba(255,255,255,0.42);
+      --border:     rgba(255,255,255,0.08);
+      --header-h:   52px;
+    }
+
+    html, body {
+      height: 100%; width: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: #07090f;
+      color: var(--white);
+      overflow: hidden;
+    }
+
+    /* Vignette spotlight — edges go very dark, centre stays open */
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse 68% 72% at 50% 48%,
+        transparent 0%,
+        rgba(0,0,0,0.0)  28%,
+        rgba(0,0,0,0.65) 60%,
+        rgba(0,0,0,0.94) 100%);
+    }
+
+    /* Barely-visible grid on the dark room background */
+    body::after {
+      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.007) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.007) 1px, transparent 1px);
+      background-size: 72px 72px;
+    }
+
+    #shell { position: relative; z-index: 1; height: 100vh; width: 100%; overflow: hidden; }
+
+
+    /* ════════════════════════════════════════
+       LOBBY — darkened classroom
+    ════════════════════════════════════════ */
+    #lobby-view {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0;
+      transition: opacity 0.38s ease;
+    }
+    #lobby-view.out { opacity: 0; pointer-events: none; }
+
+    /* Boomi logo — top left, quiet */
+    .lb-wordmark {
+      position: absolute; top: 26px; left: 44px;
+      height: 24px; width: auto; cursor: pointer;
+      opacity: 0.65; transition: opacity 0.18s;
+    }
+    .lb-wordmark:hover { opacity: 0.90; }
+
+    /* Presenter tools — bottom right, barely there */
+    .lb-tools-btn {
+      position: absolute; bottom: 24px; right: 44px;
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; font-size: 0.58rem; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+      display: flex; align-items: center; gap: 5px;
+      transition: color 0.18s;
+    }
+    .lb-tools-btn:hover { color: rgba(255,255,255,0.55); }
+
+    /* ── Whiteboard frame — exact match to chapter files ── */
+    .lb-frame {
+      background: #1c2f42;
+      border-radius: 6px 6px 5px 5px;
+      padding: 9px 9px 20px 9px;
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.06) inset,
+        0 0 90px 18px rgba(190,215,255,0.028),
+        0 50px 130px rgba(0,0,0,0.85),
+        0 10px 36px rgba(0,0,0,0.60);
+      width: 62vw;
+      cursor: pointer;
+      transition: box-shadow 0.30s;
+    }
+    .lb-frame:hover {
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.07) inset,
+        0 0 110px 22px rgba(190,215,255,0.045),
+        0 50px 130px rgba(0,0,0,0.85),
+        0 10px 36px rgba(0,0,0,0.60);
+    }
+
+    /* ── Whiteboard surface ── */
+    .lb-surface {
+      background: #f6f5f1;
+      border-radius: 2px;
+      width: 100%; aspect-ratio: 16 / 9;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+      padding: 3.8% 5% 3.2% 5%;
+    }
+
+    /* Faint marker grid */
+    .lb-surface::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.019) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.019) 1px, transparent 1px);
+      background-size: 46px 46px;
+    }
+
+    /* Edge shadow on surface — depth */
+    .lb-surface::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse 96% 94% at 50% 50%, transparent 62%, rgba(0,0,0,0.045) 100%);
+    }
+
+    /* All board content sits above the overlays */
+    .lb-board-content {
+      position: relative; z-index: 1;
+      flex: 1; display: flex; flex-direction: column;
+    }
+
+    /* ── Board header ── */
+    .lb-board-top {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 1.8%; flex-shrink: 0;
+    }
+    .lb-series-dot {
+      width: 7px; height: 7px; background: var(--coral);
+      border-radius: 50%; flex-shrink: 0;
+    }
+    .lb-series-label {
+      font-size: clamp(0.46rem, 0.70vw, 0.58rem);
+      font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(2,40,59,0.38);
+    }
+    .lb-board-title {
+      font-size: clamp(1.1rem, 2.2vw, 1.8rem);
+      font-weight: 800; letter-spacing: -0.025em; line-height: 1.0;
+      color: rgba(2,40,59,0.82);
+      margin-left: auto;
+    }
+
+    /* ── Icon grid ── */
+    .lb-diagram {
+      flex: 1; width: 100%; min-height: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lb-icons {
+      display: flex; align-items: center; justify-content: center;
+      gap: clamp(18px, 4vw, 56px); width: 100%;
+    }
+    .lb-icon-block {
+      display: flex; flex-direction: column; align-items: center;
+      gap: clamp(6px, 1vw, 12px);
+      opacity: 0.52; transition: opacity 0.22s;
+    }
+    .lb-frame:hover .lb-icon-block { opacity: 0.70; }
+    .lb-icon-img {
+      width: clamp(42px, 6vw, 80px); height: auto; object-fit: contain;
+    }
+    .lb-icon-name {
+      font-family: 'Patrick Hand', cursive;
+      font-size: clamp(0.65rem, 1.0vw, 0.84rem);
+      color: rgba(2,40,59,0.68); text-align: center; white-space: nowrap;
+    }
+
+    /* ── Attribution ── */
+    .lb-attribution {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 1.8%; flex-shrink: 0;
+    }
+    .lb-presenter-tag {
+      font-size: clamp(0.44rem, 0.65vw, 0.55rem);
+      color: rgba(2,40,59,0.26); letter-spacing: 0.04em; font-weight: 500;
+    }
+    .lb-click-hint {
+      font-family: 'Patrick Hand', cursive;
+      font-size: clamp(0.75rem, 1.1vw, 0.90rem);
+      color: rgba(2,40,59,0.20);
+    }
+
+    /* ── Below-frame strip ── */
+    .lb-controls {
+      display: flex; align-items: center; justify-content: center;
+      gap: 18px; margin-top: 14px;
+    }
+    .lb-begin-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0.58rem 1.5rem;
+      background: var(--coral); color: var(--navy);
+      font-family: inherit; font-size: 0.78rem; font-weight: 800;
+      border: none; border-radius: 6px; cursor: pointer;
+      box-shadow: 0 4px 22px rgba(255,124,102,0.32);
+      letter-spacing: 0.01em;
+      transition: transform 0.14s, box-shadow 0.14s;
+    }
+    .lb-begin-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 30px rgba(255,124,102,0.45);
+    }
+
+
+    /* ════════════════════════════════════════
+       THEATER VIEW
+    ════════════════════════════════════════ */
+    #theater-view {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.45s ease 0.28s;
+    }
+    #theater-view.visible { opacity: 1; pointer-events: all; }
+
+    .th-header {
+      height: var(--header-h); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem;
+      background: rgba(1,18,30,0.88);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      z-index: 20; position: relative;
+    }
+
+    .th-left { display: flex; align-items: center; }
+
+    .th-wordmark {
+      height: 22px; width: auto; cursor: pointer; flex-shrink: 0;
+      opacity: 0.88; transition: opacity 0.15s;
+    }
+    .th-wordmark:hover { opacity: 1; }
+
+    .th-sep { width: 1px; height: 18px; background: var(--border); margin: 0 14px; flex-shrink: 0; }
+
+    .th-ch-nav { display: flex; align-items: center; gap: 2px; }
+    .th-ch-pill {
+      padding: 5px 10px; border-radius: 4px;
+      font-family: inherit; font-size: 0.60rem; font-weight: 700;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      border: 1px solid transparent; background: transparent;
+      color: rgba(255,255,255,0.30); cursor: pointer;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .th-ch-pill:hover { color: rgba(255,255,255,0.65); background: rgba(255,255,255,0.05); }
+    .th-ch-pill.active { color: var(--white); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.13); }
+
+    .th-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+    .th-arrow {
+      width: 30px; height: 30px; border-radius: 5px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: rgba(255,255,255,0.55);
+      transition: background 0.15s, color 0.15s; flex-shrink: 0;
+    }
+    .th-arrow:hover:not(:disabled) { background: rgba(255,255,255,0.12); color: var(--white); }
+    .th-arrow:disabled { opacity: 0.22; cursor: default; }
+
+    .th-presenter-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 12px 5px 10px; border-radius: 5px;
+      font-family: inherit; font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      background: rgba(255,124,102,0.10); border: 1px solid rgba(255,124,102,0.22);
+      color: var(--coral); cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .th-presenter-btn:hover { background: rgba(255,124,102,0.18); border-color: rgba(255,124,102,0.40); }
+    .th-presenter-btn.on { background: rgba(255,124,102,0.22); border-color: var(--coral); }
+
+    .th-stage { flex: 1; position: relative; background: #090f18; overflow: hidden; }
+    #wb-iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: block; }
+
+
+
+    /* ════════════════════════════════════════
+       KEYBOARD HINT
+    ════════════════════════════════════════ */
+    #kb-hint {
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 16px; z-index: 19;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease 1.2s;
+    }
+    #theater-view.visible #kb-hint { opacity: 1; }
+    #kb-hint.hide { opacity: 0 !important; transition: opacity 0.3s ease; }
+    .kb-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.56rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+    }
+    .kb-key {
+      padding: 2px 6px; border-radius: 3px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      font-size: 0.55rem; color: rgba(255,255,255,0.35); white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+<div id="shell">
+
+
+  <!-- ═══════════════════════════════════════════
+       LOBBY — board in a dark room
+  ═══════════════════════════════════════════ -->
+  <div id="lobby-view">
+
+    <img class="lb-wordmark" src="../assets/boomi-logo.svg" alt="Boomi" onclick="goLobby()">
+
+    <!-- Whiteboard frame -->
+    <div class="lb-frame" onclick="launch(0)">
+      <div class="lb-surface">
+
+        <div class="lb-board-content">
+
+          <!-- Header strip -->
+          <div class="lb-board-top">
+            <div class="lb-series-dot"></div>
+            <div class="lb-series-label">Domain Expert Series</div>
+            <div class="lb-board-title">Boomi Data Management</div>
+          </div>
+
+          <!-- Product icons preview -->
+          <div class="lb-diagram">
+            <div class="lb-icons">
+
+              <div class="lb-icon-block">
+                <img src="../assets/Icon Data Integration.png" class="lb-icon-img" alt="Data Integration">
+                <span class="lb-icon-name">Data Integration</span>
+              </div>
+
+              <div class="lb-icon-block">
+                <img src="../assets/datahub-icon.png" class="lb-icon-img" alt="Data Hub">
+                <span class="lb-icon-name">Data Hub</span>
+              </div>
+
+              <div class="lb-icon-block">
+                <img src="../assets/Icon MFT.png" class="lb-icon-img" alt="MFT">
+                <span class="lb-icon-name">MFT</span>
+              </div>
+
+              <div class="lb-icon-block">
+                <img src="../assets/Icon AI Studio.png" class="lb-icon-img" alt="Agent Studio">
+                <span class="lb-icon-name">Agent Studio</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Attribution -->
+          <div class="lb-attribution">
+            <div class="lb-presenter-tag">Boomi Solution Engineering · Field Enablement</div>
+            <div class="lb-click-hint">click to begin →</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- /board frame -->
+
+    <!-- Below-frame controls -->
+    <div class="lb-controls">
+      <button class="lb-begin-btn" onclick="launch(0)">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <polygon points="2.5,1 11,6 2.5,11" fill="currentColor"/>
+        </svg>
+        Begin Presentation
+      </button>
+    </div>
+
+    <button class="lb-tools-btn" onclick="window.open('storyboard.html','_blank')">
+      Presenter Tools ›
+    </button>
+
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       THEATER
+  ═══════════════════════════════════════════ -->
+  <div id="theater-view">
+
+    <header class="th-header">
+      <div class="th-left">
+        <img class="th-wordmark" src="../assets/boomi-logo.svg" alt="Boomi" onclick="goLobby()" title="Back to overview (Esc)">
+        <div class="th-sep"></div>
+        <nav class="th-ch-nav" id="ch-nav" aria-label="Chapters"></nav>
+      </div>
+      <div class="th-right">
+        <button class="th-arrow" id="prev-btn" onclick="prevChapter()" title="Previous (←)" disabled>
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+            <path d="M7.5 1.5L3 5.5l4.5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="th-arrow" id="next-btn" onclick="nextChapter()" title="Next (→)">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+            <path d="M3.5 1.5L8 5.5l-4.5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="th-presenter-btn" onclick="window.open('storyboard.html','_blank')" title="Presenter tools (P)">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <rect x="1" y="1" width="4.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/>
+            <rect x="7.5" y="1" width="4.5" height="3.5" rx="1" stroke="currentColor" stroke-width="1.3"/>
+            <rect x="7.5" y="6.5" width="4.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/>
+            <rect x="1" y="8.5" width="4.5" height="3.5" rx="1" stroke="currentColor" stroke-width="1.3"/>
+          </svg>
+          Presenter
+        </button>
+      </div>
+    </header>
+
+    <div class="th-stage">
+      <iframe id="wb-iframe" src="" title="Whiteboard" allowfullscreen allow="accelerometer; autoplay; fullscreen"></iframe>
+    </div>
+
+    <div id="kb-hint">
+      <div class="kb-item"><span class="kb-key">← →</span> Chapters</div>
+      <div class="kb-item"><span class="kb-key">P</span> Presenter tools</div>
+      <div class="kb-item"><span class="kb-key">Esc</span> Lobby</div>
+    </div>
+
+  </div>
+
+
+
+</div><!-- /shell -->
+
+<script>
+  const CHAPTERS = [
+    { src: '01-intro.html',         num: '01', title: 'Sources'       },
+    { src: '02-bdi.html',           num: '02', title: 'BDI'           },
+    { src: '03-connectors.html',    num: '03', title: 'Connectors'    },
+    { src: '04-knowledge-hub.html', num: '04', title: 'Knowledge Hub' },
+    { src: '05-data-hub.html',      num: '05', title: 'Data Hub'      },
+    { src: '06-use-case.html',      num: '06', title: 'Use Case'      },
+  ];
+
+  let current   = 0;
+  let inTheater = false;
+  let hintTimer;
+
+  /* Chapter nav pills */
+  const chNav = document.getElementById('ch-nav');
+  CHAPTERS.forEach((ch, i) => {
+    const btn = document.createElement('button');
+    btn.className   = 'th-ch-pill';
+    btn.id          = `pill-${i}`;
+    btn.textContent = `${ch.num} ${ch.title}`;
+    btn.title       = `Chapter ${ch.num} — ${ch.title}`;
+    btn.onclick     = () => loadChapter(i);
+    chNav.appendChild(btn);
+  });
+
+  /* Chapter items on the board stop propagation so frame click → ch01,
+     but clicking a specific chapter row launches at that chapter */
+  function handleChapterClick(e, index) {
+    e.stopPropagation();
+    launch(index);
+  }
+
+  function launch(index = 0) {
+    inTheater = true;
+    const lobby   = document.getElementById('lobby-view');
+    const theater = document.getElementById('theater-view');
+    lobby.classList.add('out');
+    setTimeout(() => {
+      theater.classList.add('visible');
+      loadChapter(index);
+      scheduleHideHint();
+    }, 320);
+  }
+
+  function goLobby() {
+    inTheater = false;
+    const lobby   = document.getElementById('lobby-view');
+    const theater = document.getElementById('theater-view');
+    theater.classList.remove('visible');
+    lobby.classList.remove('out');
+    setTimeout(() => { document.getElementById('wb-iframe').src = ''; }, 500);
+    clearTimeout(hintTimer);
+  }
+
+  function loadChapter(index) {
+    current = Math.max(0, Math.min(index, CHAPTERS.length - 1));
+    document.getElementById('wb-iframe').src = CHAPTERS[current].src;
+    refreshNav();
+    resetHintTimer();
+  }
+
+  function prevChapter() { if (current > 0)                   loadChapter(current - 1); }
+  function nextChapter() { if (current < CHAPTERS.length - 1) loadChapter(current + 1); }
+
+  function refreshNav() {
+    CHAPTERS.forEach((_, i) => {
+      document.getElementById(`pill-${i}`).classList.toggle('active', i === current);
+    });
+    document.getElementById('prev-btn').disabled = (current === 0);
+    document.getElementById('next-btn').disabled = (current === CHAPTERS.length - 1);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (!inTheater) return;
+    if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
+    switch (e.key) {
+      case 'ArrowRight':
+      case ' ':         e.preventDefault(); nextChapter(); break;
+      case 'ArrowLeft': e.preventDefault(); prevChapter(); break;
+      case 'p': case 'P': window.open('storyboard.html', '_blank'); break;
+      case 'Escape': goLobby(); break;
+    }
+  });
+
+  function scheduleHideHint() { hintTimer = setTimeout(hideHint, 4200); }
+  function resetHintTimer() {
+    clearTimeout(hintTimer);
+    document.getElementById('kb-hint').classList.remove('hide');
+    scheduleHideHint();
+  }
+  function hideHint() { document.getElementById('kb-hint').classList.add('hide'); }
+
+  refreshNav();
+</script>
+</body>
+</html>
