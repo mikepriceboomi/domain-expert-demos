@@ -125,6 +125,9 @@
       <rect id="khub-rect" x="654" y="228" width="230" height="200" rx="5"
         fill="none" stroke="#A03291" stroke-width="2.8"/>
 
+      <!-- KH product icon — top-right inside box -->
+      <image id="kh-icon" href="../assets/KH.png" x="844" y="232" width="34" height="34" opacity="0"/>
+
       <!-- Content -->
       <line id="khub-rule" x1="662" y1="258" x2="876" y2="258"
         stroke="rgba(26,26,46,0.25)" stroke-width="1.2"/>
@@ -230,6 +233,7 @@ function write(id, delay, dur) {
 document.addEventListener('DOMContentLoaded', () => {
   write('khub-title',   0.4,  0.55);
   draw('khub-rect',     1.0,  1.10);
+  fade('kh-icon',       1.6,  0.40);
   draw('khub-rule',     2.2,  0.30);
   write('khub-line1',   2.6,  0.55);
   write('khub-line2',   3.2,  0.50);
