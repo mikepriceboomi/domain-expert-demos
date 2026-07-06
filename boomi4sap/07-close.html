@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Installation Complete · Boomi for SAP Installation Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#02283B; --navy-mid:#0a3d5c; --navy-dark:#011e2e;
+  --coral:#FF7C66; --teal:#0EC38B; --indigo:#4B4FE2; --cyan:#0097B2;
+  --ink:#02283B; --muted:#4a6070; --border:#d8e0e8; --bg:#f5f7f9;
+}
+html,body{height:100%;}
+body{font-family:'Poppins',Arial,sans-serif;background:var(--bg);color:var(--ink);}
+
+.topbar{background:var(--navy-dark);padding:0.85rem 2rem;display:flex;align-items:center;gap:1rem;border-bottom:2px solid var(--coral);}
+.topbar img{height:20px;display:block;}
+.topbar .tb-label{color:rgba(255,255,255,0.55);font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}
+.topbar .tb-label span{color:#fff;}
+.topbar .tb-progress{margin-left:auto;display:flex;align-items:center;gap:6px;}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.2);}
+.tb-dot.done{background:var(--teal);}
+.tb-step-label{color:rgba(255,255,255,0.5);font-size:0.65rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-left:0.4rem;}
+
+.success-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);padding:4.5rem 2rem;text-align:center;border-top:4px solid var(--teal);position:relative;overflow:hidden;}
+.success-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 20% 20%, rgba(14,195,139,0.14) 0%, transparent 60%);pointer-events:none;}
+.success-hero .inner{position:relative;max-width:600px;margin:0 auto;}
+.check-badge{width:56px;height:56px;border-radius:50%;background:rgba(14,195,139,0.15);border:1px solid rgba(14,195,139,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;}
+.success-hero h1{color:#fff;font-size:1.7rem;font-weight:700;margin-bottom:0.85rem;}
+.success-hero p{color:rgba(255,255,255,0.65);font-size:0.92rem;line-height:1.7;margin-bottom:0;}
+
+.wrap{max-width:700px;margin:0 auto;padding:2rem 1.5rem 1rem;}
+.summary-row{display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem;}
+.summary-chip{background:#fff;border:1px solid var(--border);color:var(--ink);font-size:0.78rem;font-weight:600;padding:0.5rem 1rem;border-radius:8px;}
+.summary-chip strong{color:var(--teal);}
+
+.resources{background:#fff;border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;text-align:center;}
+.resources-label{font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.85rem;}
+.fp-assets-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.fp-asset{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.4rem 0.9rem;font-size:0.8rem;font-weight:600;color:var(--ink);text-decoration:none;}
+.fp-asset::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--coral);flex-shrink:0;}
+
+.nav-footer{max-width:700px;margin:0 auto;padding:2rem 1.5rem 3rem;display:flex;align-items:center;justify-content:center;gap:1rem;}
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.4rem;border-radius:8px;font-size:0.85rem;font-weight:700;text-decoration:none;font-family:'Poppins',sans-serif;border:none;cursor:pointer;transition:transform 0.15s;}
+.btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--coral);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="../assets/boomi-logo.svg" alt="Boomi">
+  <div class="tb-label">Boomi for SAP · <span>Installation Guide</span></div>
+  <div class="tb-progress">
+    <div class="tb-dot done"></div><div class="tb-dot done"></div><div class="tb-dot done"></div><div class="tb-dot done"></div><div class="tb-dot done"></div><div class="tb-dot done"></div>
+    <span class="tb-step-label">Complete</span>
+  </div>
+</div>
+
+<div class="success-hero">
+  <div class="inner">
+    <div class="check-badge">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0EC38B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h1>Boomi for SAP is installed and running</h1>
+    <p>IXBX 700_740 add-on installed · ZBX ICF service active · Boomi for SAP UI accessible.<br>Your SAP system is now connected to the Boomi integration platform.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="summary-row">
+    <span class="summary-chip"><strong>Phase 1</strong> Transport files uploaded</span>
+    <span class="summary-chip"><strong>Phase 2</strong> Add-on installed via SAINT</span>
+    <span class="summary-chip"><strong>Phase 3</strong> ZBX ICF service active</span>
+    <span class="summary-chip"><strong>Phase 4</strong> Launch verified</span>
+  </div>
+
+  <div class="resources">
+    <div class="resources-label">Resources</div>
+    <div class="fp-assets-row">
+      <a class="fp-asset" href="https://help.boomi.com" target="_blank" rel="noopener">Help.boomi.com</a>
+      <a class="fp-asset" href="https://community.boomi.com" target="_blank" rel="noopener">Boomi Community</a>
+      <span class="fp-asset">SAP Note 567695</span>
+      <span class="fp-asset">Boomi Support</span>
+    </div>
+  </div>
+</div>
+
+<div class="nav-footer">
+  <a href="01-intro.html" class="btn btn-ghost">↺ Restart the guide</a>
+</div>
+
+</body>
+</html>

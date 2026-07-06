@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prerequisites — Boomi for SAP Installation Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#02283B; --navy-mid:#0a3d5c; --navy-dark:#011e2e;
+  --coral:#FF7C66; --teal:#0EC38B; --indigo:#4B4FE2; --cyan:#0097B2;
+  --ink:#02283B; --muted:#4a6070; --border:#d8e0e8; --bg:#f5f7f9;
+}
+body{font-family:'Poppins',Arial,sans-serif;background:var(--bg);color:var(--ink);}
+
+.topbar{background:var(--navy-dark);padding:0.85rem 2rem;display:flex;align-items:center;gap:1rem;border-bottom:2px solid var(--coral);}
+.topbar img{height:20px;display:block;}
+.topbar .tb-label{color:rgba(255,255,255,0.55);font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}
+.topbar .tb-label span{color:#fff;}
+.topbar .tb-progress{margin-left:auto;display:flex;align-items:center;gap:6px;}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.2);}
+.tb-dot.active{background:var(--coral);}
+.tb-step-label{color:rgba(255,255,255,0.5);font-size:0.65rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-left:0.4rem;}
+
+.hero-band{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);padding:2.25rem 2rem;}
+.hero-band .inner{max-width:900px;margin:0 auto;}
+.eyebrow{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--coral);margin-bottom:0.5rem;}
+.hero-band h1{color:#fff;font-size:1.5rem;font-weight:700;line-height:1.3;}
+
+.wrap{max-width:900px;margin:0 auto;padding:2rem 1.5rem 1rem;}
+.card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:1.5rem;box-shadow:0 1px 4px rgba(2,40,59,0.06);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.75rem;}
+.col-label{font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;}
+
+.checklist-item{display:flex;align-items:flex-start;gap:8px;font-size:0.85rem;color:var(--muted);margin-bottom:0.55rem;}
+.checklist-item .ck{color:var(--teal);font-weight:700;flex-shrink:0;}
+.checklist-item strong{color:var(--ink);}
+
+.tcode{font-family:'Courier New',monospace;font-size:0.75rem;font-weight:700;background:var(--navy);color:var(--coral);padding:2px 8px;border-radius:4px;letter-spacing:0.04em;}
+code{font-family:'Courier New',monospace;font-size:0.78rem;background:#f0f4f8;color:var(--ink);padding:1px 6px;border-radius:4px;border:1px solid var(--border);}
+
+.file-table{width:100%;border-collapse:collapse;font-size:0.78rem;margin-top:0.5rem;}
+.file-table th{background:var(--navy);color:rgba(255,255,255,0.85);padding:6px 10px;text-align:left;font-weight:600;font-size:0.68rem;letter-spacing:0.05em;}
+.file-table td{padding:7px 10px;border-bottom:1px solid #edf0f4;color:var(--muted);vertical-align:top;}
+.file-table tr:last-child td{border-bottom:none;}
+.file-table code{background:none;border:none;padding:0;color:var(--indigo);font-size:0.75rem;}
+
+.install-note{background:#fff8f7;border-left:3px solid var(--coral);border-radius:0 6px 6px 0;padding:0.75rem 0.9rem;margin-top:0.85rem;font-size:0.78rem;color:var(--muted);line-height:1.6;}
+.install-note strong{color:var(--ink);}
+
+.nav-footer{max-width:900px;margin:0 auto;padding:1.5rem 1.5rem 3rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.4rem;border-radius:8px;font-size:0.85rem;font-weight:700;text-decoration:none;font-family:'Poppins',sans-serif;border:none;cursor:pointer;transition:transform 0.15s;}
+.btn-primary{background:var(--coral);color:#fff;box-shadow:0 4px 14px rgba(255,124,102,0.3);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--coral);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="../assets/boomi-logo.svg" alt="Boomi">
+  <div class="tb-label">Boomi for SAP · <span>Installation Guide</span></div>
+  <div class="tb-progress">
+    <div class="tb-dot active"></div><div class="tb-dot"></div><div class="tb-dot"></div><div class="tb-dot"></div><div class="tb-dot"></div><div class="tb-dot"></div>
+    <span class="tb-step-label">Prerequisites</span>
+  </div>
+</div>
+
+<div class="hero-band">
+  <div class="inner">
+    <div class="eyebrow">Before You Start</div>
+    <h1>Prerequisites &amp; Required Files</h1>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <div class="col-label">Required access</div>
+        <div class="checklist-item"><span class="ck">✓</span><span>SAP user with <strong>Basis / add-on installation rights</strong> (SAINT authorisation)</span></div>
+        <div class="checklist-item"><span class="ck">✓</span><span>Access to <span class="tcode">CG3Z</span> — Upload File to Application Server</span></div>
+        <div class="checklist-item"><span class="ck">✓</span><span>Access to <span class="tcode">SAINT</span> — SAP Add-on Installation Tool</span></div>
+        <div class="checklist-item"><span class="ck">✓</span><span>Access to <span class="tcode">SICF</span> — Maintain Services</span></div>
+        <div class="checklist-item"><span class="ck">✓</span><span>IXBX package files from Boomi Support or SAP Marketplace</span></div>
+        <div class="checklist-item"><span class="ck">✓</span><span>Installation password from <strong>SAP Note 567695</strong></span></div>
+      </div>
+      <div>
+        <div class="col-label">Package files required</div>
+        <table class="file-table">
+          <thead><tr><th>File</th><th>Target path on server</th></tr></thead>
+          <tbody>
+            <tr><td><code>substanc.dat</code></td><td><code>/usr/sap/trans/substanc.dat</code></td></tr>
+            <tr><td><code>QAS…0000114.PAT</code></td><td><code>/usr/sap/trans/EPS/in/…114.PAT</code></td></tr>
+            <tr><td><code>QAS…0000115.PAT</code></td><td><code>/usr/sap/trans/EPS/in/…115.PAT</code></td></tr>
+            <tr><td><code>QAS…0000119.PAT</code></td><td><code>/usr/sap/trans/EPS/in/…119.PAT</code></td></tr>
+          </tbody>
+        </table>
+        <div class="install-note"><strong>Note:</strong> Target paths are case-sensitive on Linux SAP systems. Verify <code>/usr/sap/trans/EPS/in/</code> exists and is writable by the <code>&lt;sid&gt;adm</code> OS user before uploading.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-footer">
+  <a href="01-intro.html" class="btn btn-ghost">← Back</a>
+  <a href="03-phase1-upload.html" class="btn btn-primary">
+    Continue to Phase 1
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</div>
+
+</body>
+</html>

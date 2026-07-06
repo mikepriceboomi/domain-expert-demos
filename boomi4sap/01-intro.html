@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boomi for SAP — Installation Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#02283B; --navy-mid:#0a3d5c; --navy-dark:#011e2e;
+  --coral:#FF7C66; --teal:#0EC38B; --indigo:#4B4FE2; --cyan:#0097B2;
+  --ink:#02283B; --muted:#4a6070; --border:#d8e0e8; --bg:#f5f7f9;
+}
+html,body{height:100%;}
+body{font-family:'Poppins',Arial,sans-serif;background:var(--bg);color:var(--ink);}
+
+.topbar{background:var(--navy-dark);padding:0.85rem 2rem;display:flex;align-items:center;gap:1rem;border-bottom:2px solid var(--coral);}
+.topbar img{height:20px;display:block;}
+.topbar .tb-label{color:rgba(255,255,255,0.55);font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}
+.topbar .tb-label span{color:#fff;}
+
+.intro-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);padding:5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden;}
+.intro-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 15% 10%, rgba(255,124,102,0.14) 0%, transparent 60%),radial-gradient(ellipse 600px 500px at 90% 90%, rgba(14,195,139,0.10) 0%, transparent 60%);pointer-events:none;}
+.intro-hero .inner{position:relative;max-width:680px;margin:0 auto;}
+.eyebrow{font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--coral);margin-bottom:0.85rem;}
+.intro-hero h1{color:#fff;font-size:2.1rem;font-weight:700;line-height:1.2;margin-bottom:1rem;}
+.intro-hero p{color:rgba(255,255,255,0.68);font-size:0.98rem;line-height:1.7;max-width:560px;margin:0 auto 1.75rem;}
+
+.chip-row{display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem;}
+.chip{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.85);font-size:0.75rem;font-weight:600;padding:0.35rem 0.85rem;border-radius:20px;}
+
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.8rem 1.8rem;border-radius:8px;font-size:0.92rem;font-weight:700;text-decoration:none;font-family:'Poppins',sans-serif;border:none;cursor:pointer;transition:transform 0.15s, box-shadow 0.15s;}
+.btn-primary{background:var(--coral);color:#fff;box-shadow:0 6px 20px rgba(255,124,102,0.35);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(255,124,102,0.45);}
+
+.phase-strip{display:flex;max-width:900px;margin:0 auto;border-top:1px solid var(--border);}
+.phase-tile{flex:1;background:#fff;padding:1.25rem 1.4rem;border-right:1px solid var(--border);}
+.phase-tile:last-child{border-right:none;}
+.phase-num{font-size:0.68rem;font-weight:700;color:var(--coral);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;}
+.phase-title{font-size:0.85rem;font-weight:700;color:var(--ink);margin-bottom:0.3rem;}
+.phase-sub{font-size:0.72rem;color:var(--muted);line-height:1.5;}
+
+.wrap-footnote{max-width:900px;margin:0 auto;padding:1.5rem 1.5rem 3rem;text-align:center;}
+.wrap-footnote p{font-size:0.78rem;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="../assets/boomi-logo.svg" alt="Boomi">
+  <div class="tb-label">Boomi for SAP · <span>Installation Guide</span></div>
+</div>
+
+<div class="intro-hero">
+  <div class="inner">
+    <div class="eyebrow">Boomi for SAP · Add-On Installation · Admin Reference</div>
+    <h1>IXBX 700_740 — Installation Guide</h1>
+    <p>Step-by-step installation of the Boomi for SAP add-on. Covers transport file upload, the SAINT wizard, ICF service configuration, and launch verification.</p>
+    <div class="chip-row">
+      <span class="chip">4 Phases</span>
+      <span class="chip">20–40 min</span>
+      <span class="chip">Basis / Admin access required</span>
+    </div>
+    <a href="02-prerequisites.html" class="btn btn-primary">
+      Start the Installation
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</div>
+
+<div class="phase-strip">
+  <div class="phase-tile">
+    <div class="phase-num">Phase 1</div>
+    <div class="phase-title">Upload Transport Files</div>
+    <div class="phase-sub">T-Code: CG3Z</div>
+  </div>
+  <div class="phase-tile">
+    <div class="phase-num">Phase 2</div>
+    <div class="phase-title">SAINT Install Wizard</div>
+    <div class="phase-sub">T-Code: SAINT</div>
+  </div>
+  <div class="phase-tile">
+    <div class="phase-num">Phase 3</div>
+    <div class="phase-title">ICF Service Config</div>
+    <div class="phase-sub">T-Code: SICF</div>
+  </div>
+  <div class="phase-tile">
+    <div class="phase-num">Phase 4</div>
+    <div class="phase-title">Launch &amp; Verify</div>
+    <div class="phase-sub">Final Check</div>
+  </div>
+</div>
+
+<div class="wrap-footnote">
+  <p>Have the IXBX package files and your SAP Note 567695 password ready before you begin.</p>
+</div>
+
+</body>
+</html>

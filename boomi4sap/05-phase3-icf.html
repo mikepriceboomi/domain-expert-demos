@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 3 — ICF Service Configuration · Boomi for SAP Installation Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#02283B; --navy-mid:#0a3d5c; --navy-dark:#011e2e;
+  --coral:#FF7C66; --teal:#0EC38B; --indigo:#4B4FE2; --cyan:#0097B2;
+  --ink:#02283B; --muted:#4a6070; --border:#d8e0e8; --bg:#f5f7f9;
+}
+body{font-family:'Poppins',Arial,sans-serif;background:var(--bg);color:var(--ink);}
+
+.topbar{background:var(--navy-dark);padding:0.85rem 2rem;display:flex;align-items:center;gap:1rem;border-bottom:2px solid var(--coral);}
+.topbar img{height:20px;display:block;}
+.topbar .tb-label{color:rgba(255,255,255,0.55);font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}
+.topbar .tb-label span{color:#fff;}
+.topbar .tb-progress{margin-left:auto;display:flex;align-items:center;gap:6px;}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.2);}
+.tb-dot.done{background:var(--teal);}
+.tb-dot.active{background:var(--coral);}
+.tb-step-label{color:rgba(255,255,255,0.5);font-size:0.65rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-left:0.4rem;}
+
+.wrap{max-width:900px;margin:1.75rem auto 1rem;padding:0 1.5rem;}
+.phase-card{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(2,40,59,0.06);}
+.fp-header{background:var(--navy);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.fp-eyebrow{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--coral);margin-bottom:0.3rem;}
+.fp-header h2{font-size:1.15rem;font-weight:700;color:#fff;line-height:1.3;}
+.fp-badge{background:var(--coral);color:#fff;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:0.3rem 0.8rem;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.fp-body{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;padding:1.5rem;border-bottom:1px solid var(--border);}
+.fp-hook{font-size:0.95rem;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:0.5rem;}
+.fp-step{display:flex;align-items:flex-start;gap:10px;margin-bottom:0.85rem;}
+.fp-step:last-child{margin-bottom:0;}
+.fp-step-num{width:20px;height:20px;border-radius:50%;background:var(--navy);color:rgba(255,255,255,0.9);font-size:0.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.fp-step p{font-size:0.8rem;color:var(--muted);line-height:1.6;}
+.fp-step strong{color:var(--ink);font-weight:700;}
+.fp-rule{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.85rem 1rem;margin-bottom:1rem;}
+.fp-rule-label{font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;}
+.fp-rule-text{font-size:0.88rem;font-weight:700;color:var(--ink);line-height:1.45;}
+.fp-assets{padding:1.1rem 1.5rem;}
+.fp-assets-label{font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem;}
+.fp-assets-row{display:flex;gap:8px;flex-wrap:wrap;}
+.fp-asset{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.3rem 0.75rem;font-size:0.78rem;font-weight:600;color:var(--ink);}
+.fp-asset::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--coral);flex-shrink:0;}
+
+.tcode{font-family:'Courier New',monospace;font-size:0.75rem;font-weight:700;background:var(--navy);color:var(--coral);padding:2px 8px;border-radius:4px;letter-spacing:0.04em;}
+code{font-family:'Courier New',monospace;font-size:0.78rem;background:#f0f4f8;color:var(--ink);padding:1px 6px;border-radius:4px;border:1px solid var(--border);}
+.install-tip{background:#edfbf5;border-left:3px solid var(--teal);border-radius:0 6px 6px 0;padding:0.65rem 0.85rem;margin-top:1rem;font-size:0.75rem;color:var(--muted);line-height:1.6;}
+.install-tip strong{color:var(--ink);}
+.fp-note{font-size:0.72rem;color:var(--muted);margin-bottom:1rem;}
+
+.nav-footer{max-width:900px;margin:0 auto;padding:1.5rem 1.5rem 3rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.4rem;border-radius:8px;font-size:0.85rem;font-weight:700;text-decoration:none;font-family:'Poppins',sans-serif;border:none;cursor:pointer;transition:transform 0.15s;}
+.btn-primary{background:var(--coral);color:#fff;box-shadow:0 4px 14px rgba(255,124,102,0.3);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--coral);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="../assets/boomi-logo.svg" alt="Boomi">
+  <div class="tb-label">Boomi for SAP · <span>Installation Guide</span></div>
+  <div class="tb-progress">
+    <div class="tb-dot done"></div><div class="tb-dot done"></div><div class="tb-dot done"></div><div class="tb-dot active"></div><div class="tb-dot"></div><div class="tb-dot"></div>
+    <span class="tb-step-label">Phase 3 of 4</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="phase-card">
+    <div class="fp-header">
+      <div>
+        <div class="fp-eyebrow">Phase 3 of 4</div>
+        <h2>Create and Activate the ZBX ICF Service</h2>
+      </div>
+      <span class="fp-badge">T-Code: SICF</span>
+    </div>
+
+    <div class="fp-body">
+      <div>
+        <p class="fp-hook">The Boomi for SAP UI is served through an SAP ICF service. Create the ZBX node, register the handler class, and activate it.</p>
+        <div class="fp-step">
+          <span class="fp-step-num">1</span>
+          <p><strong>Open SICF</strong> — Enter <span class="tcode">SICF</span>, ensure Hierarchy Type is <code>SERVICE</code>, and press F8 (Execute) to load the service tree.</p>
+        </div>
+        <div class="fp-step">
+          <span class="fp-step-num">2</span>
+          <p><strong>Create new service element</strong> — Click <strong>Create Host/Service</strong> in the toolbar. In the dialog: Name = <code>ZBX</code>, Type = <strong>Standalone service</strong>. Click the green checkmark.</p>
+        </div>
+        <div class="fp-step">
+          <span class="fp-step-num">3</span>
+          <p><strong>Set the description</strong> — On the <strong>Service Data</strong> tab: Description 1 = <code>Boomi for SAP activation</code>. Leave all other Service Data fields at default.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="fp-rule">
+          <div class="fp-rule-label">Handler class (exact value)</div>
+          <div class="fp-rule-text"><code style="background:#02283B;color:#FF7C66;padding:3px 8px;border-radius:4px;border:none;">/IXBX/CL_SICF</code></div>
+        </div>
+        <p class="fp-note">Case-sensitive. Must be entered exactly as shown in the Handler List row 1.</p>
+        <div class="fp-step">
+          <span class="fp-step-num">4</span>
+          <p><strong>Register the handler class</strong> — Click the <strong>Handler List</strong> tab. In row 1, enter <code>/IXBX/CL_SICF</code>. This is the IXBX handler class that processes all service calls.</p>
+        </div>
+        <div class="fp-step">
+          <span class="fp-step-num">5</span>
+          <p><strong>Save as Local Object</strong> — Click <strong>Store</strong>. The <em>Create Object Directory Entry</em> dialog shows object <code>R3TR SICF ZBX</code>. Click <strong>Local Object</strong> — this assigns the service without a transport request, which is correct.</p>
+        </div>
+        <div class="fp-step">
+          <span class="fp-step-num">6</span>
+          <p><strong>Activate the service</strong> — In the service tree, locate <strong>ZBX</strong> under <code>default_host</code>. Right-click → <strong>Activate Service</strong>. Confirm the activation prompt.</p>
+        </div>
+        <div class="install-tip"><strong>Success indicator:</strong> The ZBX node icon changes to active. The service is reachable at <code>http(s)://&lt;host&gt;:&lt;port&gt;/ZBX</code>.</div>
+      </div>
+    </div>
+
+    <div class="fp-assets">
+      <div class="fp-assets-label">Service configuration summary</div>
+      <div class="fp-assets-row">
+        <span class="fp-asset">Path: /default_host/ZBX</span>
+        <span class="fp-asset">Handler: /IXBX/CL_SICF</span>
+        <span class="fp-asset">Object: R3TR SICF ZBX</span>
+        <span class="fp-asset">Desc: Boomi for SAP activation</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-footer">
+  <a href="04-phase2-saint.html" class="btn btn-ghost">← Back</a>
+  <a href="06-phase4-verify.html" class="btn btn-primary">
+    Continue to Phase 4
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</div>
+
+</body>
+</html>
