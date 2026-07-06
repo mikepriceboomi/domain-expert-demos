@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boomi for SAP Lab — Flow Build Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Poppins', Arial, sans-serif; background: #eef1f5; color: #02283B; font-size: 14px; }
+
+.top-bar {
+  background: #011e2e; padding: 10px 28px;
+  display: flex; align-items: center; gap: 14px;
+  position: sticky; top: 0; z-index: 200;
+  border-bottom: 2px solid #FF7C66;
+}
+.top-bar .tbl { color: rgba(255,255,255,0.5); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.top-bar .tbt { color: #fff; font-size: 0.82rem; font-weight: 700; }
+.top-bar .tbb { margin-left: auto; color: rgba(255,255,255,0.35); font-size: 0.65rem; }
+
+.page-nav {
+  background: #02283B; padding: 0 28px;
+  display: flex; align-items: stretch;
+  position: sticky; top: 41px; z-index: 190;
+  overflow-x: auto; border-bottom: 1px solid #0a3d5c;
+}
+.page-nav a {
+  color: rgba(255,255,255,0.5); font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 10px 14px; text-decoration: none;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap; display: inline-block;
+}
+.page-nav a:hover { color: #fff; }
+.page-nav a.active { color: #fff; border-bottom-color: #FF7C66; }
+
+.content { max-width: 860px; margin: 0 auto; padding: 28px 24px 80px; }
+
+/* Section wrapper */
+.section { margin-bottom: 36px; }
+.section-head {
+  background: #02283B; color: #fff;
+  padding: 14px 20px; border-radius: 8px 8px 0 0;
+  display: flex; align-items: center; gap: 12px;
+}
+.snum {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: #FF7C66; color: #fff;
+  font-size: 0.88rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.snum.blue { background: #4B4FE2; font-size: 0.7rem; }
+.snum.teal { background: #0EC38B; color: #02283B; font-size: 0.7rem; }
+.section-head h2 { font-size: 0.95rem; font-weight: 700; color: #fff; line-height: 1.3; }
+.section-head .sh-sub { font-size: 0.68rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
+.section-body {
+  background: #fff; border: 1px solid #d8e0e8;
+  border-top: none; border-radius: 0 0 8px 8px;
+  padding: 20px 22px;
+}
+
+/* Step rows */
+.step { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+.step:last-child { margin-bottom: 0; }
+.step-n {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #02283B; color: #fff;
+  font-size: 0.68rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+}
+.step-n.coral { background: #FF7C66; }
+.step-n.teal { background: #0EC38B; color: #02283B; }
+.step-body { flex: 1; font-size: 0.8rem; color: #2a3a45; line-height: 1.7; }
+.step-body strong { color: #02283B; }
+.step-body code {
+  background: #f0f4f8; padding: 1px 6px; border-radius: 3px;
+  font-size: 0.75rem; color: #0097B2; font-family: 'Courier New', monospace;
+}
+
+/* Callouts */
+.callout {
+  display: flex; gap: 10px; padding: 10px 14px;
+  border-radius: 6px; margin: 10px 0;
+  font-size: 0.78rem; line-height: 1.65;
+}
+.callout.info  { background: #edf5ff; border-left: 4px solid #0097B2; color: #1a3a5c; }
+.callout.warn  { background: #fff8ed; border-left: 4px solid #f0a500; color: #5a3d00; }
+.callout.tip   { background: #edfcf5; border-left: 4px solid #0EC38B; color: #0a3d28; }
+.callout.imp   { background: #fff0ee; border-left: 4px solid #FF7C66; color: #6b2a1e; }
+.callout-icon  { font-size: 0.95rem; flex-shrink: 0; margin-top: 1px; }
+.callout strong { font-weight: 700; display: block; margin-bottom: 1px; }
+
+/* Component blocks */
+.comp {
+  border: 1px solid #d8e0e8; border-radius: 8px;
+  overflow: hidden; margin: 14px 0;
+}
+.comp-head {
+  background: #f5f7f9; padding: 9px 14px;
+  display: flex; align-items: center; gap: 9px;
+  border-bottom: 1px solid #d8e0e8; flex-wrap: wrap;
+}
+.tag {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.05em;
+  text-transform: uppercase; white-space: nowrap;
+}
+.tag.p  { background: #4B4FE2; color: #fff; }
+.tag.c  { background: #0097B2; color: #fff; }
+.tag.o  { background: #A03291; color: #fff; }
+.comp-name { font-size: 0.82rem; font-weight: 700; color: #02283B; }
+.comp-class {
+  margin-left: auto; font-size: 0.7rem; font-weight: 600;
+  color: #0097B2; font-family: 'Courier New', monospace;
+  background: #edf5ff; padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+}
+.comp-class.none { color: #4a6070; background: #f0f0f0; }
+.comp-body { padding: 14px 16px; }
+
+/* Paste blocks */
+.paste { margin: 10px 0; border: 1px solid #d8e0e8; border-radius: 6px; overflow: hidden; }
+.paste-hd {
+  background: #011e2e; color: rgba(255,255,255,0.55);
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 5px 12px; border-bottom: 1px solid #0a3d5c;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.paste-hd em { color: #FF7C66; font-style: normal; }
+.paste-code {
+  background: #f8fafc; padding: 12px 14px;
+  font-size: 0.72rem; color: #2a3a45;
+  font-family: 'Courier New', monospace;
+  line-height: 1.7; overflow-x: auto; white-space: pre;
+  max-height: 280px; overflow-y: auto;
+}
+
+/* Tables */
+.t { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 10px 0 4px; }
+.t th { background: #02283B; color: #fff; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 7px 12px; text-align: left; }
+.t td { padding: 7px 12px; border-bottom: 1px solid #eef1f5; color: #2a3a45; vertical-align: top; }
+.t tbody tr:last-child td { border-bottom: none; }
+.t tbody tr:nth-child(even) td { background: #f8fafc; }
+.t code { background: #f0f4f8; padding: 1px 5px; border-radius: 3px; font-size: 0.7rem; color: #0097B2; font-family: 'Courier New', monospace; }
+
+/* Divider + sub-heading */
+hr { border: none; border-top: 1px solid #eef1f5; margin: 16px 0; }
+.sub { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4a6070; margin: 12px 0 6px; }
+
+/* Progress tracker */
+.tracker {
+  background: #f5f7f9; border: 1px solid #d8e0e8; border-radius: 8px;
+  padding: 14px 18px; margin-bottom: 20px;
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+.tracker-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #4a6070; margin-right: 4px; }
+.tcheck {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.74rem; color: #4a6070; font-weight: 600;
+  background: #fff; border: 1px solid #d8e0e8; border-radius: 20px;
+  padding: 4px 12px;
+}
+.tcheck::before { content: '○'; color: #d8e0e8; font-size: 0.8rem; }
+
+/* Big flow diagram */
+.flow-diagram {
+  background: #f5f7f9; border: 1px solid #d8e0e8; border-radius: 6px;
+  padding: 14px 16px; margin-bottom: 14px;
+  font-size: 0.74rem; color: #4a6070; line-height: 2.1;
+  font-family: 'Courier New', monospace;
+}
+.flow-diagram .fn { color: #02283B; font-weight: 700; }
+.flow-diagram .fc { color: #0097B2; }
+.flow-diagram .ft { color: #FF7C66; font-weight: 600; }
+.flow-diagram .fa { color: #0EC38B; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span class="tbl">Boomi for SAP Lab</span>
+  <span class="tbt">Flow Build Guide</span>
+  <span class="tbb">Open this alongside the Flow builder</span>
+</div>
+<nav class="page-nav">
+  <a href="#phase1" class="active">Phase 1 · Setup</a>
+  <a href="#phase2">Phase 2 · Template</a>
+  <a href="#phase3">Phase 3 · Lab Home</a>
+  <a href="#phase4">Phase 4 · Exercise 1</a>
+  <a href="#phase5">Phase 5 · Exercise 2</a>
+  <a href="#phase6">Phase 6 · Exercise 3</a>
+  <a href="#phase7">Phase 7 · Install Guide</a>
+</nav>
+
+<div class="content">
+
+<div class="callout tip" style="margin-bottom:20px;">
+  <span class="callout-icon">💡</span>
+  <div><strong>How this guide works</strong> Work through the phases in order. Phases 1 and 2 are done once. Phases 3–7 are one phase per Flow page. Each phase tells you exactly which components to add, what CSS class to set, and what HTML to paste into TinyMCE. Images are already wired — just paste and they load.</div>
+</div>
+
+<!-- ══════════════════ PHASE 1 — SETUP ══════════════════ -->
+<section class="section" id="phase1">
+  <div class="section-head">
+    <div class="snum blue">1</div>
+    <div>
+      <h2>Phase 1 — One-time Setup</h2>
+      <div class="sh-sub">Install the CSS theme · Create the 5 pages</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div class="sub">Install the CSS theme</div>
+    <div class="step">
+      <div class="step-n">1</div>
+      <div class="step-body">In the Flow builder go to <strong>Tenant settings → Themes</strong>. Open the theme named <strong>Domain-Expert-Team</strong> (or create it if it doesn't exist yet).</div>
+    </div>
+    <div class="step">
+      <div class="step-n">2</div>
+      <div class="step-body">In the <strong>Custom CSS</strong> field, replace all existing content by pasting the full contents of <strong>BDE-Portal-theme.css</strong> from your folder. Save the theme.</div>
+    </div>
+    <div class="callout warn">
+      <span class="callout-icon">⚠</span>
+      <div><strong>Always replace the whole file</strong> Never paste partial CSS — always replace everything in the Custom CSS field with the full BDE-Portal-theme.css contents.</div>
+    </div>
+
+    <hr>
+    <div class="sub">Create all 5 pages in your Flow app</div>
+    <div class="step">
+      <div class="step-n">3</div>
+      <div class="step-body">In your Flow app, create five pages (States). Name them exactly as shown — these names are what the nav outcomes will point to.</div>
+    </div>
+    <table class="t">
+      <thead><tr><th>#</th><th>Page name in Flow</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>Lab Home</code></td></tr>
+        <tr><td>2</td><td><code>Exercise 1</code></td></tr>
+        <tr><td>3</td><td><code>Exercise 2</code></td></tr>
+        <tr><td>4</td><td><code>Exercise 3</code></td></tr>
+        <tr><td>5</td><td><code>Installation Guide</code></td></tr>
+      </tbody>
+    </table>
+    <div class="callout info" style="margin-top:10px;">
+      <span class="callout-icon">ℹ</span>
+      <div>Create all 5 pages <em>before</em> building any content. The nav outcomes need the target pages to exist so you can wire them in Phase 2.</div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════ PHASE 2 — TEMPLATE ══════════════════ -->
+<section class="section" id="phase2">
+  <div class="section-head">
+    <div class="snum blue">2</div>
+    <div>
+      <h2>Phase 2 — Build the Nav Template</h2>
+      <div class="sh-sub">Wire the nav once · Duplicate for every page · Saves ~20 minutes</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <p style="font-size:0.8rem;color:#2a3a45;line-height:1.7;margin-bottom:14px;">Every page shares the same top nav component. Rather than wiring 5 nav buttons on each of 5 pages, you build it once on Lab Home, then <strong>duplicate the page four times</strong>. Each duplicate already has the nav wired — you just update the active button and add the page content underneath.</p>
+
+    <div class="comp">
+      <div class="comp-head">
+        <span class="tag p">Presentation</span>
+        <span class="comp-name">Component 1 — Page Header (nav template)</span>
+        <span class="comp-class">page-header</span>
+      </div>
+      <div class="comp-body">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div class="step-body">Go to the <strong>Lab Home</strong> page. Add a <strong>Presentation</strong> component. In Properties, set CSS Class to <code>page-header</code>.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">2</div>
+          <div class="step-body">Open TinyMCE source mode (<code>&lt;/&gt;</code> button in the toolbar). Paste the HTML below, then click OK.</div>
+        </div>
+        <div class="paste">
+          <div class="paste-hd">TinyMCE Source — paste this into the page-header Presentation</div>
+          <div class="paste-code">&lt;nav class="header-nav"&gt;&lt;/nav&gt;
+&lt;div class="header-body"&gt;
+  &lt;span class="eyebrow"&gt;Hands-on Lab &amp;middot; Intermediate&lt;/span&gt;
+  &lt;h1&gt;Boomi for SAP&lt;/h1&gt;
+  &lt;p&gt;Connect SAP S/4HANA to Salesforce and databases using the Boomi for SAP connector.
+  Three progressive exercises covering BAPI invocation, Table Services,
+  and real-time Business Object Events.&lt;/p&gt;
+  &lt;div class="header-badges"&gt;
+    &lt;span class="hbadge blue"&gt;~2.5 hours&lt;/span&gt;
+    &lt;span class="hbadge green"&gt;Intermediate&lt;/span&gt;
+    &lt;span class="hbadge yellow"&gt;3 Exercises&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</div>
+        </div>
+
+        <hr>
+        <div class="sub">Add the 5 nav outcome buttons to this Presentation</div>
+        <div class="step">
+          <div class="step-n">3</div>
+          <div class="step-body">Add <strong>5 Outcome buttons</strong> to the page-header Presentation. Use the table below for labels, CSS classes, and target pages. All 5 target pages already exist from Phase 1.</div>
+        </div>
+        <table class="t">
+          <thead><tr><th>Button label</th><th>CSS Class on button</th><th>Points to page</th></tr></thead>
+          <tbody>
+            <tr><td>Lab Home</td><td><code>nav-header-btn active</code></td><td>Lab Home</td></tr>
+            <tr><td>Exercise 1</td><td><code>nav-header-btn</code></td><td>Exercise 1</td></tr>
+            <tr><td>Exercise 2</td><td><code>nav-header-btn</code></td><td>Exercise 2</td></tr>
+            <tr><td>Exercise 3</td><td><code>nav-header-btn</code></td><td>Exercise 3</td></tr>
+            <tr><td>Installation Guide</td><td><code>nav-header-btn</code></td><td>Installation Guide</td></tr>
+          </tbody>
+        </table>
+        <div class="callout info" style="margin-top:10px;">
+          <span class="callout-icon">ℹ</span>
+          <div><strong>How active works</strong> The <code>active</code> class on the button adds the coral underline and white text. Only the button for the <em>current page</em> gets it. When you duplicate this page, you'll move the <code>active</code> class to the correct button for that page.</div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+    <div class="sub">Duplicate the page four times</div>
+    <div class="step">
+      <div class="step-n">4</div>
+      <div class="step-body">On the Flow canvas, right-click (or use the menu on) the <strong>Lab Home</strong> state and choose <strong>Copy</strong> or <strong>Duplicate</strong>. Do this four times to create your four remaining page templates.</div>
+    </div>
+    <div class="step">
+      <div class="step-n">5</div>
+      <div class="step-body">Rename each duplicate to match the page names from Phase 1: <code>Exercise 1</code>, <code>Exercise 2</code>, <code>Exercise 3</code>, <code>Installation Guide</code>.</div>
+    </div>
+    <div class="step">
+      <div class="step-n">6</div>
+      <div class="step-body">On each duplicate, open the page-header Presentation and update the nav outcome button CSS classes so the <strong>correct button has <code>active</code></strong> and the others don't. See the table below.</div>
+    </div>
+    <table class="t">
+      <thead><tr><th>Page</th><th>Button that gets <code>nav-header-btn active</code></th><th>All others get</th></tr></thead>
+      <tbody>
+        <tr><td>Lab Home</td><td>Lab Home</td><td><code>nav-header-btn</code></td></tr>
+        <tr><td>Exercise 1</td><td>Exercise 1</td><td><code>nav-header-btn</code></td></tr>
+        <tr><td>Exercise 2</td><td>Exercise 2</td><td><code>nav-header-btn</code></td></tr>
+        <tr><td>Exercise 3</td><td>Exercise 3</td><td><code>nav-header-btn</code></td></tr>
+        <tr><td>Installation Guide</td><td>Installation Guide</td><td><code>nav-header-btn</code></td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip" style="margin-top:10px;">
+      <span class="callout-icon">💡</span>
+      <div><strong>After this phase</strong> all 5 pages have a working nav header. Phases 3–7 just add content <em>below</em> Component 1 on each page. You won't touch the nav again.</div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════ PHASE 3 — LAB HOME ══════════════════ -->
+<section class="section" id="phase3">
+  <div class="section-head">
+    <div class="snum">3</div>
+    <div>
+      <h2>Phase 3 — Lab Home page content</h2>
+      <div class="sh-sub">Add below Component 1 (nav is already done)</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div class="flow-diagram">
+<span class="fn">Component 1</span>  <span class="fc">page-header</span>       ✓ Already built in Phase 2
+<span class="fn">Component 2</span>  <span class="fc">bio-section-label</span>  ← Add now  (the "EXERCISES" eyebrow strip)
+<span class="fn">Component 3</span>  Inline Container  <span class="fc">home-layout</span>  ← Add now  (2-col grid)
+  ├── Left  Presentation  <span class="ft">(no class)</span>  ← Exercise cards + Prerequisites
+  └── Right Presentation  <span class="ft">(no class)</span>  ← Lab Details sidebar
+    </div>
+
+    <!-- Component 2 -->
+    <div class="comp">
+      <div class="comp-head">
+        <span class="tag p">Presentation</span>
+        <span class="comp-name">Component 2 — Section eyebrow</span>
+        <span class="comp-class">bio-section-label</span>
+      </div>
+      <div class="comp-body">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div class="step-body">Add a <strong>Presentation</strong> below the header. CSS Class: <code>bio-section-label</code>. Paste the one line below.</div>
+        </div>
+        <div class="paste">
+          <div class="paste-hd">TinyMCE Source</div>
+          <div class="paste-code">&lt;p&gt;Exercises&lt;/p&gt;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Component 3 — Inline Container -->
+    <div class="comp">
+      <div class="comp-head">
+        <span class="tag c">Inline Container</span>
+        <span class="comp-name">Component 3 — Two-column layout</span>
+        <span class="comp-class">home-layout</span>
+      </div>
+      <div class="comp-body">
+        <div class="step">
+          <div class="step-n">2</div>
+          <div class="step-body">Add an <strong>Inline Container</strong>. CSS Class: <code>home-layout</code>. This creates a grid with the main content on the left and a 260px sidebar on the right.</div>
+        </div>
+
+        <hr>
+        <div class="sub">Left Presentation inside the container — exercise cards</div>
+        <div class="step">
+          <div class="step-n">3</div>
+          <div class="step-body">Inside the container, add a <strong>Presentation</strong> with <strong>no CSS class</strong>. Paste the HTML below.</div>
+        </div>
+        <div class="paste">
+          <div class="paste-hd">TinyMCE Source — Left Presentation <em>→ full version in flow-page-lab-home.html</em></div>
+          <div class="paste-code">&lt;div class="exercise-card"&gt;
+  &lt;div class="ex-num"&gt;1&lt;/div&gt;
+  &lt;div class="ex-info"&gt;
+    &lt;h3&gt;Creating a Sales Order in SAP from a Salesforce Opportunity&lt;/h3&gt;
+    &lt;p&gt;Use the Boomi for SAP connector to call &lt;code&gt;BAPI_SALESORDER_CREATEFROMDAT2&lt;/code&gt;
+    and map fields from a Salesforce XML opportunity payload to an SAP Sales Order.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class="ex-meta"&gt;&lt;span&gt;~45 min&lt;/span&gt;&lt;span&gt;8 steps&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="exercise-card"&gt;
+  &lt;div class="ex-num"&gt;2&lt;/div&gt;
+  &lt;div class="ex-info"&gt;
+    &lt;h3&gt;Table Services: SAP Sales Orders to a Database&lt;/h3&gt;
+    &lt;p&gt;Create a custom Table Service in the Boomi for SAP UI joining &lt;code&gt;VBAK&lt;/code&gt;
+    and &lt;code&gt;VBAP&lt;/code&gt;, then build a process to query it and load results into a database.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class="ex-meta"&gt;&lt;span&gt;~60 min&lt;/span&gt;&lt;span&gt;8 steps&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="exercise-card"&gt;
+  &lt;div class="ex-num"&gt;3&lt;/div&gt;
+  &lt;div class="ex-info"&gt;
+    &lt;h3&gt;Business Object Events: Real-time SAP Notifications&lt;/h3&gt;
+    &lt;p&gt;Subscribe to SAP Sales Order &lt;em&gt;CHANGED&lt;/em&gt; events, then build a Web Services
+    Server listener process that receives event payloads in real time.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class="ex-meta"&gt;&lt;span&gt;~45 min&lt;/span&gt;&lt;span&gt;6 steps&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="prereq-card"&gt;
+  &lt;h2&gt;Prerequisites&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Access to Boomi AtomSphere (&lt;a href="https://platform.boomi.com" target="_blank"&gt;platform.boomi.com&lt;/a&gt;) &amp;mdash; credentials provided by your trainer&lt;/li&gt;
+    &lt;li&gt;Access to the Boomi for SAP UI (&lt;a href="https://boomiforsap.demo.boomi.com:44300/zbx/home" target="_blank"&gt;boomiforsap.demo.boomi.com&lt;/a&gt;)&lt;/li&gt;
+    &lt;li&gt;Basic familiarity with the Boomi AtomSphere canvas&lt;/li&gt;
+    &lt;li&gt;Assigned user number (USERXX) &amp;mdash; provided by your trainer&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</div>
+        </div>
+
+        <hr>
+        <div class="sub">Right Presentation inside the container — Lab Details sidebar</div>
+        <div class="step">
+          <div class="step-n">4</div>
+          <div class="step-body">Add a second <strong>Presentation</strong> inside the container with <strong>no CSS class</strong>. Paste the HTML below.</div>
+        </div>
+        <div class="paste">
+          <div class="paste-hd">TinyMCE Source — Right Presentation (Lab Details)</div>
+          <div class="paste-code">&lt;div class="lab-details-card"&gt;
+  &lt;h3&gt;Lab Details&lt;/h3&gt;
+  &lt;div class="lab-detail"&gt;
+    &lt;div class="detail-label"&gt;Products Covered&lt;/div&gt;
+    &lt;div class="detail-value"&gt;Boomi for SAP, Boomi AtomSphere, SAP S/4HANA&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="lab-detail"&gt;
+    &lt;div class="detail-label"&gt;Integration Patterns&lt;/div&gt;
+    &lt;div class="detail-value"&gt;BAPI, Table Service (OData-like), Business Object Events&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="lab-detail"&gt;
+    &lt;div class="detail-label"&gt;Total Duration&lt;/div&gt;
+    &lt;div class="detail-value"&gt;~2.5 hours (hands-on)&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="lab-detail"&gt;
+    &lt;div class="detail-label"&gt;Level&lt;/div&gt;
+    &lt;div class="detail-value"&gt;Intermediate &amp;mdash; some prior Boomi experience recommended&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════ PHASE 4 — EXERCISE 1 ══════════════════ -->
+<section class="section" id="phase4">
+  <div class="section-head">
+    <div class="snum">4</div>
+    <div>
+      <h2>Phase 4 — Exercise 1 page content</h2>
+      <div class="sh-sub">Creating a Sales Order in SAP from a Salesforce Opportunity · 8 steps</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div class="flow-diagram">
+<span class="fn">Component 1</span>  <span class="fc">page-header</span>     ✓ Already done — update active button to "Exercise 1" + update header text
+<span class="fn">Component 2</span>  Presentation     <span class="ft">(no CSS class)</span>  ← Add now — paste EVERYTHING from flow-page-exercise-1.html
+               Contains: step-chip nav strip at top, then all 8 step sections below
+    </div>
+
+    <div class="callout imp">
+      <span class="callout-icon">🔧</span>
+      <div><strong>Already built this page?</strong> If you already have an Inline Container with two Presentations on this page, <strong>delete the Inline Container entirely</strong>. The new layout is just a single Presentation — no Inline Container needed.</div>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div><strong>Before you add components</strong> First update the page-header on this page: find the <strong>Exercise 1</strong> nav outcome button and change its CSS class to <code>nav-header-btn active</code>. Change the Lab Home button back to <code>nav-header-btn</code>. Then update the eyebrow and h1 in TinyMCE (see below).</div>
+    </div>
+
+    <!-- Update header -->
+    <div class="comp">
+      <div class="comp-head">
+        <span class="tag p">Presentation</span>
+        <span class="comp-name">Component 1 — Update header text</span>
+        <span class="comp-class">page-header</span>
+      </div>
+      <div class="comp-body">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div class="step-body">Open TinyMCE source mode on the page-header. Replace the <code>&lt;div class="header-body"&gt;</code> section with the text below. Leave the <code>&lt;nav&gt;</code> tag untouched.</div>
+        </div>
+        <div class="paste">
+          <div class="paste-hd">Replace header-body content only</div>
+          <div class="paste-code">&lt;div class="header-body"&gt;
+  &lt;span class="eyebrow"&gt;Exercise 1 of 3 &amp;middot; ~45 min &amp;middot; 8 Steps&lt;/span&gt;
+  &lt;h1&gt;Creating a Sales Order in SAP from a Salesforce Opportunity&lt;/h1&gt;
+&lt;/div&gt;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Component 2 — single Presentation -->
+    <div class="comp">
+      <div class="comp-head">
+        <span class="tag p">Presentation</span>
+        <span class="comp-name">Component 2 — All exercise content</span>
+        <span class="comp-class none">(no CSS class)</span>
+      </div>
+      <div class="comp-body">
+        <div class="step">
+          <div class="step-n">2</div>
+          <div class="step-body">Add a <strong>Presentation</strong> below the header. Leave the CSS Class field <strong>empty</strong>.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">3</div>
+          <div class="step-body">Open <strong>flow-page-exercise-1.html</strong> in your browser. Find the comment <code>&lt;!-- COMPONENT 2 — exercise content --&gt;</code>. Select and copy <strong>everything inside</strong> the white card below it — from the <code>&lt;div class="ex-step-nav"&gt;</code> all the way down through the last <code>&lt;/div&gt;</code> of Step 8. Paste into TinyMCE source mode.</div>
+        </div>
+        <div class="callout info">
+          <span class="callout-icon">ℹ</span>
+          <div><strong>What you're pasting</strong> The content starts with a horizontal step-chip nav strip (Overview → 1 → 2 → … → 8) and is followed by all step sections stacked full-width. The step chips are anchor links — clicking them scrolls to that step.</div>
+        </div>
+        <div class="callout tip">
+          <span class="callout-icon">💡</span>
+          <div><strong>Images load automatically</strong> All 32 screenshots are wired to live GitHub URLs. No image steps needed.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════ PHASE 5 — EXERCISE 2 ══════════════════ -->
+<section class="section" id="phase5">
+  <div class="section-head">
+    <div class="snum">5</div>
+    <div>
+      <h2>Phase 5 — Exercise 2 page content</h2>
+      <div class="sh-sub">Table Services: SAP Sales Orders to a Database · 2 sections · 7 steps</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div class="flow-diagram">
+<span class="fn">Component 1</span>  <span class="fc">page-header</span>     ✓ Already done — update active button to "Exercise 2" + update header text
+<span class="fn">Component 2</span>  Presentation     <span class="ft">(no CSS class)</span>  ← Add now — paste EVERYTHING from flow-page-exercise-2.html
+               Contains: step-chip nav (Overview | S1 1 2 3 | S2 4 5 6 7), then all steps
+    </div>
+
+    <div class="comp">
+      <div class="comp-head">
+        <span class="tag p">Presentation</span>
+        <span class="comp-name">Component 1 — Update header text</span>
+        <span class="comp-class">page-header</span>
+      </div>
+      <div class="comp-body">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div class="step-body">Update the active nav button to <strong>Exercise 2</strong>. Replace the header-body content in TinyMCE:</div>
+        </div>
+        <div class="paste">
+          <div class="paste-hd">Replace header-body content only</div>
+          <div class="paste-code">&lt;div class="header-body"&gt;
+  &lt;span class="eyebrow"&gt;Exercise 2 of 3 &amp;middot; ~60 min &amp;middot; 2 Sections&lt;/span&gt;
+  &lt;h1&gt;Table Services: SAP Sales Orders to a Database&lt;/h1&gt;
+&lt;/div&gt;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp">
+      <div class="comp-head">
+        <span class="tag p">Presentation</span>
+        <span class="comp-name">Component 2 — All exercise content</span>
+        <span class="comp-class none">(no CSS class)</span>
+      </div>
+      <div class="comp-body">
+        <div class="step">
+          <div class="step-n">2</div>
+          <div class="step-body">Add a <strong>Presentation</strong> below the header. Leave CSS Class <strong>empty</strong>.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">3</div>
+          <div class="step-body">Open <strong>flow-page-exercise-2.html</strong>. Find <code>&lt;!-- COMPONENT 2 — exercise content --&gt;</code>. Copy everything inside the white card — from <code>&lt;div class="ex-step-nav"&gt;</code> through the last step's closing <code>&lt;/div&gt;</code>. Paste into TinyMCE source mode.</div>
+        </div>
+        <div class="callout info">
+          <span class="callout-icon">ℹ</span>
+          <div><strong>Step chip nav for Exercise 2</strong> The strip shows: <strong>Overview</strong> · S1 label · chips 1 2 3 · S2 label · chips 4 5 6 7. Each chip scrolls to the matching step section.</div>
+        </div>
+        <div class="callout tip">
+          <span class="callout-icon">💡</span>
+          <div><strong>Images load automatically</strong> All 37 screenshots are pre-wired to GitHub URLs.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════ PHASE 6 — EXERCISE 3 ══════════════════ -->
+<section class="section" id="phase6">
+  <div class="section-head">
+    <div class="snum">6</div>
+    <div>
+      <h2>Phase 6 — Exercise 3 page content</h2>
+      <div class="sh-sub">Business Object Events: Real-time SAP Notifications · 3 sections · 5 steps</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div class="flow-diagram">
+<span class="fn">Component 1</span>  <span class="fc">page-header</span>     ✓ Already done — update active button to "Exercise 3" + update header text
+<span class="fn">Component 2</span>  Presentation     <span class="ft">(no CSS class)</span>  ← Add now — paste EVERYTHING from flow-page-exercise-3.html
+               Contains: step-chip nav (Overview | S1 1 2 | S2 3 4 | S3 5), then all steps
+    </div>
+
+    <div class="comp">
+      <div class="comp-head">
+        <span class="tag p">Presentation</span>
+        <span class="comp-name">Component 1 — Update header text</span>
+        <span class="comp-class">page-header</span>
+      </div>
+      <div class="comp-body">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div class="step-body">Update the active nav button to <strong>Exercise 3</strong>. Replace the header-body content:</div>
+        </div>
+        <div class="paste">
+          <div class="paste-hd">Replace header-body content only</div>
+          <div class="paste-code">&lt;div class="header-body"&gt;
+  &lt;span class="eyebrow"&gt;Exercise 3 of 3 &amp;middot; ~45 min &amp;middot; 3 Sections&lt;/span&gt;
+  &lt;h1&gt;Business Object Events: Real-time SAP Notifications&lt;/h1&gt;
+&lt;/div&gt;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp">
+      <div class="comp-head">
+        <span class="tag p">Presentation</span>
+        <span class="comp-name">Component 2 — All exercise content</span>
+        <span class="comp-class none">(no CSS class)</span>
+      </div>
+      <div class="comp-body">
+        <div class="step">
+          <div class="step-n">2</div>
+          <div class="step-body">Add a <strong>Presentation</strong> below the header. Leave CSS Class <strong>empty</strong>.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">3</div>
+          <div class="step-body">Open <strong>flow-page-exercise-3.html</strong>. Find <code>&lt;!-- COMPONENT 2 — exercise content --&gt;</code>. Copy everything inside the white card — from <code>&lt;div class="ex-step-nav"&gt;</code> through the last step's closing <code>&lt;/div&gt;</code>. Paste into TinyMCE source mode.</div>
+        </div>
+        <div class="callout tip">
+          <span class="callout-icon">💡</span>
+          <div><strong>Images load automatically</strong> All 22 screenshots are pre-wired to GitHub URLs.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+          <div class="step-n">5</div>
+          <div class="step-body">Open <strong>flow-page-exercise-3.html</strong>. Find <code>&lt;!-- RIGHT: All step content --&gt;</code>. Copy everything from <code>&lt;div id="overview"&gt;</code> to the end of the last step section. Paste into TinyMCE source mode.</div>
+        </div>
+        <div class="callout tip">
+          <span class="callout-icon">💡</span>
+          <div><strong>Images load automatically</strong> All 22 screenshots in Exercise 3 are pre-wired.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════ PHASE 7 — INSTALL GUIDE ══════════════════ -->
+<section class="section" id="phase7">
+  <div class="section-head">
+    <div class="snum">7</div>
+    <div>
+      <h2>Phase 7 — Installation Guide page content</h2>
+      <div class="sh-sub">Admin reference · Appendix leave-behind</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div class="flow-diagram">
+<span class="fn">Component 1</span>  <span class="fc">page-header</span>       ✓ Already done — update active button to "Installation Guide" + update header text
+<span class="fn">Components 2+</span>  Presentations     ← One per installation phase (paste from boomi-for-sap-installation-guide.html)
+    </div>
+
+    <!-- Update header -->
+    <div class="comp">
+      <div class="comp-head">
+        <span class="tag p">Presentation</span>
+        <span class="comp-name">Component 1 — Update header text</span>
+        <span class="comp-class">page-header</span>
+      </div>
+      <div class="comp-body">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div class="step-body">Update the active nav button to <strong>Installation Guide</strong>. Replace the header-body content:</div>
+        </div>
+        <div class="paste">
+          <div class="paste-hd">Replace header-body content only</div>
+          <div class="paste-code">&lt;div class="header-body"&gt;
+  &lt;span class="eyebrow"&gt;Boomi for SAP &amp;middot; Add-On Installation &amp;middot; Admin Reference&lt;/span&gt;
+  &lt;h1&gt;SAP Add-On Installation Guide&lt;/h1&gt;
+  &lt;p&gt;Step-by-step guide for installing and configuring the Boomi for SAP add-on
+  in your SAP system. Required before running lab exercises.&lt;/p&gt;
+&lt;/div&gt;</div>
+        </div>
+        <div class="step" style="margin-top:12px;">
+          <div class="step-n">2</div>
+          <div class="step-body">Add the installation phase sections from <strong>boomi-for-sap-installation-guide.html</strong> as additional Presentations below. One Presentation per phase works well, or combine them into a single Presentation — either way is fine.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════ QUICK REF ══════════════════ -->
+<section class="section" id="ref">
+  <div class="section-head">
+    <div class="snum teal">?</div>
+    <div>
+      <h2>Quick Reference</h2>
+      <div class="sh-sub">CSS classes · Common issues</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div class="sub">CSS Classes used in this lab</div>
+    <table class="t" style="margin-bottom:16px;">
+      <thead><tr><th>Component type</th><th>CSS Class</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>Presentation</td><td><code>page-header</code></td><td>Dark navy header — nav strip + gradient hero</td></tr>
+        <tr><td>Presentation</td><td><code>bio-section-label</code></td><td>Coral eyebrow strip (used for "EXERCISES" label)</td></tr>
+        <tr><td>Presentation</td><td><code>exercise-sidebar</code></td><td>Sticky TOC — navy header, anchor link list</td></tr>
+        <tr><td>Presentation</td><td><code>exercise-content</code></td><td>Right column — transparent, step sections stack inside</td></tr>
+        <tr><td>Presentation</td><td><em>(no class)</em></td><td>Default white card — used for exercise cards and lab details</td></tr>
+        <tr><td>Inline Container</td><td><code>home-layout</code></td><td>Grid: content left, 260px sidebar right</td></tr>
+        <tr><td>Inline Container</td><td><code>exercise-layout</code></td><td>Grid: 260px sidebar left, content right</td></tr>
+        <tr><td>Outcome button</td><td><code>nav-header-btn</code></td><td>Top nav button — inactive state</td></tr>
+        <tr><td>Outcome button</td><td><code>nav-header-btn active</code></td><td>Top nav button — active state (coral underline)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub">If something looks wrong</div>
+    <div class="callout warn">
+      <span class="callout-icon">⚠</span>
+      <div><strong>Columns stacking vertically instead of side by side</strong> The CSS class on the Inline Container is missing or misspelled. Double-check <code>home-layout</code> or <code>exercise-layout</code> is set on the container, not on one of the Presentations inside it.</div>
+    </div>
+    <div class="callout warn" style="margin-top:8px;">
+      <span class="callout-icon">⚠</span>
+      <div><strong>Sidebar not sticking when you scroll</strong> The sticky behaviour comes from the <code>exercise-sidebar</code> class on the left Presentation. If the sidebar scrolls away with the page, check that class is set correctly.</div>
+    </div>
+    <div class="callout warn" style="margin-top:8px;">
+      <span class="callout-icon">⚠</span>
+      <div><strong>TOC links don't scroll to the right place</strong> TinyMCE may have stripped the <code>id</code> attributes from the step section divs. Re-open TinyMCE source mode on the right Presentation and check that <code>&lt;div id="step1"&gt;</code> etc. are still there. If they were stripped, add <code>&lt;a name="step1"&gt;&lt;/a&gt;</code> just before each step section as an alternative.</div>
+    </div>
+    <div class="callout warn" style="margin-top:8px;">
+      <span class="callout-icon">⚠</span>
+      <div><strong>Images not loading</strong> The images point to a public GitHub repo. If the repo has been made private, images will 404. Check the repo visibility at github.com/Boomi-Global-Field-Engineering/boomilabs.</div>
+    </div>
+
+  </div>
+</section>
+
+</div>
+</body>
+</html>
