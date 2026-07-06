@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boomi for SAP — Installation Guide</title>
+  <style>
+/* ============================================================
+   Boomi Domain Expert Team — Theme CSS (BDE-Portal-theme.css)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Poppins', Arial, sans-serif !important;
+  background-color: #f5f7f9;
+  color: #02283B;
+}
+
+h1, h2, h3, h4 {
+  color: #02283B;
+  font-family: 'Poppins', Arial, sans-serif !important;
+}
+
+.page-component-presentation {
+  background-color: #ffffff;
+  border: 1px solid #d8e0e8;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 1px 4px rgba(2, 40, 59, 0.06);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.page-component-presentation:hover {
+  box-shadow: 0 4px 16px rgba(2, 40, 59, 0.12);
+}
+
+.page-component-presentation h2 {
+  color: #02283B;
+  border-bottom: 3px solid #FF7C66;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.card h2, .card h3 {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* PAGE HEADER */
+.page-component-presentation.page-header {
+  background: #02283B !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 0 !important;
+  margin-bottom: 1.25rem !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 20px rgba(2, 40, 59, 0.2) !important;
+}
+
+.page-component-presentation.page-header:hover {
+  transform: none !important;
+  box-shadow: 0 4px 20px rgba(2, 40, 59, 0.2) !important;
+}
+
+.page-component-presentation.page-header .header-nav {
+  background-color: #011e2e;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.page-component-presentation.page-header .header-nav a,
+.page-component-presentation.page-header .header-nav a:visited {
+  color: rgba(255,255,255,0.65) !important;
+  text-decoration: none !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  padding: 0.8rem 1.1rem !important;
+  display: inline-block !important;
+  border-bottom: 2px solid transparent !important;
+  transition: color 0.15s, border-bottom-color 0.15s !important;
+}
+
+.page-component-presentation.page-header .header-nav a:hover {
+  color: #ffffff !important;
+  border-bottom-color: #FF7C66 !important;
+}
+
+.page-component-presentation.page-header .header-body {
+  background: linear-gradient(135deg, #02283B 0%, #0a3d5c 100%);
+  padding: 2.5rem 2rem;
+}
+
+.page-component-presentation.page-header .header-body .eyebrow {
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: #FF7C66 !important;
+  margin-bottom: 0.6rem !important;
+  display: block !important;
+}
+
+.page-component-presentation.page-header .header-body h1,
+.page-component-presentation.page-header .header-body h2,
+.page-component-presentation.page-header .header-body h3 {
+  color: #ffffff !important;
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  margin-bottom: 0.6rem !important;
+  border: none !important;
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  font-family: 'Poppins', Arial, sans-serif !important;
+}
+
+.page-component-presentation.page-header .header-body p {
+  color: rgba(255,255,255,0.65) !important;
+  font-size: 0.95rem !important;
+  line-height: 1.65 !important;
+  max-width: 600px !important;
+  margin: 0 !important;
+}
+
+/* INLINE CONTAINER */
+.container-inline { width: 100%; }
+
+.container-inline > .container-content {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 1rem;
+  align-items: stretch !important;
+  width: 100%;
+}
+
+.container-inline .page-component-presentation {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  margin-bottom: 0 !important;
+  border: 1px solid #d8e0e8 !important;
+  border-top: 3px solid #FF7C66 !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+.container-inline .page-component-presentation:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(2, 40, 59, 0.13) !important;
+}
+
+.container-inline .page-component-presentation p:first-child {
+  color: #FF7C66;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+/* INTRO SECTION */
+.intro-section > .container-content {
+  align-items: stretch !important;
+  gap: 0 !important;
+  border: 1px solid #d8e0e8 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  box-shadow: 0 1px 4px rgba(2, 40, 59, 0.06) !important;
+  min-height: 400px !important;
+}
+
+.intro-section .page-component-presentation {
+  border: none !important;
+  border-top: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  justify-content: space-between !important;
+}
+
+.intro-section .page-component-presentation:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.intro-section .page-component-presentation:first-child {
+  flex: 0 0 42% !important;
+  max-width: 42% !important;
+  border-right: 1px solid #d8e0e8 !important;
+}
+
+.intro-section .page-component-presentation:last-child {
+  flex: 0 0 58% !important;
+  max-width: 58% !important;
+}
+
+.intro-section .page-component-presentation p:first-child {
+  color: #02283B !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  margin-bottom: inherit !important;
+}
+
+/* FEATURED PLAY CARD */
+.page-component-presentation.featured-play {
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #d8e0e8 !important;
+  border-top: none !important;
+  margin-top: 1.5rem !important;
+}
+
+.page-component-presentation.featured-play:hover {
+  transform: none !important;
+}
+
+.featured-play .fp-header {
+  background: #02283B;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.featured-play .fp-eyebrow {
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: #FF7C66 !important;
+  margin: 0 0 0.3rem !important;
+}
+
+.featured-play .fp-header h3 {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  border: none !important;
+  border-bottom: none !important;
+  padding: 0 !important;
+  line-height: 1.3 !important;
+}
+
+.featured-play .fp-badge {
+  background: #FF7C66;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.featured-play .fp-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid #d8e0e8;
+}
+
+.featured-play .fp-hook {
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: #02283B !important;
+  line-height: 1.4 !important;
+  margin: 0 0 0.5rem !important;
+}
+
+.featured-play .fp-sub {
+  font-size: 0.8rem !important;
+  color: #4a6070 !important;
+  line-height: 1.7 !important;
+  margin: 0 0 1rem !important;
+}
+
+.featured-play .fp-triggers {
+  border-left: 3px solid #FF7C66;
+  padding-left: 0.85rem;
+  margin: 0 0 1.25rem !important;
+}
+
+.featured-play .fp-trigger-label {
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: #FF7C66 !important;
+  margin: 0 0 0.4rem !important;
+}
+
+.featured-play .fp-trigger {
+  font-size: 0.78rem !important;
+  color: #4a6070 !important;
+  line-height: 1.7 !important;
+  margin: 0 !important;
+}
+
+.featured-play .fp-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.featured-play .fp-btn-primary,
+.featured-play .fp-btn-primary:visited {
+  display: inline-block;
+  background: #FF7C66 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 0.45rem 1.1rem !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+}
+
+.featured-play .fp-btn-ghost,
+.featured-play .fp-btn-ghost:visited {
+  display: inline-block;
+  background: #ffffff !important;
+  color: #02283B !important;
+  border: 1px solid #d8e0e8 !important;
+  border-radius: 6px !important;
+  padding: 0.45rem 1.1rem !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+}
+
+.featured-play .fp-btn-ghost:hover {
+  border-color: #FF7C66 !important;
+  background: #fff5f3 !important;
+}
+
+.featured-play .fp-btn-highspot,
+.featured-play .fp-btn-highspot:visited {
+  display: inline-block;
+  background: #0097B2 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 0.45rem 1.1rem !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+}
+
+.featured-play .fp-rule {
+  background: #f5f7f9;
+  border: 1px solid #d8e0e8;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.featured-play .fp-rule-label {
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: #4a6070 !important;
+  margin: 0 0 0.3rem !important;
+}
+
+.featured-play .fp-rule-text {
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  color: #02283B !important;
+  margin: 0 !important;
+  line-height: 1.45 !important;
+}
+
+.featured-play .fp-steps { margin: 0; }
+
+.featured-play .fp-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 0.85rem;
+}
+
+.featured-play .fp-step:last-child { margin-bottom: 0; }
+
+.featured-play .fp-step-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #02283B;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.featured-play .fp-step p {
+  font-size: 0.78rem !important;
+  color: #4a6070 !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+}
+
+.featured-play .fp-step strong {
+  color: #02283B;
+  font-weight: 700;
+}
+
+.featured-play .fp-assets {
+  padding: 1rem 1.5rem;
+}
+
+.featured-play .fp-assets-label {
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: #4a6070 !important;
+  margin: 0 0 0.6rem !important;
+}
+
+.featured-play .fp-assets-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.featured-play .fp-asset,
+.featured-play .fp-asset:visited {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f5f7f9;
+  border: 1px solid #d8e0e8;
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: #02283B !important;
+  text-decoration: none !important;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.featured-play .fp-asset::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FF7C66;
+  flex-shrink: 0;
+}
+
+.featured-play .fp-asset:hover {
+  border-color: #FF7C66 !important;
+  background: #fff5f3 !important;
+}
+
+/* PLAY TILES */
+.play-tile .tile-triggers {
+  border-left: 2px solid #FF7C66;
+  padding-left: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+
+.play-tile .tile-triggers ul {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.play-tile .tile-triggers li {
+  font-size: 0.72rem !important;
+  color: #4a6070 !important;
+  line-height: 1.65 !important;
+  list-style: none !important;
+  padding-left: 0 !important;
+}
+
+.play-tile .tile-footer {
+  border-top: 1px solid #d8e0e8;
+  padding-top: 0.75rem;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+/* ── Standalone page wrapper ── */
+.bde-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+/* ── Inline code / tcode styles ── */
+code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  background: #f0f4f8;
+  color: #02283B;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid #d8e0e8;
+}
+
+.tcode {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #02283B;
+  color: #FF7C66;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+/* ── File reference table (used inside fp-rule or fp-assets) ── */
+.file-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+.file-table th {
+  background: #02283B;
+  color: rgba(255,255,255,0.85);
+  padding: 6px 10px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+}
+.file-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #edf0f4;
+  color: #4a6070;
+  vertical-align: top;
+}
+.file-table tr:last-child td { border-bottom: none; }
+.file-table code { background: none; border: none; padding: 0; color: #4B4FE2; font-size: 0.75rem; }
+
+/* ── Warning / tip inline boxes (inside fp-body columns) ── */
+.install-note {
+  background: #fff8f7;
+  border-left: 3px solid #FF7C66;
+  border-radius: 0 6px 6px 0;
+  padding: 0.65rem 0.85rem;
+  margin-top: 0.85rem;
+  font-size: 0.75rem;
+  color: #4a6070;
+  line-height: 1.6;
+}
+
+.install-tip {
+  background: #edfbf5;
+  border-left: 3px solid #0EC38B;
+  border-radius: 0 6px 6px 0;
+  padding: 0.65rem 0.85rem;
+  margin-top: 0.85rem;
+  font-size: 0.75rem;
+  color: #4a6070;
+  line-height: 1.6;
+}
+
+.install-note strong, .install-tip strong { color: #02283B; }
+
+/* ── Success banner at bottom ── */
+.success-banner {
+  background: linear-gradient(135deg, #02283B 0%, #0a3d5c 100%);
+  border-radius: 10px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  margin-top: 1.5rem;
+  border-top: 4px solid #0EC38B;
+}
+.success-banner h3 {
+  color: #ffffff;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  border: none !important;
+}
+.success-banner p {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+.success-banner .fp-btn-highspot {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1.25rem;
+  background: #FF7C66 !important;
+  color: #fff !important;
+  padding: 0.55rem 1.4rem !important;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+  </style>
+</head>
+<body>
+
+<div class="bde-page">
+
+  <!-- ═══════════════════════════════════
+       PAGE HEADER
+  ════════════════════════════════════ -->
+  <div class="page-component-presentation page-header">
+    <nav class="header-nav">
+      <a href="#">Lab Home</a>
+      <a href="#">Exercise 1</a>
+      <a href="#">Exercise 2</a>
+      <a href="#">Exercise 3</a>
+      <a href="#" class="active">Installation Guide</a>
+    </nav>
+    <div class="header-body">
+      <span class="eyebrow">Boomi for SAP · Add-On Installation · Admin Reference</span>
+      <h1>IXBX 700_740 — Installation Guide</h1>
+      <p>Step-by-step installation of the Boomi for SAP add-on. Covers transport file upload, SAINT wizard, ICF service configuration, and launch verification. Estimated time: 20–40 minutes.</p>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       PREREQUISITES  (standard card)
+  ════════════════════════════════════ -->
+  <div id="prerequisites" class="page-component-presentation" style="margin-top:1.5rem;">
+    <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#FF7C66;margin-bottom:0.5rem;">Before You Start</p>
+    <h2 style="border-bottom:3px solid #FF7C66;padding-bottom:0.5rem;margin-bottom:1.25rem;font-size:1rem;">Prerequisites &amp; Required Files</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+
+      <!-- Left: access checklist -->
+      <div>
+        <p style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#4a6070;margin-bottom:0.65rem;">Required access</p>
+        <div style="display:flex;flex-direction:column;gap:0.45rem;">
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.8rem;color:#4a6070;">
+            <span style="color:#0EC38B;font-weight:700;flex-shrink:0;">✓</span>
+            <span>SAP user with <strong style="color:#02283B;">Basis / add-on installation rights</strong> (SAINT authorisation)</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.8rem;color:#4a6070;">
+            <span style="color:#0EC38B;font-weight:700;flex-shrink:0;">✓</span>
+            <span>Access to <span class="tcode">CG3Z</span> — Upload File to Application Server</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.8rem;color:#4a6070;">
+            <span style="color:#0EC38B;font-weight:700;flex-shrink:0;">✓</span>
+            <span>Access to <span class="tcode">SAINT</span> — SAP Add-on Installation Tool</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.8rem;color:#4a6070;">
+            <span style="color:#0EC38B;font-weight:700;flex-shrink:0;">✓</span>
+            <span>Access to <span class="tcode">SICF</span> — Maintain Services</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.8rem;color:#4a6070;">
+            <span style="color:#0EC38B;font-weight:700;flex-shrink:0;">✓</span>
+            <span>IXBX package files from Boomi Support or SAP Marketplace</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.8rem;color:#4a6070;">
+            <span style="color:#0EC38B;font-weight:700;flex-shrink:0;">✓</span>
+            <span>Installation password from <strong style="color:#02283B;">SAP Note 567695</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: file table -->
+      <div>
+        <p style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#4a6070;margin-bottom:0.65rem;">Package files required</p>
+        <table class="file-table">
+          <thead>
+            <tr><th>File</th><th>Target path on server</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>substanc.dat</code></td>
+              <td><code>/usr/sap/trans/substanc.dat</code></td>
+            </tr>
+            <tr>
+              <td><code>QAS…0000114.PAT</code></td>
+              <td><code>/usr/sap/trans/EPS/in/…114.PAT</code></td>
+            </tr>
+            <tr>
+              <td><code>QAS…0000115.PAT</code></td>
+              <td><code>/usr/sap/trans/EPS/in/…115.PAT</code></td>
+            </tr>
+            <tr>
+              <td><code>QAS…0000119.PAT</code></td>
+              <td><code>/usr/sap/trans/EPS/in/…119.PAT</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="install-note" style="margin-top:0.75rem;">
+          <strong>Note:</strong> Target paths are case-sensitive on Linux SAP systems. Verify <code>/usr/sap/trans/EPS/in/</code> exists and is writable by the <code>&lt;sid&gt;adm</code> OS user before uploading.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       PHASE 1 — Upload Transport Files
+  ════════════════════════════════════ -->
+  <div id="phase1" class="page-component-presentation featured-play">
+    <div class="fp-header">
+      <div>
+        <p class="fp-eyebrow">Phase 1 of 4</p>
+        <h3>Upload Transport Files to the Application Server</h3>
+      </div>
+      <span class="fp-badge">T-Code: CG3Z</span>
+    </div>
+
+    <div class="fp-body">
+
+      <!-- Left: Steps 1–3 -->
+      <div>
+        <p class="fp-hook">Push each package file from your local machine to the SAP server before SAINT can detect them.</p>
+        <p class="fp-sub">Use transaction <span class="tcode">CG3Z</span> once per file — four uploads total. Transfer format is always BIN.</p>
+
+        <div class="fp-steps">
+          <div class="fp-step">
+            <span class="fp-step-num">1</span>
+            <p><strong>Open CG3Z</strong> — Enter <span class="tcode">CG3Z</span> in the transaction field and press Enter. The <em>Upload File: Parameters</em> dialog opens.</p>
+          </div>
+          <div class="fp-step">
+            <span class="fp-step-num">2</span>
+            <p><strong>Upload substanc.dat first</strong> — Set Source file to <code>%LOCALAPPDATA%\substanc.dat</code>, Target to <code>/usr/sap/trans/substanc.dat</code>, format <strong>BIN</strong>. Click the Transfer (floppy disk) icon.</p>
+          </div>
+          <div class="fp-step">
+            <span class="fp-step-num">3</span>
+            <p><strong>Upload the three .PAT files</strong> — Repeat CG3Z for each file. Target path for all three: <code>/usr/sap/trans/EPS/in/&lt;filename&gt;.PAT</code>. Upload in order: 0000114 → 0000115 → 0000119.</p>
+          </div>
+        </div>
+
+        <div class="install-tip" style="margin-top:1rem;">
+          <strong>Success indicator:</strong> The status bar confirms <em>"File [source] transferred to [target]"</em> after each upload. All four confirmations = ready for SAINT.
+        </div>
+      </div>
+
+      <!-- Right: File details -->
+      <div>
+        <div class="fp-rule">
+          <p class="fp-rule-label">Upload parameters — all four files</p>
+          <p class="fp-rule-text" style="font-weight:400 !important;font-size:0.78rem !important;">Transfer format: <strong>BIN</strong> for all files. Do not use ASC or DAT modes.</p>
+        </div>
+
+        <table class="file-table">
+          <thead>
+            <tr><th>#</th><th>Source filename</th><th>Target server path</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#FF7C66;font-weight:700;">1</td>
+              <td><code>substanc.dat</code></td>
+              <td><code>/usr/sap/trans/substanc.dat</code></td>
+            </tr>
+            <tr>
+              <td style="color:#FF7C66;font-weight:700;">2</td>
+              <td><code>QAS…_0000114.PAT</code></td>
+              <td><code>/usr/sap/trans/EPS/in/…114.PAT</code></td>
+            </tr>
+            <tr>
+              <td style="color:#FF7C66;font-weight:700;">3</td>
+              <td><code>QAS…_0000115.PAT</code></td>
+              <td><code>/usr/sap/trans/EPS/in/…115.PAT</code></td>
+            </tr>
+            <tr>
+              <td style="color:#FF7C66;font-weight:700;">4</td>
+              <td><code>QAS…_0000119.PAT</code></td>
+              <td><code>/usr/sap/trans/EPS/in/…119.PAT</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="install-note">
+          If SAINT later reports <em>"OCS file already exists in inbox. Upload not required."</em> — that is the expected success message. It means the file landed correctly the first time.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="fp-assets">
+      <p class="fp-assets-label">What SAINT expects to find in the inbox</p>
+      <div class="fp-assets-row">
+        <span class="fp-asset">SAPK-700COINIXBX — Installation</span>
+        <span class="fp-asset">IXBX=====700_740</span>
+        <span class="fp-asset">SAPK-70001INIXBX — Support Package</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       PHASE 2 — SAINT Install
+  ════════════════════════════════════ -->
+  <div id="phase2" class="page-component-presentation featured-play">
+    <div class="fp-header">
+      <div>
+        <p class="fp-eyebrow">Phase 2 of 4</p>
+        <h3>Install the Add-On via SAINT — 6-Screen Wizard</h3>
+      </div>
+      <span class="fp-badge">T-Code: SAINT</span>
+    </div>
+
+    <div class="fp-body">
+
+      <!-- Left: Steps 1–3 -->
+      <div>
+        <p class="fp-hook">Screens 1–5 of the SAINT wizard walk through package selection, queue calculation, and password entry.</p>
+
+        <div class="fp-steps">
+          <div class="fp-step">
+            <span class="fp-step-num">1</span>
+            <p><strong>Open SAINT</strong> — Enter <span class="tcode">SAINT</span> and run. The tool scans the inbox. Verify all three OCS packages show result code <strong>0004</strong> — <em>"OCS file already exists in inbox."</em></p>
+          </div>
+          <div class="fp-step">
+            <span class="fp-step-num">2</span>
+            <p><strong>Select the package</strong> <em style="color:#888;font-size:0.72rem;">(Screen 1/6)</em> — Check the box next to <strong>IXBX 700_740: Add-On Installation</strong> and click <strong>Continue</strong>.</p>
+          </div>
+          <div class="fp-step">
+            <span class="fp-step-num">3</span>
+            <p><strong>Review the calculated queue</strong> <em style="color:#888;font-size:0.72rem;">(Screen 3/6)</em> — Confirm both packages appear: <code>SAPK-700COINIXBX</code> (Installation) and <code>SAPK-70001INIXBX</code> (Support Package). Status reads <em>"The extended queue is consistent."</em> Click <strong>Continue</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Steps 4–6 + notes -->
+      <div>
+        <div class="fp-rule">
+          <p class="fp-rule-label">Password source</p>
+          <p class="fp-rule-text">SAP Note <strong>567695</strong> — double-click the note number in the SAINT dialog to open it directly in the SAP Support Portal.</p>
+        </div>
+
+        <div class="fp-steps">
+          <div class="fp-step">
+            <span class="fp-step-num">4</span>
+            <p><strong>Enter the installation password</strong> <em style="color:#888;font-size:0.72rem;">(Screen 5/6)</em> — The <em>SAINT: Password request</em> dialog appears. Enter the password from SAP Note 567695 in the Password column for both packages. Click the green checkmark.</p>
+          </div>
+          <div class="fp-step">
+            <span class="fp-step-num">5</span>
+            <p><strong>Wait for the import</strong> — SAINT runs the queue. Progress messages include <em>"10%: tp successfully connected"</em> and <em>"CHECK_REQUIREMENTS is being executed…"</em> Do not cancel — this takes several minutes.</p>
+          </div>
+          <div class="fp-step">
+            <span class="fp-step-num">6</span>
+            <p><strong>Finish</strong> <em style="color:#888;font-size:0.72rem;">(Screen 6/6)</em> — When complete, the runtime analysis dialog appears confirming <em>"The import of the OCS queue was successfully finished!"</em> Choose <strong>Do not send</strong>, then click <strong>Finish</strong>.</p>
+          </div>
+        </div>
+
+        <div class="install-tip">
+          <strong>Success indicator:</strong> Status bar reads <em>"Add-on installation queue was confirmed"</em> as the wizard advances to Screen 6/6.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="fp-assets">
+      <p class="fp-assets-label">OCS packages imported</p>
+      <div class="fp-assets-row">
+        <span class="fp-asset">SAPK-700COINIXBX · Installation · IXBX · 700_740</span>
+        <span class="fp-asset">SAPK-70001INIXBX · Support Package · IXBX · 700_740</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       PHASE 3 — ICF Service
+  ════════════════════════════════════ -->
+  <div id="phase3" class="page-component-presentation featured-play">
+    <div class="fp-header">
+      <div>
+        <p class="fp-eyebrow">Phase 3 of 4</p>
+        <h3>Create and Activate the ZBX ICF Service</h3>
+      </div>
+      <span class="fp-badge">T-Code: SICF</span>
+    </div>
+
+    <div class="fp-body">
+
+      <!-- Left: Steps 1–3 -->
+      <div>
+        <p class="fp-hook">The Boomi for SAP UI is served through an SAP ICF service. Create the ZBX node, register the handler class, and activate it.</p>
+
+        <div class="fp-steps">
+          <div class="fp-step">
+            <span class="fp-step-num">1</span>
+            <p><strong>Open SICF</strong> — Enter <span class="tcode">SICF</span>, ensure Hierarchy Type is <code>SERVICE</code>, and press F8 (Execute) to load the service tree.</p>
+          </div>
+          <div class="fp-step">
+            <span class="fp-step-num">2</span>
+            <p><strong>Create new service element</strong> — Click <strong>Create Host/Service</strong> in the toolbar. In the dialog: Name = <code>ZBX</code>, Type = <strong>Standalone service</strong>. Click the green checkmark.</p>
+          </div>
+          <div class="fp-step">
+            <span class="fp-step-num">3</span>
+            <p><strong>Set the description</strong> — On the <strong>Service Data</strong> tab: Description 1 = <code>Boomi for SAP activation</code>. Leave all other Service Data fields at default.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Steps 4–6 -->
+      <div>
+        <div class="fp-rule">
+          <p class="fp-rule-label">Handler class (exact value)</p>
+          <p class="fp-rule-text"><code style="background:#02283B;color:#FF7C66;padding:3px 8px;border-radius:4px;border:none;">/IXBX/CL_SICF</code></p>
+        </div>
+        <p style="font-size:0.72rem;color:#4a6070;margin-bottom:1rem;">Case-sensitive. Must be entered exactly as shown in the Handler List row 1.</p>
+
+        <div class="fp-steps">
+          <div class="fp-step">
+            <span class="fp-step-num">4</span>
+            <p><strong>Register the handler class</strong> — Click the <strong>Handler List</strong> tab. In row 1, enter <code>/IXBX/CL_SICF</code>. This is the IXBX handler class that processes all service calls.</p>
+          </div>
+          <div class="fp-step">
+            <span class="fp-step-num">5</span>
+            <p><strong>Save as Local Object</strong> — Click <strong>Store</strong>. The <em>Create Object Directory Entry</em> dialog shows object <code>R3TR SICF ZBX</code>. Click <strong>Local Object</strong> — this assigns the service without a transport request, which is correct.</p>
+          </div>
+          <div class="fp-step">
+            <span class="fp-step-num">6</span>
+            <p><strong>Activate the service</strong> — In the service tree, locate <strong>ZBX</strong> under <code>default_host</code>. Right-click → <strong>Activate Service</strong>. Confirm the activation prompt.</p>
+          </div>
+        </div>
+
+        <div class="install-tip">
+          <strong>Success indicator:</strong> The ZBX node icon changes to active. The service is reachable at <code>http(s)://&lt;host&gt;:&lt;port&gt;/ZBX</code>.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="fp-assets">
+      <p class="fp-assets-label">Service configuration summary</p>
+      <div class="fp-assets-row">
+        <span class="fp-asset">Path: /default_host/ZBX</span>
+        <span class="fp-asset">Handler: /IXBX/CL_SICF</span>
+        <span class="fp-asset">Object: R3TR SICF ZBX</span>
+        <span class="fp-asset">Desc: Boomi for SAP activation</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       PHASE 4 — Launch & Verify
+  ════════════════════════════════════ -->
+  <div id="phase4" class="page-component-presentation featured-play">
+    <div class="fp-header">
+      <div>
+        <p class="fp-eyebrow">Phase 4 of 4</p>
+        <h3>Launch and Verify the Boomi for SAP Application</h3>
+      </div>
+      <span class="fp-badge">Final Check</span>
+    </div>
+
+    <div class="fp-body">
+
+      <!-- Left: Steps -->
+      <div>
+        <p class="fp-hook">With the add-on installed and ICF service active, the Boomi for SAP UI should be accessible from SAP Easy Access.</p>
+
+        <div class="fp-steps">
+          <div class="fp-step">
+            <span class="fp-step-num">1</span>
+            <p><strong>Launch from SAP Easy Access</strong> — Return to the SAP Easy Access menu. Navigate to the Boomi for SAP application or run the ZBX service URL directly. The status bar shows <em>"Start of application: Open UI"</em> as it loads.</p>
+          </div>
+          <div class="fp-step">
+            <span class="fp-step-num">2</span>
+            <p><strong>Verify the UI loads fully</strong> — The Boomi for SAP home screen should display the integration diagram and a full left navigation menu. Confirm the footer shows the version string, e.g. <code>VERSION | S4H-100 | &lt;user&gt;</code>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Verification checklist -->
+      <div>
+        <div class="fp-rule">
+          <p class="fp-rule-label">Expected left navigation menu</p>
+          <p class="fp-rule-text" style="font-weight:400 !important;font-size:0.78rem !important;line-height:1.7 !important;">
+            <strong>List &amp; Manage:</strong> Table Services · Function Modules · Events · IDocs · BW Data Extractors · ABAP Proxies<br>
+            <strong>Create:</strong> Table Service · Function Module · Data Wizard · Event · BW Data Extractor<br>
+            <strong>Help:</strong> Getting Started · Help.boomi.com · Boomi Support
+          </p>
+        </div>
+
+        <div class="install-tip" style="margin-top:0;">
+          <strong>Installation complete.</strong> All four phases finished successfully. The IXBX 700_740 add-on is installed, the ZBX ICF service is active, and the Boomi for SAP UI is accessible.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="fp-assets">
+      <p class="fp-assets-label">Resources</p>
+      <div class="fp-assets-row">
+        <a class="fp-asset" href="https://help.boomi.com" target="_blank" rel="noopener">Help.boomi.com</a>
+        <a class="fp-asset" href="https://community.boomi.com" target="_blank" rel="noopener">Boomi Community</a>
+        <span class="fp-asset">SAP Note 567695</span>
+        <span class="fp-asset">Boomi Support</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       SUCCESS BANNER
+  ════════════════════════════════════ -->
+  <div class="success-banner">
+    <h3>Boomi for SAP is installed and running</h3>
+    <p>IXBX 700_740 add-on installed · ZBX ICF service active · Boomi for SAP UI accessible<br>
+    Your SAP system is now connected to the Boomi integration platform.</p>
+    <a href="https://help.boomi.com" target="_blank" rel="noopener" class="fp-btn-highspot">Visit Help.boomi.com →</a>
+  </div>
+
+</div><!-- /bde-page -->
+</body>
+</html>
