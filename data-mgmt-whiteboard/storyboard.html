@@ -766,10 +766,14 @@
   <section class="script-chapter ch-intro">
     <div class="script-chapter-heading">
       <span class="ch-num">Intro</span>
-      <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Opening</span>
+      <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Lobby</span>
     </div>
     <div class="script-body">
-      <p><em>No narration. The Boomi wordmark fades in on the blank board, holds for a beat, then fades out. Let the room settle before you begin speaking.</em></p>
+      <p>Hey — thanks for making time. What I want to walk you through today is something I think changes the way you look at AI readiness.</p>
+      <p>There's a lot of conversation right now about which AI model to use, which agent framework to build on, which tools to evaluate. And those are real questions. But they're not the question that's stalling most AI initiatives.</p>
+      <p>The thing that's actually blocking progress — in most of the organizations I talk to — isn't the model. It's the data. Specifically, the fact that the data is fragmented, ungoverned, and not connected to anything the AI can actually use.</p>
+      <p>What I'm going to show you is the architecture that solves that. Six chapters. We'll go from raw, fragmented sources — through ingestion, transformation, context, and master data — all the way to a working AI agent answering real operational questions.</p>
+      <p>Let's start with the problem itself.</p>
     </div>
   </section>
 
@@ -779,13 +783,13 @@
       <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Sources</span>
     </div>
     <div class="script-body">
-      <p>Every enterprise runs on fragmented data. Thousands of sources. Each with its own credentials, its own endpoints, its own quirks. Before you can analyze data, move it, or run AI on top of it — you have to be able to get to it.</p>
-      <p>There are four categories that matter here.</p>
-      <p>APIs. Systems like Salesforce, NetSuite, Jira, and marketing platforms. Each one behaves differently, and a typical enterprise runs dozens of them.</p>
-      <p>Databases. SQL Server, Oracle, MySQL, PostgreSQL. These are the operational core — often running on-prem, often the most sensitive, and the hardest to replicate without disrupting the business.</p>
-      <p>SAP. A category on its own, and for good reason. You'll see why shortly.</p>
-      <p>Files. CSV, SFTP, FTP, and managed file transfer at scale.</p>
-      <p>This is the starting point: fragmented sources, and the need to do something intelligent with what's inside them.</p>
+      <p>Every enterprise runs on fragmented data. Thousands of sources. Each one with its own credentials, its own endpoints, its own quirks. Before you can even begin to analyze data, let alone move it or run AI on top of it — you have to be able to get to it.</p>
+      <p>There are four main data source categories that matter here.</p>
+      <p>First, APIs. Systems like Salesforce, NetSuite, Jira, and marketing platforms. Each one behaves differently, and a typical enterprise runs dozens of them.</p>
+      <p>Next, Databases. SQL Server, Oracle, My-SQL, Postgre-SQL. These are the operational core — often running on-prem, often the most sensitive, and often the hardest to replicate without disrupting the business.</p>
+      <p>Then there is SAP. Which we have here as a category all on its own, and for good reason. You'll see why shortly.</p>
+      <p>And finally, Files. CSV, SFTP, FTP, and managed file transfer at scale. Structured. Unstructured. Truly the wild west of our data landscape.</p>
+      <p>So that's the starting point: many fragmented sources, and a growing pressure to do something intelligent with what's inside them.</p>
     </div>
   </section>
 
@@ -795,11 +799,11 @@
       <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Boomi Data Integration</span>
     </div>
     <div class="script-body">
-      <p>BDI — Boomi Data Integration — is how we bridge from fragmented sources to everything downstream.</p>
-      <p>Think of it in two halves.</p>
-      <p>The left side is ingestion: reading data from your sources and getting it into your environment. There are five connector types on the ingestion side, each designed for a different class of source.</p>
-      <p>The right side is transformation and orchestration: shaping that data and coordinating what happens to it once it's there.</p>
-      <p>We'll walk through all five next.</p>
+      <p>Our next stop is a look at Boomi Data Integration — or BDI — and how it builds a bridge from our many fragmented sources to everything we have waiting downstream.</p>
+      <p>Let's think about BDI in two halves.</p>
+      <p>The left side is ingestion: reading data from your sources and getting it into your environment. There are five connector types on the ingestion side, each designed for a different class of source. We're going to get into each of these in more detail.</p>
+      <p>The right side is transformation and orchestration: which is how we shape this incoming data and coordinate what happens to it once it's here.</p>
+      <p>We'll walk through all five ingestion types next.</p>
     </div>
   </section>
 
@@ -809,11 +813,12 @@
       <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Connector Types</span>
     </div>
     <div class="script-body">
-      <p>Native connectors. Around two hundred of them, covering the most common API-based sources. When a vendor changes an endpoint, updates pagination, rotates credentials — Boomi maintains the connector. The data flow keeps running without intervention.</p>
-      <p>CDC — Change Data Capture. The most efficient way to get data out of operational databases. Instead of querying the database directly, CDC reads from the transaction logs. No load on the production system. No impact on the web and mobile applications running on top of it. For customers whose databases are load-bearing in production, this is the only acceptable approach.</p>
-      <p>SAP Data Connector. Built natively into BDI, and paired with Boomi for SAP — which runs on-prem inside the SAP environment. Every table, every dataset, every trigger in SAP can be streamed through Boomi's event layer into BDI. It's effectively CDC for SAP. Very few vendors can offer this, and it's why SAP is its own category.</p>
-      <p>DCA — Data Connector Agent. Not every source has a native connector, and building one for every system in the world isn't scalable. DCA solves this with AI. Point it at any third-party system — say, GitHub — and it reads the vendor documentation, identifies the endpoints, credentials, and pagination patterns, and generates a working connector on the fly. This unlocks thousands of systems that would otherwise require custom development.</p>
-      <p>MFT — Managed File Transfer. Native connectors for FTP and SFTP, plus governed, secured file transfer at scale. MFT currently runs as a standalone console, with native BDI integration on the roadmap.</p>
+      <p>Ok, let's take a look at our five different connector types for data ingestion in BDI.</p>
+      <p>First up is native connectors. Around two hundred of them, covering the most common API-based sources. When a vendor changes an endpoint, updates pagination, rotates credentials — Boomi maintains the connector. The data flow keeps running without human intervention.</p>
+      <p>Next is CDC — Change Data Capture. This is the most efficient way to get data out of operational databases. Instead of querying the database directly, CDC reads from the transaction logs. No load on the production system. No impact on the web and mobile applications running on top of it. For customers whose databases are load-bearing in production, this is the only acceptable approach.</p>
+      <p>Now let's talk about the SAP Data Connector. Built natively into BDI and paired with Boomi for SAP — this connector runs on-prem inside the SAP environment. Boomi for SAP is a certified SAP-validated product, which means it's been tested and approved to run natively inside the SAP ecosystem. Every table, every dataset, every trigger in SAP can be streamed through Boomi's event layer into BDI. It's effectively CDC for SAP. Boomi is one of just a few vendors who can offer this, and it's why we put SAP in its own category.</p>
+      <p>Our next connector type is the Data Connector Agent — or DCA. Not every source has its own native connector, and while the list is growing, building one for every system in the world just isn't scalable. Boomi's DCA solves this with AI. Point it at any third-party system — say, a niche manufacturing ERP — and it reads the vendor documentation, identifies the endpoints, credentials, and pagination patterns, and generates a working connector on the fly, unlocking thousands of systems that would otherwise require custom development.</p>
+      <p>Finally we have Boomi MFT — Managed File Transfer. Native connectors for FTP and SFTP, plus governed, secured file transfer at scale. MFT currently runs as a standalone console, with native BDI integration on the roadmap.</p>
     </div>
   </section>
 
@@ -823,9 +828,9 @@
       <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Knowledge Hub</span>
     </div>
     <div class="script-body">
-      <p>To run AI agents, you need more than structured data. You need context.</p>
-      <p>That context lives in unstructured sources — documents, PDFs, images, location feeds. Traditional data warehouses weren't built for this. The Knowledge Hub was.</p>
-      <p>It's a native extension of the data integration layer, not a separate product bolted on. Any source you can connect to in BDI, you can feed directly into the Knowledge Hub — where it's vectorized and made available for semantic retrieval.</p>
+      <p>As we've seen, Boomi's Data Integration capabilities pack quite a punch, allowing enterprises to ingest and transform data from a wide variety of sources. But to run AI agents, you need more than structured data. You need context.</p>
+      <p>For most enterprises, the most valuable of that context lives in unstructured sources — documents, PDFs, images, location feeds. Traditional data warehouses weren't built for this. Boomi's Knowledge Hub was.</p>
+      <p>Knowledge Hub is a native extension of the data integration layer, not a separate product bolted on. Any source you can connect to in BDI, you can feed directly into the Knowledge Hub — where it's vectorized and made available for semantic retrieval.</p>
       <p>The result is a context layer your agents can trust — continuously updated, governed at the source, and accessible without custom pipelines.</p>
     </div>
   </section>
@@ -836,11 +841,10 @@
       <span class="ch-name" style="font-size:0.88rem;font-weight:700;">Data Hub</span>
     </div>
     <div class="script-body">
-      <p>Data Hub is the golden record layer. Data stewardship, deduplication, and unified master data — all in one place.</p>
-      <p>There's a field conversation worth having here. When you're implementing integrations across three or more systems, Data Hub belongs in the design. Point-to-point integrations between six or seven systems become an architectural tangle — hard to govern, expensive to change, impossible to scale. Data Hub in the middle keeps the architecture clean. Every system connects to one hub. Adding new systems becomes additive, not exponential.</p>
-      <p>A native integration between BDI and Data Hub makes this significantly more powerful in two directions.</p>
-      <p>Data Hub as a source: customers want to analyze their golden records in their analytics environment and run agents on top of them. That native integration makes it seamless — golden record datasets flow directly into any data or AI service downstream.</p>
-      <p>Data Hub as a target: onboarding new sources into Data Hub should be fast. Point any BDI source at Data Hub in a few clicks — less configuration, faster time to value.</p>
+      <p>DataHub is Boomi's golden record layer. Data stewardship, deduplication, and synchronised records — all in one place.</p>
+      <p>There's a very important conversation worth having here, and frankly we don't have it enough. Every time a modern business decides to implement integrations across three or more systems, DataHub belongs in the design. Point-to-point integrations between six or seven systems become an architectural tangle — hard to govern, expensive to change, impossible to scale.</p>
+      <p>With DataHub in the middle, the architecture stays clean. Instead of an exponentially growing spaghetti mess, every system now connects to one hub. Wiring in a new system provides additive value, not exponential effort.</p>
+      <p>Boomi's native integration between BDI and DataHub makes this significantly more powerful. Golden record datasets flow directly into any data or AI service downstream. And onboarding new sources is fast — point any BDI source at Data Hub in a few clicks, less configuration, faster time to value. Whether teams are using Boomi Integration or Boomi Data Integration to move data — depending on their use case — all of their master data ends up synchronised in one place.</p>
       <p>Together, these capabilities turn Data Hub from a master data store into an active participant in the AI data architecture.</p>
     </div>
   </section>
@@ -852,14 +856,15 @@
     </div>
     <div class="script-body">
       <p>Here's what this looks like end-to-end.</p>
-      <p>A large retailer. Complex operations, multiple HR systems from years of acquisitions, logistics spanning dozens of distribution locations. They want to build an AI agent to optimize their distribution network — routes, schedules, driver assignments.</p>
-      <p>Here's how it works.</p>
-      <p>BDI ingests from every relevant source. Salesforce provides CRM and marketing data — via native connector. Operational databases carry inventory and purchase history — via CDC, with zero impact on production. SAP handles logistics and finance — via the SAP Data Connector. Photos, PDFs, and location data come in as files — via MFT.</p>
-      <p>From there, the data splits by type.</p>
+      <p>Imagine a modern global retailer. Complex operations, multiple HR systems from years of acquisitions, logistics spanning dozens of distribution locations. Like most of their competitors, they want to build an AI agent to optimize their distribution network — routes, schedules, driver assignments. But their data is a mess. Their integrations are old and resistant to change. Their internal resources are maxed out, and their leaders won't stop asking how AI is going to transform their business.</p>
+      <p>Let's look at how they can get to work with Boomi.</p>
+      <p>First, BDI ingests data from every relevant source. From there, the data splits by type.</p>
       <p>Unstructured data — PDFs, location feeds, photos — flows into the Knowledge Hub, where it's vectorized and made available for semantic retrieval.</p>
-      <p>Structured records — employee data, driver data — flow into Data Hub, where they're deduplicated and merged into clean golden records. The agent knows who every driver is, across every system that's ever touched that record.</p>
-      <p>The agent runs in Agent Studio. It draws on the Knowledge Hub for context, and on the Data Hub golden records for operational ground truth. The result is an agent that can answer real operational questions — not from stale exports or disconnected reports, but from a live, governed, unified data foundation built on every source the business runs on.</p>
+      <p>Structured records — employee data, driver and delivery data — all flow into Data Hub, where they're deduplicated and merged into clean golden records.</p>
+      <p>The organization uses Agent Studio to build an agent that knows who every driver is, across every system that's ever touched that record, all with existing governance and security checks in place. Knowledge Hub, Data Hub, and the entire Boomi platform combine to ground the agent's activity in context and grounded truth.</p>
+      <p>The result is an agent that can answer real operational questions — not from stale exports or disconnected reports, but from a live, governed, unified data foundation built on every source the business runs on.</p>
       <p>That's the data activation story: get the data, improve the data, activate it for AI.</p>
+      <p>Simple, right?</p>
     </div>
   </section>
 
