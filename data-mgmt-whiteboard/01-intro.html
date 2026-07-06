@@ -133,14 +133,16 @@
         fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">SAP</text>
       <text id="sap-sub" x="90" y="678"
         font-family="'Poppins', sans-serif" font-size="17" fill="#555">BW · ecosystem · SAP Data Connector</text>
-      <circle id="dot-c1" cx="205" cy="696" r="4" fill="#ccc"/>
+      <circle id="dot-c1" cx="205" cy="692" r="4" fill="#ccc"/>
 
       <!-- Files rect -->
-      <rect id="files-rect" x="90" y="712" width="230" height="56" rx="6"
+      <rect id="files-rect" x="90" y="704" width="230" height="52" rx="6"
         fill="none" stroke="#1a1a2e" stroke-width="3.0"/>
-      <text id="files-lbl" x="205" y="745"
+      <text id="files-lbl" x="205" y="730"
         font-family="'Poppins', sans-serif" font-size="36" font-weight="700"
         fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">Files</text>
+      <text id="files-sub" x="90" y="772"
+        font-family="'Poppins', sans-serif" font-size="17" fill="#555">CSV · SFTP · FTP · MFT</text>
 
       <!-- ═══════════════════════════════════════════ -->
       <!-- BDI GHOST — fades in at end to hint at ch2 -->
@@ -302,6 +304,7 @@ document.fonts.ready.then(() => {
   // Files
   draw('files-rect',  12.3, 0.55);
   write('files-lbl',  12.95,0.35);
+  fade('files-sub',   13.35,0.35);
 
   // Ghost hints — BDI and Destinations fade in softly
   fade('bdi-ghost',        13.45, 1.1);
