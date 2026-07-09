@@ -24,7 +24,7 @@ body{font-family:'Poppins',Arial,sans-serif;background:var(--bg);color:var(--ink
 .tb-dot.active{background:var(--coral);}
 .tb-step-label{color:rgba(255,255,255,0.5);font-size:0.65rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-left:0.4rem;}
 
-.wrap{max-width:900px;margin:1.75rem auto 1rem;padding:0 1.5rem;}
+.wrap{max-width:1100px;margin:1.75rem auto 1rem;padding:0 1.5rem;}
 .phase-card{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(2,40,59,0.06);}
 .fp-header{background:var(--navy);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
 .fp-eyebrow{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--coral);margin-bottom:0.3rem;}
@@ -51,7 +51,14 @@ code{font-family:'Courier New',monospace;font-size:0.78rem;background:#f0f4f8;co
 .install-tip{background:#edfbf5;border-left:3px solid var(--teal);border-radius:0 6px 6px 0;padding:0.65rem 0.85rem;margin-top:1rem;font-size:0.75rem;color:var(--muted);line-height:1.6;}
 .install-tip strong{color:var(--ink);}
 
-.nav-footer{max-width:900px;margin:0 auto;padding:1.5rem 1.5rem 3rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.screenshot-panel{border-top:1px solid var(--border);padding:1.25rem 1.5rem;background:var(--bg);}
+.screenshot-panel .ss-label{font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;}
+.screenshot-grid{display:grid;grid-template-columns:1fr;gap:1.5rem;}
+.screenshot-grid figure{margin:0;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 2px 10px rgba(2,40,59,0.1);}
+.screenshot-grid img{display:block;width:100%;height:auto;border-bottom:1px solid var(--border);cursor:zoom-in;}
+.screenshot-grid figcaption{padding:0.75rem 1rem;font-size:0.8rem;color:var(--muted);line-height:1.5;}
+
+.nav-footer{max-width:1100px;margin:0 auto;padding:1.5rem 1.5rem 3rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
 .btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.4rem;border-radius:8px;font-size:0.85rem;font-weight:700;text-decoration:none;font-family:'Poppins',sans-serif;border:none;cursor:pointer;transition:transform 0.15s;}
 .btn-primary{background:var(--coral);color:#fff;box-shadow:0 4px 14px rgba(255,124,102,0.3);}
 .btn-primary:hover{transform:translateY(-1px);}
@@ -115,6 +122,20 @@ code{font-family:'Courier New',monospace;font-size:0.78rem;background:#f0f4f8;co
           <p><strong>Finish</strong> <em style="color:#888;font-size:0.72rem;">(Screen 6/6)</em> — When complete, the runtime analysis dialog appears confirming <em>"The import of the OCS queue was successfully finished!"</em> Choose <strong>Do not send</strong>, then click <strong>Finish</strong>.</p>
         </div>
         <div class="install-tip"><strong>Success indicator:</strong> Status bar reads <em>"Add-on installation queue was confirmed"</em> as the wizard advances to Screen 6/6.</div>
+      </div>
+    </div>
+
+    <div class="screenshot-panel">
+      <div class="ss-label">From the actual install — SAINT</div>
+      <div class="screenshot-grid">
+        <figure>
+          <a href="images/phase2-saint-queue-screen3.png" target="_blank"><img src="images/phase2-saint-queue-screen3.png" alt="SAINT calculated queue, Screen 3 of 6"></a>
+          <figcaption>Screen 3/6 — the calculated queue, with both OCS packages listed and the Modification Adjustment Transports prompt.</figcaption>
+        </figure>
+        <figure>
+          <a href="images/phase2-saint-finish-screen6.png" target="_blank"><img src="images/phase2-saint-finish-screen6.png" alt="SAINT imported queue, Screen 6 of 6, Finish button"></a>
+          <figcaption>Screen 6/6 — "The Add-on was successfully imported." Click Finish here.</figcaption>
+        </figure>
       </div>
     </div>
 
