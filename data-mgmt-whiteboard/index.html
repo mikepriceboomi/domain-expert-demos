@@ -616,6 +616,7 @@
     const theater = document.getElementById('theater-view');
     theater.classList.remove('visible');
     lobby.classList.remove('out');
+    clearTimeout(gapTimer);
     setTimeout(() => { document.getElementById('wb-iframe').src = ''; }, 500);
     if (typeof au !== 'undefined') au.pause();
   }
@@ -626,6 +627,7 @@
   let renderPending = false;
 
   function loadChapter(index) {
+    clearTimeout(gapTimer);
     current = Math.max(0, Math.min(index, CHAPTERS.length - 1));
     refreshNav();
     renderPending = true;
@@ -782,11 +784,16 @@
      delay, so this is the accurate sync point. */
   au.addEventListener('playing', () => { audioPlaying = true; maybeRelease(); });
 
+  /* Beat of silence on the finished frame before the next chapter loads, so
+     the last line has room to land instead of being cut off. */
+  const CHAPTER_GAP = 1800;
+  let gapTimer = null;
+
   au.addEventListener('ended', () => {
     auIcon.innerHTML = ICON_PLAY;
     setNextReady(true);
-    /* Continuous playback: roll straight into the next chapter. */
-    advanceChapter();
+    clearTimeout(gapTimer);
+    gapTimer = setTimeout(advanceChapter, CHAPTER_GAP);
   });
 
   function advanceChapter() {
@@ -801,6 +808,7 @@
     if (au.paused) {
       restartChapter();
     } else {
+      clearTimeout(gapTimer);   /* pausing cancels a pending auto-advance */
       au.pause();
     }
   }
