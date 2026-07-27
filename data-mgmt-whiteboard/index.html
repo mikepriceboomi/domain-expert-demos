@@ -500,7 +500,10 @@
 
   /* Narration cut in use. The Extended Uncut set is still on disk and feeds
      the BDI MQ demo script, but this player ships the Condensed cut only. */
-  const AUDIO_DIR    = 'audio/Condensed/';
+  /* Lowercase deliberately — GitHub Pages is case-sensitive and the folder is
+     committed lowercase. macOS is case-insensitive, so a mismatch here works
+     locally and 404s only once it's live. */
+  const AUDIO_DIR    = 'audio/condensed/';
   const AUDIO_PREFIX = 'audio-';
   const CHAPTERS = [
     { src: '01-intro.html',         num: '01', title: 'Sources',       slug: '01-sources',       animEnd: 15.10 },
