@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/sphere-single.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boomi Data Management — Presenter Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #02283B;
+      --coral: #FF7C66;
+      --teal:  #0EC38B;
+      --indigo:#4B4FE2;
+      --purple:#A03291;
+      --ink:   rgba(2,40,59,0.86);
+      --ink-2: rgba(2,40,59,0.58);
+      --ink-3: rgba(2,40,59,0.34);
+      --rule:  rgba(2,40,59,0.10);
+    }
+
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      background: #f6f5f1; color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      padding: 0 0 5rem;
+    }
+
+    /* ── Header ─────────────────────────────── */
+    header {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(246,245,241,0.94);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      padding: 14px 40px 12px;
+      display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+    }
+    .h-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--coral); align-self: center; }
+    .h-eyebrow {
+      font-size: 0.56rem; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--ink-3);
+    }
+    h1 { font-size: 1.02rem; font-weight: 800; letter-spacing: -0.02em; }
+    .h-meta { margin-left: auto; font-size: 0.62rem; color: var(--ink-3); align-self: center; }
+    .h-link {
+      align-self: center; font-size: 0.58rem; font-weight: 700;
+      letter-spacing: 0.10em; text-transform: uppercase; text-decoration: none;
+      color: var(--coral); border: 1px solid rgba(255,124,102,0.32);
+      border-radius: 4px; padding: 5px 10px; transition: background 0.14s;
+    }
+    .h-link:hover { background: rgba(255,124,102,0.10); }
+
+    /* ── Chapter jump nav ───────────────────── */
+    nav.jump {
+      position: sticky; top: 47px; z-index: 19;
+      background: rgba(246,245,241,0.94);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      padding: 8px 40px; display: flex; gap: 4px; flex-wrap: wrap;
+    }
+    nav.jump a {
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; text-decoration: none;
+      color: var(--ink-3); padding: 4px 8px; border-radius: 4px;
+      border: 1px solid transparent; transition: all 0.14s;
+    }
+    nav.jump a:hover { color: var(--ink); background: rgba(2,40,59,0.05); }
+
+    /* ── How to use ─────────────────────────── */
+    .howto {
+      margin: 26px 40px 0; padding: 16px 20px;
+      border-left: 2px solid var(--coral);
+      background: rgba(255,124,102,0.045);
+      font-size: 0.76rem; line-height: 1.62; color: var(--ink-2);
+      max-width: 900px;
+    }
+    .howto strong { color: var(--ink); font-weight: 700; }
+    .howto kbd {
+      font-family: inherit; font-size: 0.68rem; font-weight: 700;
+      background: rgba(2,40,59,0.08); border-radius: 3px; padding: 1px 5px;
+      color: var(--ink);
+    }
+
+    /* ── Chapter ────────────────────────────── */
+    section.chapter { margin: 40px 40px 0; scroll-margin-top: 96px; }
+    .ch-head {
+      display: flex; align-items: baseline; gap: 12px;
+      padding-bottom: 8px; margin-bottom: 4px;
+      border-bottom: 2px solid var(--ch);
+    }
+    .ch-num {
+      font-size: 0.60rem; font-weight: 800; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--ch);
+    }
+    .ch-name { font-size: 1.18rem; font-weight: 800; letter-spacing: -0.025em; }
+    .ch-runtime { margin-left: auto; font-size: 0.60rem; color: var(--ink-3); }
+
+    /* ── Chapter body: live board + segment list ── */
+    .ch-body {
+      display: grid; grid-template-columns: minmax(340px, 42%) 1fr;
+      gap: 28px; align-items: start;
+    }
+    @media (max-width: 1080px) { .ch-body { grid-template-columns: 1fr; } }
+
+    .board-col { position: sticky; top: 104px; }
+    .board-frame {
+      background: #1c2f42; border-radius: 5px; padding: 7px 7px 14px;
+      box-shadow: 0 18px 44px rgba(2,40,59,0.16);
+    }
+    .board-surface {
+      position: relative; width: 100%; aspect-ratio: 16 / 9;
+      background: #f6f5f1; border-radius: 2px; overflow: hidden;
+    }
+    .board-surface iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .board-hint {
+      margin-top: 8px; font-size: 0.60rem; color: var(--ink-3);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .board-state {
+      font-weight: 700; color: var(--ch);
+    }
+    .board-reset {
+      margin-left: auto; background: none; border: 1px solid var(--rule);
+      border-radius: 4px; padding: 3px 8px; cursor: pointer;
+      font-family: inherit; font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);
+    }
+    .board-reset:hover { color: var(--ink); border-color: var(--ink-3); }
+
+    /* ── Segment row ────────────────────────── */
+    .seg {
+      display: grid; grid-template-columns: 34px 1fr; gap: 16px;
+      padding: 18px 0; border-bottom: 1px solid var(--rule);
+      align-items: start; cursor: pointer;
+      border-left: 2px solid transparent; padding-left: 10px;
+      transition: background 0.14s, border-color 0.14s;
+    }
+    .seg:hover { background: rgba(2,40,59,0.025); }
+    .seg.active { border-left-color: var(--ch); background: rgba(2,40,59,0.035); }
+    .seg:last-child { border-bottom: none; }
+    .seg-n {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 1.5px solid var(--ch); color: var(--ch);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.66rem; font-weight: 800; flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .seg-label {
+      font-size: 0.86rem; font-weight: 700; letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+    .seg-points { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .seg-points li {
+      font-size: 0.82rem; line-height: 1.58; color: var(--ink-2);
+      padding-left: 14px; position: relative;
+    }
+    .seg-points li::before {
+      content: ''; position: absolute; left: 0; top: 0.62em;
+      width: 4px; height: 4px; border-radius: 50%; background: var(--ink-3);
+    }
+    .seg-land, .seg-ask {
+      margin-top: 10px; font-size: 0.76rem; line-height: 1.55;
+      padding: 8px 12px; border-radius: 4px;
+    }
+    .seg-land {
+      background: rgba(255,124,102,0.07);
+      border-left: 2px solid var(--coral); color: var(--ink-2);
+    }
+    .seg-ask {
+      background: rgba(14,195,139,0.07);
+      border-left: 2px solid var(--teal); color: var(--ink);
+      font-weight: 500;
+    }
+    .tag {
+      font-size: 0.54rem; font-weight: 800; letter-spacing: 0.14em;
+      text-transform: uppercase; display: block; margin-bottom: 3px;
+    }
+    .seg-land .tag { color: var(--coral); }
+    .seg-ask  .tag { color: #0a9c70; }
+    .seg-ids {
+      margin-top: 8px; font-size: 0.56rem; color: rgba(2,40,59,0.22);
+      letter-spacing: 0.02em; word-break: break-all;
+    }
+
+    @media print {
+      header, nav.jump { position: static; }
+      .h-link { display: none; }
+      .seg-ids { display: none; }
+      section.chapter { break-inside: avoid; }
+    }
+    @media (max-width: 720px) {
+      header, nav.jump, .howto, section.chapter { margin-left: 18px; margin-right: 18px; padding-left: 0; padding-right: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="h-dot"></div>
+  <div class="h-eyebrow">Domain Expert Series</div>
+  <h1>Boomi Data Management — Presenter Guide</h1>
+  <div class="h-meta" id="meta"></div>
+  <a class="h-link" href="index.html" target="_blank" rel="noopener">Open the animation ›</a>
+</header>
+
+<nav class="jump" id="jump"></nav>
+
+<div class="howto">
+  <strong>Reference material, not a script.</strong> This is a companion to the narrated
+  Data Management whiteboard — a seven-chapter animation with voiceover that runs about
+  7 minutes. Use this page to know the story before you show it, and to answer questions
+  after. The animation needs nothing from you but Play.
+  <br><br>
+  Click any segment to step the live board beside it to that exact state. It is the real
+  chapter running, not a screenshot, so it can never go stale.
+  <br><br>
+  Coral notes are the specific thing to land or a claim not to overstate.
+  Teal is a question worth handing back to the customer.
+</div>
+
+<main id="out"></main>
+
+<script src="segments.js"></script>
+<script>
+  /* Chapter order, display names and accent colours must match index.html. */
+  const CHAPTERS = [
+    { key: '01-intro',         file: '01-intro.html',         num: '01', name: 'Sources',                colour: '#4B4FE2', runtime: '46s' },
+    { key: '02-bdi',           file: '02-bdi.html',           num: '02', name: 'Boomi Data Integration', colour: '#02283B', runtime: '29s' },
+    { key: '03-connectors',    file: '03-connectors.html',    num: '03', name: 'Connector Types',        colour: '#0EC38B', runtime: '106s' },
+    { key: '04-knowledge-hub', file: '04-knowledge-hub.html', num: '04', name: 'Knowledge Hub',          colour: '#A03291', runtime: '40s' },
+    { key: '05-data-hub',      file: '05-data-hub.html',      num: '05', name: 'Data Hub',               colour: '#FF7C66', runtime: '43s' },
+    { key: '06-use-case',      file: '06-use-case.html',      num: '06', name: 'Retailer Use Case',      colour: '#02283B', runtime: '73s' },
+    { key: '07-meta-hub',      file: '07-meta-hub.html',      num: '07', name: 'Meta Hub',               colour: '#A03291', runtime: '64s' },
+  ];
+
+  const S = window.WB_SEGMENTS || {};
+  const out = document.getElementById('out');
+  const jump = document.getElementById('jump');
+  const esc = t => String(t).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+  let totalSegs = 0;
+
+  CHAPTERS.forEach(ch => {
+    const segs = S[ch.key] || [];
+    totalSegs += segs.length;
+
+    const a = document.createElement('a');
+    a.href = '#' + ch.key;
+    a.textContent = ch.num + ' ' + ch.name;
+    jump.appendChild(a);
+
+    const sec = document.createElement('section');
+    sec.className = 'chapter';
+    sec.id = ch.key;
+    sec.style.setProperty('--ch', ch.colour);
+
+    let html = '<div class="ch-head">' +
+      '<span class="ch-num">Ch ' + ch.num + '</span>' +
+      '<span class="ch-name">' + esc(ch.name) + '</span>' +
+      '<span class="ch-runtime">' + segs.length + ' segments · narrated cut ' + ch.runtime + '</span>' +
+      '</div>';
+
+    /* Live board — steps to whichever segment you click, so the visual is
+       always the real thing rather than a thumbnail that can go stale. */
+    html += '<div class="ch-body">' +
+      '<div class="board-col">' +
+        '<div class="board-frame"><div class="board-surface">' +
+          '<iframe data-src="' + ch.file + '?mode=speaker" title="' + esc(ch.name) + ' board"></iframe>' +
+        '</div></div>' +
+        '<div class="board-hint">' +
+          '<span>showing</span><span class="board-state">nothing yet</span>' +
+          '<button class="board-reset">Clear board</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="seg-col">';
+
+    segs.forEach((s, i) => {
+      html += '<div class="seg" data-seg="' + i + '">';
+      html += '<div class="seg-n">' + (i + 1) + '</div>';
+      html += '<div>';
+      html += '<div class="seg-label">' + esc(s.label) + '</div>';
+      if (s.points && s.points.length) {
+        html += '<ul class="seg-points">' +
+          s.points.map(p => '<li>' + esc(p) + '</li>').join('') + '</ul>';
+      }
+      if (s.land) {
+        html += '<div class="seg-land"><span class="tag">Land this</span>' + esc(s.land) + '</div>';
+      }
+      if (s.ask) {
+        html += '<div class="seg-ask"><span class="tag">Ask</span>' + esc(s.ask) + '</div>';
+      }
+      html += '<div class="seg-ids">reveals: ' + s.ids.join(' · ') + '</div>';
+      html += '</div></div>';
+    });
+
+    html += '</div></div>';   /* /seg-col /ch-body */
+
+    sec.innerHTML = html;
+    out.appendChild(sec);
+    wireBoard(sec, segs.length);
+  });
+
+
+  /* ── Live board control ───────────────────────────────────────────────
+     Each chapter runs in speaker mode. To show segment N we reload the
+     frame and advance N+1 times once it reports ready. Reloading rather
+     than tracking state keeps it honest when jumping backwards. */
+  function wireBoard(sec, total) {
+    const frame = sec.querySelector('iframe');
+    const state = sec.querySelector('.board-state');
+    const reset = sec.querySelector('.board-reset');
+    const rows  = [...sec.querySelectorAll('.seg')];
+    let want = -1, ready = false, loaded = false;
+
+    function ensureLoaded() {
+      if (loaded) return;
+      loaded = true;
+      frame.src = frame.dataset.src;
+    }
+
+    /* Only load the board when the chapter scrolls into view. Seven iframes
+       on load would be wasteful. */
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((es, o) => {
+        es.forEach(e => { if (e.isIntersecting) { ensureLoaded(); o.disconnect(); } });
+      }, { rootMargin: '200px' }).observe(sec);
+    } else ensureLoaded();
+
+    window.addEventListener('message', e => {
+      if (!frame.contentWindow || e.source !== frame.contentWindow) return;
+      const d = e.data;
+      if (d === 'wb:ready') {
+        ready = true;
+        for (let i = 0; i <= want; i++) frame.contentWindow.postMessage('wb:next', '*');
+      } else if (d && d.type === 'wb:seg') {
+        state.textContent = d.shown < 0 ? 'nothing yet'
+          : (d.shown + 1) + ' of ' + d.total + ' · ' + (d.label || '');
+      }
+    });
+
+    function goto(i) {
+      want = i;
+      rows.forEach((r, n) => r.classList.toggle('active', n === i));
+      ensureLoaded();
+      ready = false;
+      frame.src = frame.dataset.src;   /* reload → replays from empty */
+    }
+
+    rows.forEach((r, i) => r.addEventListener('click', () => goto(i)));
+    reset.addEventListener('click', () => {
+      rows.forEach(r => r.classList.remove('active'));
+      goto(-1);
+    });
+  }
+
+  document.getElementById('meta').textContent =
+    CHAPTERS.length + ' chapters · ' + totalSegs + ' segments · narrated cut 7.3 min';
+</script>
+</body>
+</html>

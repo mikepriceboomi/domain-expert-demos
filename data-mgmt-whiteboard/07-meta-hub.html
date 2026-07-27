@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="../assets/sphere-single.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta Hub · Boomi Data Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%; overflow: hidden;
+      background: #0b1520;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.9rem; position: relative;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(200,218,245,0.09) 0%, rgba(200,218,245,0.04) 8%, transparent 28%),
+        linear-gradient(0deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.08) 14%, transparent 30%),
+        radial-gradient(ellipse 105% 75% at 50% 50%, transparent 38%, rgba(0,0,0,0.62) 100%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: ''; position: fixed; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 0%, rgba(160,190,230,0.08) 20%, rgba(160,190,230,0.12) 50%, rgba(160,190,230,0.08) 80%, transparent 100%);
+      pointer-events: none; z-index: 0;
+    }
+    .wb-frame, .wb-nav { position: relative; z-index: 1; }
+    .wb-frame {
+      background: #1c2f42; border-radius: 6px 6px 5px 5px;
+      padding: 9px 9px 20px 9px;
+      box-shadow: 0 2px 0 rgba(255,255,255,0.06) inset, 0 0 120px 24px rgba(210,228,255,0.035), 0 40px 100px rgba(0,0,0,0.72), 0 8px 28px rgba(0,0,0,0.46);
+      width: 64vw;
+    }
+    .wb-surface {
+      background: #f6f5f1; border-radius: 2px;
+      width: 100%; aspect-ratio: 16 / 9;
+      position: relative; overflow: hidden;
+    }
+    .wb-surface::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(0,0,0,0.020) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.020) 1px, transparent 1px);
+      background-size: 46px 46px; pointer-events: none;
+    }
+    .wb-surface::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 95% 92% at 50% 50%, transparent 65%, rgba(0,0,0,0.05) 100%);
+      pointer-events: none;
+    }
+    .wb-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .wb-nav { display: flex; align-items: center; gap: 2.5rem; }
+    .wb-nav a { font-family: 'Poppins', sans-serif; font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.22); text-decoration: none; letter-spacing: 0.10em; text-transform: uppercase; transition: color 0.15s; }
+    .wb-nav a:hover { color: rgba(255,255,255,0.60); }
+    .wb-brand { height: 20px; opacity: 0.55; display: block; }
+    @keyframes wb-in { from { opacity:0 } to { opacity:1 } }
+    .wb-frame { animation: wb-in 0.4s ease both; }
+  </style>
+</head>
+<body>
+
+<div class="wb-frame">
+  <div class="wb-surface">
+    <svg class="wb-svg" viewBox="0 0 1400 788" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-done" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+          <polygon points="0 0,6 3.5,0 7" fill="rgba(26,26,46,0.22)"/>
+        </marker>
+        <marker id="arr-indigo" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <polygon points="0 0,7 4,0 8" fill="#4B4FE2"/>
+        </marker>
+      </defs>
+
+
+      <!-- ════════════════════════════════════════════ -->
+      <!-- CORNER BADGE                                 -->
+      <!-- ════════════════════════════════════════════ -->
+      <rect id="badge-bg" x="1222" y="18" width="150" height="26" rx="13"
+        fill="#0EC38B" style="opacity:0"/>
+      <text id="badge-lbl" x="1297" y="36"
+        font-family="'Poppins', sans-serif" font-size="10" font-weight="700"
+        letter-spacing="2" fill="#fff" text-anchor="middle" style="opacity:0">EARLY ACCESS</text>
+
+
+      <!-- ════════════════════════════════════════════ -->
+      <!-- LEFT COLUMN — Problem framing                -->
+      <!-- ════════════════════════════════════════════ -->
+
+      <text id="eyebrow" x="90" y="50"
+        font-family="'Poppins', sans-serif" font-size="13" font-weight="700"
+        letter-spacing="3" fill="#0EC38B" style="opacity:0">EARLY ACCESS</text>
+
+      <text id="mh-title" x="90" y="102"
+        font-family="'Poppins', sans-serif" font-size="54" font-weight="800"
+        fill="#02283B" style="opacity:0">Meta Hub</text>
+
+      <!-- Product icon beside the chapter title, matching the other chapters.
+           x/y are set at runtime from the title's measured bounding box so it
+           stays glued to the text regardless of font loading. -->
+      <image id="mh-title-icon" href="../assets/MetaHub.png"
+        x="0" y="0" width="42" height="42" style="opacity:0"/>
+
+      <text id="mh-sub" x="90" y="132"
+        font-family="'Poppins', sans-serif" font-size="19" font-weight="400"
+        fill="rgba(2,40,59,0.48)" style="opacity:0">The semantic layer for agentic AI</text>
+
+      <line id="div1" x1="90" y1="152" x2="90" y2="152"
+        stroke="rgba(2,40,59,0.18)" stroke-width="1.5"/>
+
+      <text id="prob1" x="90" y="190"
+        font-family="'Poppins', sans-serif" font-size="21" font-weight="600"
+        fill="#02283B" style="opacity:0">Data Hub gives your agents</text>
+      <text id="prob2" x="90" y="220"
+        font-family="'Poppins', sans-serif" font-size="21" font-weight="600"
+        fill="#02283B" style="opacity:0">clean, mastered records.</text>
+
+      <text id="prob3" x="90" y="260"
+        font-family="'Poppins', sans-serif" font-size="20"
+        fill="rgba(2,40,59,0.58)" style="opacity:0">But a golden record doesn't know what</text>
+      <text id="prob4" x="90" y="288"
+        font-family="'Poppins', sans-serif" font-size="20"
+        fill="rgba(2,40,59,0.58)" style="opacity:0">"high-priority" means in your business.</text>
+
+      <text id="prob5" x="90" y="328"
+        font-family="'Poppins', sans-serif" font-size="20"
+        fill="rgba(2,40,59,0.58)" style="opacity:0">That context lives in human heads —</text>
+      <text id="prob6" x="90" y="356"
+        font-family="'Poppins', sans-serif" font-size="20"
+        fill="rgba(2,40,59,0.58)" style="opacity:0">undocumented, inconsistent, invisible to AI.</text>
+
+      <!-- Tribal Knowledge Tax callout -->
+      <rect id="tkx-bg" x="88" y="384" width="540" height="90" rx="5"
+        fill="rgba(255,124,102,0.06)" stroke="rgba(255,124,102,0.22)" stroke-width="1.3"
+        style="opacity:0"/>
+      <text id="tkx-label" x="108" y="410"
+        font-family="'Poppins', sans-serif" font-size="12" font-weight="700"
+        letter-spacing="2" fill="rgba(255,124,102,0.65)" style="opacity:0">THE TRIBAL KNOWLEDGE TAX</text>
+      <text id="tkx-desc" x="108" y="434"
+        font-family="'Poppins', sans-serif" font-size="15"
+        fill="rgba(2,40,59,0.52)" style="opacity:0">Critical business logic trapped in silos —</text>
+      <text id="tkx-desc2" x="108" y="458"
+        font-family="'Poppins', sans-serif" font-size="15"
+        fill="rgba(2,40,59,0.52)" style="opacity:0">reasoning wall → AI hallucinations</text>
+
+      <!-- Outcome statement -->
+      <text id="outcome" x="90" y="528"
+        font-family="'Poppins', sans-serif" font-size="19" font-weight="600"
+        fill="rgba(2,40,59,0.70)" style="opacity:0">Meta Hub captures that context.</text>
+      <text id="outcome2" x="90" y="556"
+        font-family="'Poppins', sans-serif" font-size="19"
+        fill="rgba(2,40,59,0.48)" style="opacity:0">Agents stop guessing. They start knowing.</text>
+
+
+      <!-- ════════════════════════════════════════════ -->
+      <!-- RIGHT COLUMN — Architecture slot             -->
+      <!-- Chain centered at x=1070, boxes w=300       -->
+      <!-- x=920–1220                                   -->
+      <!-- ════════════════════════════════════════════ -->
+
+      <!-- Data Hub (faded — established) -->
+      <rect id="dhub-ghost" x="920" y="44" width="300" height="82" rx="5"
+        fill="none" stroke="rgba(255,124,102,0.22)" stroke-width="1.3"
+        style="opacity:0"/>
+      <image id="dhub-ghost-icon" href="../assets/datahub-icon.png"
+        x="1182" y="48" width="26" height="26" opacity="0.28" style="opacity:0"/>
+      <text id="dhub-ghost-lbl" x="1070" y="87"
+        font-family="'Poppins', sans-serif" font-size="20" font-weight="700"
+        fill="rgba(255,124,102,0.38)" text-anchor="middle" style="opacity:0">Data Hub</text>
+      <text id="dhub-ghost-sub" x="1070" y="108"
+        font-family="'Poppins', sans-serif" font-size="13"
+        fill="rgba(255,124,102,0.26)" text-anchor="middle" style="opacity:0">Golden records</text>
+
+      <!-- Arrow: Data Hub → Meta Hub -->
+      <line id="arr-dh-mh" x1="1070" y1="126" x2="1070" y2="172"
+        stroke="#4B4FE2" stroke-width="2" marker-end="url(#arr-indigo)"
+        style="opacity:0"/>
+      <text id="arr-dh-mh-lbl" x="1086" y="153"
+        font-family="'Poppins', sans-serif" font-size="12"
+        fill="rgba(75,79,226,0.55)" style="opacity:0">sends records</text>
+
+      <!-- Meta Hub (ACTIVE — indigo, the chapter subject) -->
+      <rect id="mh-rect" x="920" y="178" width="300" height="204" rx="5"
+        fill="rgba(75,79,226,0.04)" stroke="#4B4FE2" stroke-width="2.5"
+        style="opacity:0"/>
+      <image id="mh-icon" href="../assets/MetaHub.png"
+        x="1182" y="184" width="26" height="26" style="opacity:0"/>
+      <text id="mh-rect-title" x="1070" y="212"
+        font-family="'Poppins', sans-serif" font-size="22" font-weight="700"
+        fill="#4B4FE2" text-anchor="middle" style="opacity:0">Meta Hub</text>
+      <line id="mh-rule" x1="930" y1="226" x2="1210" y2="226"
+        stroke="rgba(75,79,226,0.20)" stroke-width="1.2" style="opacity:0"/>
+      <text id="mh-f1" x="942" y="255"
+        font-family="'Poppins', sans-serif" font-size="15"
+        fill="#02283B" style="opacity:0">→ Business Glossaries</text>
+      <text id="mh-f2" x="942" y="283"
+        font-family="'Poppins', sans-serif" font-size="15"
+        fill="#02283B" style="opacity:0">→ Semantic Association</text>
+      <text id="mh-f3" x="942" y="311"
+        font-family="'Poppins', sans-serif" font-size="15"
+        fill="#02283B" style="opacity:0">→ Expert Endorsement</text>
+      <text id="mh-f4" x="942" y="339"
+        font-family="'Poppins', sans-serif" font-size="14"
+        fill="rgba(75,79,226,0.40)" style="opacity:0">→ Universal Lineage (roadmap)</text>
+      <!-- box bottom: 178+204=382 -->
+
+      <!-- Arrow: Meta Hub → Knowledge Hub -->
+      <line id="arr-mh-kh" x1="1070" y1="382" x2="1070" y2="428"
+        stroke="#4B4FE2" stroke-width="2" marker-end="url(#arr-indigo)"
+        style="opacity:0"/>
+      <text id="arr-mh-kh-lbl" x="1086" y="409"
+        font-family="'Poppins', sans-serif" font-size="12"
+        fill="rgba(75,79,226,0.55)" style="opacity:0">adds meaning</text>
+
+      <!-- Knowledge Hub (faded — established) -->
+      <rect id="kh-ghost" x="920" y="432" width="300" height="82" rx="5"
+        fill="none" stroke="rgba(160,50,145,0.20)" stroke-width="1.3"
+        style="opacity:0"/>
+      <image id="kh-ghost-icon" href="../assets/KH.png"
+        x="1182" y="436" width="26" height="26" opacity="0.22" style="opacity:0"/>
+      <text id="kh-ghost-lbl" x="1070" y="473"
+        font-family="'Poppins', sans-serif" font-size="20" font-weight="700"
+        fill="rgba(160,50,145,0.34)" text-anchor="middle" style="opacity:0">Knowledge Hub</text>
+      <text id="kh-ghost-sub" x="1070" y="494"
+        font-family="'Poppins', sans-serif" font-size="13"
+        fill="rgba(160,50,145,0.24)" text-anchor="middle" style="opacity:0">Context-enriched vectors</text>
+      <!-- box bottom: 432+82=514 -->
+
+      <!-- Arrow: Knowledge Hub → Agent Studio -->
+      <line id="arr-kh-as" x1="1070" y1="514" x2="1070" y2="558"
+        stroke="rgba(26,26,46,0.22)" stroke-width="1.5" marker-end="url(#arr-done)"
+        style="opacity:0"/>
+
+      <!-- Agent Studio (faded — established) -->
+      <rect id="as-ghost" x="920" y="562" width="300" height="82" rx="5"
+        fill="none" stroke="rgba(2,40,59,0.14)" stroke-width="1.3"
+        style="opacity:0"/>
+      <image id="as-ghost-icon" href="../assets/Icon AI Studio.png"
+        x="1182" y="566" width="26" height="26" opacity="0.20" style="opacity:0"/>
+      <text id="as-ghost-lbl" x="1070" y="609"
+        font-family="'Poppins', sans-serif" font-size="20" font-weight="700"
+        fill="rgba(2,40,59,0.26)" text-anchor="middle" style="opacity:0">Agent Studio</text>
+      <!-- box bottom: 562+82=644 -->
+
+
+      <!-- ════════════════════════════════════════════ -->
+      <!-- BOTTOM — Availability note                   -->
+      <!-- ════════════════════════════════════════════ -->
+      <line id="avail-line" x1="90" y1="680" x2="90" y2="680"
+        stroke="rgba(2,40,59,0.18)" stroke-width="1.2"/>
+      <text id="avail-label" x="90" y="708"
+        font-family="'Poppins', sans-serif" font-size="12" font-weight="700"
+        letter-spacing="2" fill="rgba(14,195,139,0.55)" style="opacity:0">EARLY ACCESS</text>
+      <text id="avail-date" x="90" y="734"
+        font-family="'Poppins', sans-serif" font-size="18" font-weight="500"
+        fill="rgba(2,40,59,0.52)" style="opacity:0">Available now  ·  Ask us about access</text>
+
+    </svg>
+  </div>
+</div>
+
+<nav class="wb-nav">
+  <img class="wb-brand" src="../assets/boomi-logo.svg" alt="Boomi">
+  <a href="06-use-case.html">← Prev</a>
+  <a href="01-intro.html">Start over</a>
+</nav>
+
+<script src="segments.js"></script>
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+
+/* ── Narration pacing ──────────────────────────────────────────────
+   The player passes ?pace=N so reveals spread across the narration
+   instead of finishing in the first few seconds. Stroke DURATIONS are
+   untouched — only the gaps between beats scale, so drawing speed
+   looks the same. Open this file directly (no ?pace) and it plays at
+   the originally authored timing.                                     */
+const PACE = (() => {
+  const v = parseFloat(new URLSearchParams(location.search).get('pace'));
+  return (isFinite(v) && v > 0) ? v : 1;
+})();
+
+/* ── Playback gate ─────────────────────────────────────────────────
+   Two modes, both driven by the parent player.
+
+   NARRATED (?hold=1)  reveal timers are queued and released in one go the
+                       instant narration actually starts, so voice and
+                       drawing begin together.
+
+   SPEAKER (?mode=speaker)
+                       nothing runs on load. Beats are bucketed into the
+                       segments defined in segments.js and revealed one
+                       segment at a time when the presenter advances, so a
+                       live speaker sets the pace instead of racing a clock.
+
+   Neither param → plays at the originally authored timing.                */
+const WB_KEY  = '07-meta-hub';
+const SPEAKER = new URLSearchParams(location.search).get('mode') === 'speaker';
+const HOLD    = new URLSearchParams(location.search).get('hold') === '1';
+
+const _segs  = (window.WB_SEGMENTS && window.WB_SEGMENTS[WB_KEY]) || [];
+const _segOf = new Map();
+_segs.forEach((s, i) => s.ids.forEach(id => _segOf.set(id, i)));
+
+const _buckets = _segs.map(() => []);   // speaker mode
+const _queue   = [];                    // narrated mode
+let   _go      = !(HOLD || SPEAKER);
+let   _segShown = -1;
+
+function _sched(fn, ms, id) {
+  if (SPEAKER) {
+    const s = _segOf.has(id) ? _segOf.get(id) : 0;
+    _buckets[s] ? _buckets[s].push([fn, ms]) : setTimeout(fn, ms);
+    return;
+  }
+  _go ? setTimeout(fn, ms) : _queue.push([fn, ms]);
+}
+
+function _start() {
+  if (_go) return;
+  _go = true;
+  _queue.forEach(([fn, ms]) => setTimeout(fn, ms));
+  _queue.length = 0;
+}
+
+/* Reveal one segment, preserving the authored offsets inside it but
+   starting from zero so there's no dead air after an advance. */
+function _showSegment(i) {
+  if (i < 0 || i >= _buckets.length) return;
+  const b = _buckets[i];
+  if (!b.length) { _segShown = i; _report(); return; }
+  const base = Math.min(...b.map(x => x[1]));
+  b.forEach(([fn, ms]) => setTimeout(fn, Math.max(0, ms - base)));
+  b.length = 0;
+  _segShown = i;
+  _report();
+}
+
+function _nextSegment() {
+  if (_segShown + 1 < _buckets.length) _showSegment(_segShown + 1);
+  else _report(true);
+}
+
+/* Reveal everything remaining at once — used when leaving speaker mode. */
+function _showAll() {
+  for (let i = _segShown + 1; i < _buckets.length; i++) _showSegment(i);
+}
+
+function _report(atEnd) {
+  try {
+    parent.postMessage({
+      type: 'wb:seg', key: WB_KEY,
+      shown: _segShown, total: _buckets.length,
+      label: (_segs[_segShown] && _segs[_segShown].label) || '',
+      done: !!atEnd || _segShown >= _buckets.length - 1,
+    }, '*');
+  } catch (err) {}
+}
+
+window.addEventListener('message', e => {
+  const d = e && e.data;
+  if (d === 'wb:start')      document.fonts.ready.then(_start);
+  else if (d === 'wb:next')  document.fonts.ready.then(_nextSegment);
+  else if (d === 'wb:all')   document.fonts.ready.then(_showAll);
+});
+
+/* Tell the parent the gate is armed. Without this the parent can post
+   'wb:start' before this listener exists and the frame stays blank. */
+if (HOLD || SPEAKER) {
+  try { parent.postMessage('wb:ready', '*'); } catch (err) {}
+}
+if (SPEAKER) document.fonts.ready.then(() => _report());
+
+function write(id, delay, dur) {
+  delay *= PACE;
+  const el = document.getElementById(id);
+  if (!el) return;
+  try {
+    const bbox = el.getBBox();
+    const pad = 5;
+    const clipId = 'wc-' + id;
+    const defs = el.closest('svg').querySelector('defs');
+    const cp = document.createElementNS(NS, 'clipPath');
+    cp.id = clipId;
+    const r = document.createElementNS(NS, 'rect');
+    r.setAttribute('x', bbox.x - pad);
+    r.setAttribute('y', bbox.y - pad);
+    r.setAttribute('height', String(bbox.height + pad * 2));
+    r.setAttribute('width', '0');
+    cp.appendChild(r);
+    defs.appendChild(cp);
+    el.setAttribute('clip-path', `url(#${clipId})`);
+    el.style.opacity = '1';
+    const target = bbox.width + pad * 2;
+    const durMs = dur * 1000;
+    _sched(() => {
+      const t0 = performance.now();
+      (function tick(now) {
+        const p = Math.min(1, (now - t0) / durMs);
+        r.setAttribute('width', String(target * p));
+        if (p < 1) requestAnimationFrame(tick);
+      })(performance.now());
+    }, delay * 1000, id);
+  } catch(e) { fade(id, delay, dur); }
+}
+
+function draw(id, delay, dur) {
+  delay *= PACE;
+  const el = document.getElementById(id);
+  if (!el) return;
+  let len = 4000;
+  try { if (el.getTotalLength) len = el.getTotalLength(); } catch(e) {}
+  el.style.strokeDasharray = `${len} ${len}`;
+  el.style.strokeDashoffset = String(len);
+  _sched(() => {
+    el.style.opacity = '1';
+    requestAnimationFrame(() => {
+      el.style.transition = `stroke-dashoffset ${dur}s cubic-bezier(0.35, 0, 0.25, 1)`;
+      el.style.strokeDashoffset = '0';
+    });
+  }, delay * 1000, id);
+}
+
+function growLine(id, delay, dur, targetX2) {
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.opacity = '1';
+    const x1 = parseFloat(el.getAttribute('x1'));
+    const durMs = dur * 1000;
+    const t0 = performance.now();
+    (function tick(now) {
+      const p = Math.min(1, (now - t0) / durMs);
+      el.setAttribute('x2', String(x1 + (targetX2 - x1) * p));
+      if (p < 1) requestAnimationFrame(tick);
+    })(performance.now());
+  }, delay * 1000, id);
+}
+
+function fade(id, delay, dur, targetOpacity = 1) {
+  delay *= PACE;
+  const el = document.getElementById(id);
+  if (!el) return;
+  _sched(() => {
+    el.style.transition = `opacity ${dur}s ease`;
+    el.style.opacity = String(targetOpacity);
+  }, delay * 1000, id);
+}
+
+document.fonts.ready.then(() => {
+
+  // Corner badge — sets context immediately
+  fade('badge-bg',  0.2, 0.4);
+  fade('badge-lbl', 0.2, 0.4);
+
+  // Left column — problem framing
+  fade('eyebrow',   0.5, 0.5);
+  write('mh-title', 1.1, 0.6);
+
+  /* Park the product icon just past the end of the title. Measured rather
+     than hardcoded because the title is 54px and its rendered width depends
+     on whether Poppins has loaded — we're inside fonts.ready, so it has. */
+  (() => {
+    const t = document.getElementById('mh-title');
+    const ic = document.getElementById('mh-title-icon');
+    if (!t || !ic) return;
+    const b = t.getBBox();
+    const size = +ic.getAttribute('width');
+    ic.setAttribute('x', b.x + b.width + 20);
+    ic.setAttribute('y', b.y + (b.height - size) / 2);
+  })();
+  fade('mh-title-icon', 1.6, 0.5);
+
+  fade('mh-sub',    1.8, 0.5);
+  growLine('div1',  2.4, 0.55, 640);
+
+  fade('prob1', 3.0, 0.45);
+  fade('prob2', 3.3, 0.45);
+  fade('prob3', 3.9, 0.45);
+  fade('prob4', 4.2, 0.45);
+  fade('prob5', 4.8, 0.45);
+  fade('prob6', 5.1, 0.45);
+
+  fade('tkx-bg',    5.8, 0.5);
+  fade('tkx-label', 6.0, 0.4);
+  fade('tkx-desc',  6.2, 0.4);
+  fade('tkx-desc2', 6.4, 0.4);
+
+  fade('outcome',  6.9, 0.5);
+  fade('outcome2', 7.3, 0.5);
+
+  // Right column — established context appears early
+  fade('dhub-ghost',      3.2, 0.55);
+  fade('dhub-ghost-icon', 3.2, 0.55);
+  fade('dhub-ghost-lbl',  3.2, 0.55);
+  fade('dhub-ghost-sub',  3.4, 0.45);
+
+  // Arrow into Meta Hub
+  fade('arr-dh-mh',     7.9, 0.4);
+  fade('arr-dh-mh-lbl', 8.1, 0.4);
+
+  // Meta Hub draws in (the chapter subject)
+  draw('mh-rect',        8.5, 0.85);
+  fade('mh-icon',        9.1, 0.50);
+  write('mh-rect-title', 9.1, 0.50);
+  fade('mh-rule',        9.6, 0.35);
+  fade('mh-f1',          9.9, 0.35);
+  fade('mh-f2',         10.3, 0.35);
+  fade('mh-f3',         10.7, 0.35);
+  fade('mh-f4',         11.1, 0.35);
+
+  // Chain continues down
+  fade('arr-mh-kh',     11.7, 0.4);
+  fade('arr-mh-kh-lbl', 11.9, 0.4);
+  fade('kh-ghost',      12.2, 0.45);
+  fade('kh-ghost-icon', 12.2, 0.45);
+  fade('kh-ghost-lbl',  12.2, 0.45);
+  fade('kh-ghost-sub',  12.4, 0.45);
+
+  fade('arr-kh-as',     12.9, 0.4);
+  fade('as-ghost',      13.2, 0.45);
+  fade('as-ghost-icon', 13.2, 0.45);
+  fade('as-ghost-lbl',  13.2, 0.45);
+
+  // Availability note
+  growLine('avail-line', 14.2, 0.55, 1310);
+  fade('avail-label',   14.5, 0.4);
+  fade('avail-date',    14.9, 0.5);
+
+});
+</script>
+</body>
+</html>

@@ -71,17 +71,6 @@
     }
     .lb-wordmark:hover { opacity: 0.90; }
 
-    /* Presenter tools — bottom right, barely there */
-    .lb-tools-btn {
-      position: absolute; bottom: 24px; right: 44px;
-      background: none; border: none; cursor: pointer;
-      font-family: inherit; font-size: 0.58rem; font-weight: 600;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: rgba(255,255,255,0.22);
-      display: flex; align-items: center; gap: 5px;
-      transition: color 0.18s;
-    }
-    .lb-tools-btn:hover { color: rgba(255,255,255,0.55); }
 
     /* ── Whiteboard frame — exact match to chapter files ── */
     .lb-frame {
@@ -273,44 +262,72 @@
     .th-arrow:hover:not(:disabled) { background: rgba(255,255,255,0.12); color: var(--white); }
     .th-arrow:disabled { opacity: 0.22; cursor: default; }
 
-    .th-presenter-btn {
-      display: flex; align-items: center; gap: 6px;
-      padding: 5px 12px 5px 10px; border-radius: 5px;
-      font-family: inherit; font-size: 0.62rem; font-weight: 700;
+    /* Next is the primary action — it needs to read as a button, with a word
+       on it. Icon-only chevrons were being missed entirely.
+
+       Three states:
+         default  — the chapter is still drawing. Dim, but still clickable
+                    so nobody feels trapped.
+         .ready   — the drawing has completed. Coral, obvious.
+         :disabled— last chapter. Reads "End". */
+    .th-next {
+      display: flex; align-items: center; gap: 7px;
+      width: auto; padding: 0 11px 0 13px; height: 30px; border-radius: 5px;
+      font-family: inherit; font-size: 0.63rem; font-weight: 700;
       letter-spacing: 0.07em; text-transform: uppercase;
-      background: rgba(255,124,102,0.10); border: 1px solid rgba(255,124,102,0.22);
-      color: var(--coral); cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.34); cursor: pointer; flex-shrink: 0;
+      transition: background 0.45s ease, border-color 0.45s ease,
+                  color 0.45s ease, filter 0.15s;
     }
-    .th-presenter-btn:hover { background: rgba(255,124,102,0.18); border-color: rgba(255,124,102,0.40); }
-    .th-presenter-btn.on { background: rgba(255,124,102,0.22); border-color: var(--coral); }
+    .th-next:hover:not(:disabled) { color: rgba(255,255,255,0.70); }
+    .th-next.ready {
+      background: var(--coral); border-color: var(--coral); color: var(--navy);
+    }
+    .th-next.ready:hover { filter: brightness(1.08); color: var(--navy); }
+    .th-next:disabled {
+      background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.22); cursor: default;
+    }
+
 
     .th-stage { flex: 1; position: relative; background: #090f18; overflow: hidden; }
+
+    /* ── Audio bar ───────────────────────────── */
+    .th-audio {
+      display: flex; align-items: center; gap: 12px;
+      height: 44px; flex-shrink: 0; padding: 0 16px;
+      background: var(--navy-deep); border-top: 1px solid var(--border);
+      font-family: 'Poppins', sans-serif;
+    }
+    .th-audio.no-track { opacity: 0.45; }
+    .au-btn {
+      width: 30px; height: 30px; flex-shrink: 0; display: flex;
+      align-items: center; justify-content: center;
+      border: 1px solid rgba(255,255,255,0.14); border-radius: 50%;
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85);
+      cursor: pointer; transition: background 0.15s, border-color 0.15s;
+    }
+    .au-btn:hover:not(:disabled) { background: var(--coral); border-color: var(--coral); color: var(--navy); }
+    .au-btn:disabled { opacity: 0.3; cursor: default; }
+    .au-track {
+      flex: 1; height: 3px; border-radius: 2px; position: relative;
+      background: rgba(255,255,255,0.10); cursor: pointer; min-width: 60px;
+    }
+    .au-fill {
+      position: absolute; left: 0; top: 0; bottom: 0; width: 0;
+      border-radius: 2px; background: var(--coral); pointer-events: none;
+    }
+    .au-time {
+      flex-shrink: 0; font-size: 0.6rem; font-weight: 500;
+      color: var(--muted); font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    }
+
     #wb-iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: block; }
 
 
 
-    /* ════════════════════════════════════════
-       KEYBOARD HINT
-    ════════════════════════════════════════ */
-    #kb-hint {
-      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
-      display: flex; align-items: center; gap: 16px; z-index: 19;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.4s ease 1.2s;
-    }
-    #theater-view.visible #kb-hint { opacity: 1; }
-    #kb-hint.hide { opacity: 0 !important; transition: opacity 0.3s ease; }
-    .kb-item {
-      display: flex; align-items: center; gap: 5px;
-      font-size: 0.56rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-      color: rgba(255,255,255,0.22);
-    }
-    .kb-key {
-      padding: 2px 6px; border-radius: 3px;
-      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
-      font-size: 0.55rem; color: rgba(255,255,255,0.35); white-space: nowrap;
-    }
   </style>
 </head>
 <body>
@@ -351,14 +368,12 @@
                 <span class="lb-icon-name">Data Hub</span>
               </div>
 
+              <!-- Meta Hub — swap src when icon is available -->
               <div class="lb-icon-block">
-                <img src="../assets/Icon MFT.png" class="lb-icon-img" alt="MFT">
-                <span class="lb-icon-name">MFT</span>
-              </div>
-
-              <div class="lb-icon-block">
-                <img src="../assets/Icon AI Studio.png" class="lb-icon-img" alt="Agent Studio">
-                <span class="lb-icon-name">Agent Studio</span>
+                <img src="../assets/MetaHub.png" class="lb-icon-img" alt="Meta Hub"
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div style="display:none;width:clamp(42px,6vw,80px);height:clamp(42px,6vw,80px);border-radius:14px;background:linear-gradient(135deg,rgba(75,79,226,0.18),rgba(160,50,145,0.18));border:1.5px dashed rgba(2,40,59,0.20);align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:rgba(2,40,59,0.30);letter-spacing:0.04em;">MH</div>
+                <span class="lb-icon-name">Meta Hub</span>
               </div>
 
               <div class="lb-icon-block">
@@ -390,10 +405,6 @@
       </button>
     </div>
 
-    <button class="lb-tools-btn" onclick="window.open('storyboard.html','_blank')">
-      Presenter Tools ›
-    </button>
-
   </div>
 
 
@@ -414,19 +425,11 @@
             <path d="M7.5 1.5L3 5.5l4.5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-        <button class="th-arrow" id="next-btn" onclick="nextChapter()" title="Next (→)">
+        <button class="th-next" id="next-btn" onclick="nextChapter()" title="Next chapter (→)">
+          Next
           <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-            <path d="M3.5 1.5L8 5.5l-4.5 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3.5 1.5L8 5.5l-4.5 4" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-        </button>
-        <button class="th-presenter-btn" onclick="window.open('storyboard.html','_blank')" title="Presenter tools (P)">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-            <rect x="1" y="1" width="4.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/>
-            <rect x="7.5" y="1" width="4.5" height="3.5" rx="1" stroke="currentColor" stroke-width="1.3"/>
-            <rect x="7.5" y="6.5" width="4.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/>
-            <rect x="1" y="8.5" width="4.5" height="3.5" rx="1" stroke="currentColor" stroke-width="1.3"/>
-          </svg>
-          Presenter
         </button>
       </div>
     </header>
@@ -435,11 +438,26 @@
       <iframe id="wb-iframe" src="" title="Whiteboard" allowfullscreen allow="accelerometer; autoplay; fullscreen"></iframe>
     </div>
 
-    <div id="kb-hint">
-      <div class="kb-item"><span class="kb-key">← →</span> Chapters</div>
-      <div class="kb-item"><span class="kb-key">P</span> Presenter tools</div>
-      <div class="kb-item"><span class="kb-key">Esc</span> Lobby</div>
+    <!-- Narration bar -->
+    <div class="th-audio no-track" id="au-bar">
+      <button class="au-btn" id="au-play" onclick="toggleAudio()" title="Play narration (Space)" disabled>
+        <svg id="au-icon" width="10" height="11" viewBox="0 0 10 11" fill="none">
+          <polygon points="1.5,0.5 9,5.5 1.5,10.5" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="au-btn" id="au-restart" onclick="restartChapter()" title="Replay animation + audio from start" disabled>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M10 6a4 4 0 1 1-1.4-3.05" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M10.4 0.9v2.4H8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="au-track" id="au-track" onclick="seekAudio(event)">
+        <div class="au-fill" id="au-fill"></div>
+      </div>
+      <div class="au-time" id="au-time">0:00 / 0:00</div>
     </div>
+
+    <audio id="au-el" preload="metadata"></audio>
 
   </div>
 
@@ -447,19 +465,117 @@
 
 </div><!-- /shell -->
 
+<script src="segments.js"></script>
 <script>
+  /* audio  = file in audio/ — drop it in and it lights up automatically
+     animEnd = when that chapter's draw-on finishes, in seconds.
+               Read from the setTimeout delays in each chapter's HTML.
+               Shown as a marker on the scrub bar so you can see how long
+               you're talking over a held frame. */
+  /* audio   = basename in audio/, no extension. The player tries the
+               extensions in AUDIO_EXT below, so drop in whichever format
+               you have — mp3, m4a, wav or aiff — and it just works.
+     animEnd = when that chapter's draw-on finishes, in seconds.
+               Read from the setTimeout delays in each chapter's HTML.
+               Drawn as a marker on the scrub bar so you can see how long
+               you're talking over a held frame. */
+  const AUDIO_EXT = ['mp3', 'm4a', 'wav', 'aiff'];
+
+  /* PACING
+     Chapter animations were authored to run in a few seconds, but the
+     narration is much longer — so reveals would all fire up front and
+     leave you talking over a finished drawing. The player measures the
+     narration file and passes ?pace=N to the chapter, which stretches
+     the GAPS between reveals (not the stroke speed) so the drawing
+     finishes at FILL_TO of the way through the audio.
+
+     Pace is read from the actual audio file at load time, so re-recording
+     or re-cutting narration needs no changes here.
+
+     animEnd = when the draw-on finishes at authored speed. If you retime a
+     chapter's animation, update its animEnd.
+     Set PACING = false for authored timing. */
+  const PACING  = true;
+  const FILL_TO = 0.90;
+
+  /* Narration cut in use. The Extended Uncut set is still on disk and feeds
+     the BDI MQ demo script, but this player ships the Condensed cut only. */
+  const AUDIO_DIR    = 'audio/Condensed/';
+  const AUDIO_PREFIX = 'audio-';
   const CHAPTERS = [
-    { src: '01-intro.html',         num: '01', title: 'Sources'       },
-    { src: '02-bdi.html',           num: '02', title: 'BDI'           },
-    { src: '03-connectors.html',    num: '03', title: 'Connectors'    },
-    { src: '04-knowledge-hub.html', num: '04', title: 'Knowledge Hub' },
-    { src: '05-data-hub.html',      num: '05', title: 'Data Hub'      },
-    { src: '06-use-case.html',      num: '06', title: 'Use Case'      },
+    { src: '01-intro.html',         num: '01', title: 'Sources',       slug: '01-sources',       animEnd: 15.10 },
+    { src: '02-bdi.html',           num: '02', title: 'BDI',           slug: '02-bdi',           animEnd:  8.20 },
+    /* 03 anchors its five connector groups to narration paragraphs rather
+       than scaling uniformly, so its drawing ends at 93.1%, not FILL_TO. */
+    { src: '03-connectors.html',    num: '03', title: 'Connectors',    slug: '03-connectors',    animEnd: 18.75, drawEndFrac: 0.931 },
+    { src: '04-knowledge-hub.html', num: '04', title: 'Knowledge Hub', slug: '04-knowledge-hub', animEnd:  7.45 },
+    { src: '05-data-hub.html',      num: '05', title: 'Data Hub',      slug: '05-data-hub',      animEnd:  5.05 },
+    { src: '06-use-case.html',      num: '06', title: 'Use Case',      slug: '06-use-case',      animEnd: 33.00 },
+    { src: '07-meta-hub.html',      num: '07', title: 'Meta Hub',      slug: '07-meta-hub',      animEnd: 15.40 },
   ];
+
+  /* Path to a chapter's narration, minus extension. */
+  function audioBase(i) {
+    return encodeURI(AUDIO_DIR + AUDIO_PREFIX + CHAPTERS[i].slug);
+  }
+
+  /* Render the current chapter, stretched to the narration length we
+     measured. narrSec null → authored timing. */
+  function renderChapter(narrSec) {
+    const ch = CHAPTERS[current];
+    const q = [];
+    if (PACING && narrSec && ch.animEnd) {
+      q.push('pace=' + ((narrSec * FILL_TO) / ch.animEnd).toFixed(3));
+      /* Narration length, so a chapter can anchor groups of reveals to
+         specific points in the voiceover instead of scaling uniformly.
+         See the SEGMENTS block in 03-connectors.html. */
+      q.push('dur=' + narrSec.toFixed(2));
+    }
+    /* With a track, hold the drawing until narration actually starts so the
+       two are locked together. No track → let it play immediately. */
+    if (narrSec) { q.push('hold=1'); resetHandshake(); }
+    document.getElementById('wb-iframe').src = ch.src + (q.length ? '?' + q.join('&') : '');
+  }
+
+  /* ── Start handshake ──────────────────────────────────────────────
+     The drawing is released only once BOTH sides are ready: the chapter
+     has armed its gate (wb:ready) and the audio is actually producing
+     sound (the 'playing' event). Either one alone would risk a lost
+     message and a permanently blank frame. A watchdog releases anyway
+     if the handshake doesn't complete. */
+  let frameReady   = false;
+  let audioPlaying = false;
+  let releaseTimer = null;
+
+  function resetHandshake() {
+    frameReady = false;
+    audioPlaying = false;
+    clearTimeout(releaseTimer);
+    /* Safety net: never leave the viewer on a blank frame. */
+    releaseTimer = setTimeout(releaseAnimation, 4000);
+  }
+
+  function maybeRelease() {
+    if (frameReady && audioPlaying) releaseAnimation();
+  }
+
+  /* Release a held animation. Safe to call more than once. */
+  function releaseAnimation() {
+    clearTimeout(releaseTimer);
+    const f = document.getElementById('wb-iframe');
+    if (f && f.contentWindow) f.contentWindow.postMessage('wb:start', '*');
+  }
+
+  window.addEventListener('message', e => {
+    const d = e && e.data;
+    if (d === 'wb:ready') { frameReady = true; maybeRelease(); return; }
+  });
+
+
+
 
   let current   = 0;
   let inTheater = false;
-  let hintTimer;
 
   /* Chapter nav pills */
   const chNav = document.getElementById('ch-nav');
@@ -488,7 +604,6 @@
     setTimeout(() => {
       theater.classList.add('visible');
       loadChapter(index);
-      scheduleHideHint();
     }, 320);
   }
 
@@ -499,14 +614,19 @@
     theater.classList.remove('visible');
     lobby.classList.remove('out');
     setTimeout(() => { document.getElementById('wb-iframe').src = ''; }, 500);
-    clearTimeout(hintTimer);
+    if (typeof au !== 'undefined') au.pause();
   }
+
+  /* The iframe is rendered once we know how long the narration is, so the
+     animation can be stretched to fit it. loadAudio() calls renderChapter()
+     on metadata, or immediately if there's no usable track. */
+  let renderPending = false;
 
   function loadChapter(index) {
     current = Math.max(0, Math.min(index, CHAPTERS.length - 1));
-    document.getElementById('wb-iframe').src = CHAPTERS[current].src;
     refreshNav();
-    resetHintTimer();
+    renderPending = true;
+    loadAudio(current);
   }
 
   function prevChapter() { if (current > 0)                   loadChapter(current - 1); }
@@ -516,29 +636,186 @@
     CHAPTERS.forEach((_, i) => {
       document.getElementById(`pill-${i}`).classList.toggle('active', i === current);
     });
+    const next = document.getElementById('next-btn');
     document.getElementById('prev-btn').disabled = (current === 0);
-    document.getElementById('next-btn').disabled = (current === CHAPTERS.length - 1);
+    next.disabled = (current === CHAPTERS.length - 1);
+    next.classList.remove('ready');
+    next.textContent = '';
+    next.appendChild(document.createTextNode(
+      current === CHAPTERS.length - 1 ? 'End' : 'Next'));
+    next.insertAdjacentHTML('beforeend',
+      '<svg width="11" height="11" viewBox="0 0 11 11" fill="none">' +
+      '<path d="M3.5 1.5L8 5.5l-4.5 4" stroke="currentColor" stroke-width="2.1" ' +
+      'stroke-linecap="round" stroke-linejoin="round"/></svg>');
   }
 
   document.addEventListener('keydown', e => {
     if (!inTheater) return;
     if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
     switch (e.key) {
-      case 'ArrowRight':
-      case ' ':         e.preventDefault(); nextChapter(); break;
-      case 'ArrowLeft': e.preventDefault(); prevChapter(); break;
-      case 'p': case 'P': window.open('storyboard.html', '_blank'); break;
+      case ' ':
+        e.preventDefault();
+        hasTrack ? toggleAudio() : nextChapter();
+        break;
+      case 'ArrowRight': e.preventDefault(); nextChapter(); break;
+      case 'ArrowLeft':  e.preventDefault(); prevChapter(); break;
+      case 'r': case 'R': restartChapter(); break;
       case 'Escape': goLobby(); break;
     }
   });
 
-  function scheduleHideHint() { hintTimer = setTimeout(hideHint, 4200); }
-  function resetHintTimer() {
-    clearTimeout(hintTimer);
-    document.getElementById('kb-hint').classList.remove('hide');
-    scheduleHideHint();
+
+  /* ═══════════════════════════════════════════
+     NARRATION
+     Audio lives in audio/ and is optional. Drop a file in with the
+     name listed in CHAPTERS and the bar enables itself on next load.
+     Nothing breaks while the folder is empty.
+  ═══════════════════════════════════════════ */
+  const au       = document.getElementById('au-el');
+  const auBar    = document.getElementById('au-bar');
+  const auPlay   = document.getElementById('au-play');
+  const auRestart= document.getElementById('au-restart');
+  const auIcon   = document.getElementById('au-icon');
+  const auFill   = document.getElementById('au-fill');
+  const auTime   = document.getElementById('au-time');
+
+  let hasTrack = false;
+
+  const ICON_PLAY  = '<polygon points="1.5,0.5 9,5.5 1.5,10.5" fill="currentColor"/>';
+  const ICON_PAUSE = '<rect x="1" y="0.5" width="3" height="10" rx="1" fill="currentColor"/>' +
+                     '<rect x="6" y="0.5" width="3" height="10" rx="1" fill="currentColor"/>';
+
+  function fmt(t) {
+    if (!isFinite(t) || t < 0) t = 0;
+    const m = Math.floor(t / 60), s = Math.floor(t % 60);
+    return m + ':' + String(s).padStart(2, '0');
   }
-  function hideHint() { document.getElementById('kb-hint').classList.add('hide'); }
+
+  /* Next is dim while the chapter is still drawing, coral once it's done.
+     Still clickable either way — the colour is a cue, not a lock. */
+  function setNextReady(on) {
+    const n = document.getElementById('next-btn');
+    if (n) n.classList.toggle('ready', !!on && !n.disabled);
+  }
+
+  function setTrackState(on) {
+    hasTrack = on;
+    auBar.classList.toggle('no-track', !on);
+    auPlay.disabled = !on;
+    auRestart.disabled = !on;
+  }
+
+  /* Which chapter + extension the current load attempt belongs to, so a
+     late event from a previous chapter can't clobber the new one. */
+  let attempt = { ch: -1, ext: 0 };
+
+  function loadAudio(i, extIdx) {
+    const ch = CHAPTERS[i];
+    if (extIdx === undefined) extIdx = 0;
+
+    if (extIdx === 0) {
+      au.pause();
+      auIcon.innerHTML = ICON_PLAY;
+      auFill.style.width = '0%';
+      auTime.textContent = '0:00 / 0:00';
+      setTrackState(false);
+      setNextReady(false);
+    }
+
+    if (extIdx >= AUDIO_EXT.length) {
+      attempt = { ch: i, ext: -1 };
+      setTrackState(false);
+      /* No track — render at authored timing so the chapter still plays.
+         Deliberately does NOT advance: a missing file should stop here and be
+         visible, not sprint through the remaining chapters. */
+      if (renderPending) { renderPending = false; renderChapter(null); }
+      return;
+    }
+
+    attempt = { ch: i, ext: extIdx };
+    au.src = audioBase(i) + '.' + AUDIO_EXT[extIdx];
+    au.load();
+  }
+
+  au.addEventListener('loadedmetadata', () => {
+    setTrackState(true);
+    auTime.textContent = '0:00 / ' + fmt(au.duration);
+
+    /* Now we know the narration length — render the chapter stretched to it,
+       held at frame zero, then start narration. The animation is released by
+       the 'playing' handler so the two begin on the same tick. */
+    if (renderPending) {
+      renderPending = false;
+      renderChapter(au.duration);
+      au.currentTime = 0;
+      au.play().catch(() => {
+        /* Autoplay refused (no user gesture yet). Don't leave the viewer
+           staring at a blank frame — run the drawing unsynced. */
+        releaseAnimation();
+      });
+    }
+  });
+
+  /* Missing or unplayable file — try the next extension, then give up
+     quietly. Never advance the chapter from here. */
+  au.addEventListener('error', () => {
+    if (attempt.ch !== current || attempt.ext < 0) return;
+    loadAudio(current, attempt.ext + 1);
+  });
+
+  au.addEventListener('timeupdate', () => {
+    if (!au.duration) return;
+    auFill.style.width = (au.currentTime / au.duration * 100) + '%';
+    auTime.textContent = fmt(au.currentTime) + ' / ' + fmt(au.duration);
+    /* Light up Next when this chapter's drawing actually completes. */
+    const frac = CHAPTERS[current].drawEndFrac || FILL_TO;
+    if (au.currentTime >= au.duration * frac) setNextReady(true);
+  });
+
+  au.addEventListener('play',  () => { auIcon.innerHTML = ICON_PAUSE; });
+  au.addEventListener('pause', () => { auIcon.innerHTML = ICON_PLAY; });
+
+  /* Audio is genuinely producing sound now. Fires after any decode/buffer
+     delay, so this is the accurate sync point. */
+  au.addEventListener('playing', () => { audioPlaying = true; maybeRelease(); });
+
+  au.addEventListener('ended', () => {
+    auIcon.innerHTML = ICON_PLAY;
+    setNextReady(true);
+    /* Continuous playback: roll straight into the next chapter. */
+    advanceChapter();
+  });
+
+  function advanceChapter() {
+    if (current < CHAPTERS.length - 1) loadChapter(current + 1);
+  }
+
+  /* Pausing mid-chapter stops the voice but not the drawing — the reveals are
+     already scheduled. Resuming from anywhere other than the start therefore
+     replays the chapter from zero so the two stay locked. */
+  function toggleAudio() {
+    if (!hasTrack) return;
+    if (au.paused) {
+      restartChapter();
+    } else {
+      au.pause();
+    }
+  }
+
+  function restartChapter() {
+    if (!hasTrack) { renderChapter(null); return; }
+    renderChapter(au.duration);   /* re-render held at frame zero */
+    au.currentTime = 0;
+    au.play().catch(() => releaseAnimation());
+  }
+
+  function seekAudio(e) {
+    if (!hasTrack || !au.duration) return;
+    const r = document.getElementById('au-track').getBoundingClientRect();
+    au.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * au.duration;
+  }
+
+
 
   refreshNav();
 </script>

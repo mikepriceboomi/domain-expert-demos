@@ -159,10 +159,114 @@
   <a href="06-use-case.html">Next →</a>
 </nav>
 
+<script src="segments.js"></script>
 <script>
 const NS = 'http://www.w3.org/2000/svg';
 
+/* ── Narration pacing ──────────────────────────────────────────────
+   The player passes ?pace=N so reveals spread across the narration
+   instead of finishing in the first few seconds. Stroke DURATIONS are
+   untouched — only the gaps between beats scale, so drawing speed
+   looks the same. Open this file directly (no ?pace) and it plays at
+   the originally authored timing.                                     */
+const PACE = (() => {
+  const v = parseFloat(new URLSearchParams(location.search).get('pace'));
+  return (isFinite(v) && v > 0) ? v : 1;
+})();
+
+/* ── Playback gate ─────────────────────────────────────────────────
+   Two modes, both driven by the parent player.
+
+   NARRATED (?hold=1)  reveal timers are queued and released in one go the
+                       instant narration actually starts, so voice and
+                       drawing begin together.
+
+   SPEAKER (?mode=speaker)
+                       nothing runs on load. Beats are bucketed into the
+                       segments defined in segments.js and revealed one
+                       segment at a time when the presenter advances, so a
+                       live speaker sets the pace instead of racing a clock.
+
+   Neither param → plays at the originally authored timing.                */
+const WB_KEY  = '05-data-hub';
+const SPEAKER = new URLSearchParams(location.search).get('mode') === 'speaker';
+const HOLD    = new URLSearchParams(location.search).get('hold') === '1';
+
+const _segs  = (window.WB_SEGMENTS && window.WB_SEGMENTS[WB_KEY]) || [];
+const _segOf = new Map();
+_segs.forEach((s, i) => s.ids.forEach(id => _segOf.set(id, i)));
+
+const _buckets = _segs.map(() => []);   // speaker mode
+const _queue   = [];                    // narrated mode
+let   _go      = !(HOLD || SPEAKER);
+let   _segShown = -1;
+
+function _sched(fn, ms, id) {
+  if (SPEAKER) {
+    const s = _segOf.has(id) ? _segOf.get(id) : 0;
+    _buckets[s] ? _buckets[s].push([fn, ms]) : setTimeout(fn, ms);
+    return;
+  }
+  _go ? setTimeout(fn, ms) : _queue.push([fn, ms]);
+}
+
+function _start() {
+  if (_go) return;
+  _go = true;
+  _queue.forEach(([fn, ms]) => setTimeout(fn, ms));
+  _queue.length = 0;
+}
+
+/* Reveal one segment, preserving the authored offsets inside it but
+   starting from zero so there's no dead air after an advance. */
+function _showSegment(i) {
+  if (i < 0 || i >= _buckets.length) return;
+  const b = _buckets[i];
+  if (!b.length) { _segShown = i; _report(); return; }
+  const base = Math.min(...b.map(x => x[1]));
+  b.forEach(([fn, ms]) => setTimeout(fn, Math.max(0, ms - base)));
+  b.length = 0;
+  _segShown = i;
+  _report();
+}
+
+function _nextSegment() {
+  if (_segShown + 1 < _buckets.length) _showSegment(_segShown + 1);
+  else _report(true);
+}
+
+/* Reveal everything remaining at once — used when leaving speaker mode. */
+function _showAll() {
+  for (let i = _segShown + 1; i < _buckets.length; i++) _showSegment(i);
+}
+
+function _report(atEnd) {
+  try {
+    parent.postMessage({
+      type: 'wb:seg', key: WB_KEY,
+      shown: _segShown, total: _buckets.length,
+      label: (_segs[_segShown] && _segs[_segShown].label) || '',
+      done: !!atEnd || _segShown >= _buckets.length - 1,
+    }, '*');
+  } catch (err) {}
+}
+
+window.addEventListener('message', e => {
+  const d = e && e.data;
+  if (d === 'wb:start')      document.fonts.ready.then(_start);
+  else if (d === 'wb:next')  document.fonts.ready.then(_nextSegment);
+  else if (d === 'wb:all')   document.fonts.ready.then(_showAll);
+});
+
+/* Tell the parent the gate is armed. Without this the parent can post
+   'wb:start' before this listener exists and the frame stays blank. */
+if (HOLD || SPEAKER) {
+  try { parent.postMessage('wb:ready', '*'); } catch (err) {}
+}
+if (SPEAKER) document.fonts.ready.then(() => _report());
+
 function write(id, delay, dur) {
+  delay *= PACE;
   const el = document.getElementById(id);
   if (!el) return;
   try {
@@ -183,38 +287,40 @@ function write(id, delay, dur) {
     el.style.opacity = '1';
     const target = bbox.width + pad * 2;
     const durMs = dur * 1000;
-    setTimeout(() => {
+    _sched(() => {
       const t0 = performance.now();
       (function tick(now) {
         const p = Math.min(1, (now - t0) / durMs);
         r.setAttribute('width', String(target * p));
         if (p < 1) requestAnimationFrame(tick);
       })(performance.now());
-    }, delay * 1000);
+    }, delay * 1000, id);
   } catch(e) { fade(id, delay, dur); }
 }
 
 function draw(id, delay, dur) {
+  delay *= PACE;
   const el = document.getElementById(id);
   if (!el) return;
   let len = 4000;
   try { if (el.getTotalLength) len = el.getTotalLength(); } catch(e) {}
   el.style.strokeDasharray = `${len} ${len}`;
   el.style.strokeDashoffset = String(len);
-  setTimeout(() => {
+  _sched(() => {
     el.style.transition = `stroke-dashoffset ${dur}s cubic-bezier(0.35, 0, 0.25, 1)`;
     el.style.strokeDashoffset = '0';
-  }, delay * 1000);
+  }, delay * 1000, id);
 }
 
 function fade(id, delay, dur, targetOpacity = 1) {
+  delay *= PACE;
   const el = document.getElementById(id);
   if (!el) return;
   el.style.opacity = '0';
-  setTimeout(() => {
+  _sched(() => {
     el.style.transition = `opacity ${dur}s ease`;
     el.style.opacity = String(targetOpacity);
-  }, delay * 1000);
+  }, delay * 1000, id);
 }
 
 document.fonts.ready.then(() => {
