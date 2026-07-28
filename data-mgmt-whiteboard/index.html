@@ -302,6 +302,22 @@
       font-family: 'Poppins', sans-serif;
     }
     .th-audio.no-track { opacity: 0.45; }
+
+    .au-voice {
+      flex-shrink: 0; display: flex; align-items: center; gap: 6px;
+      height: 26px; padding: 0 10px; border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.58);
+      font-family: inherit; font-size: 0.60rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .au-voice:hover {
+      background: rgba(255,124,102,0.14);
+      border-color: rgba(255,124,102,0.38);
+      color: var(--white);
+    }
     .au-btn {
       width: 30px; height: 30px; flex-shrink: 0; display: flex;
       align-items: center; justify-content: center;
@@ -455,6 +471,13 @@
         <div class="au-fill" id="au-fill"></div>
       </div>
       <div class="au-time" id="au-time">0:00 / 0:00</div>
+      <button class="au-voice" id="au-voice" onclick="cycleVoice()" title="Switch narration voice">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+          <path d="M6 1.2v9.6M3.4 3.4v5.2M8.6 3.4v5.2M1.2 5v2M10.8 5v2"
+            stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <span id="au-voice-lbl">Female</span>
+      </button>
     </div>
 
     <audio id="au-el" preload="metadata"></audio>
@@ -467,18 +490,7 @@
 
 <script src="segments.js"></script>
 <script>
-  /* audio  = file in audio/ — drop it in and it lights up automatically
-     animEnd = when that chapter's draw-on finishes, in seconds.
-               Read from the setTimeout delays in each chapter's HTML.
-               Shown as a marker on the scrub bar so you can see how long
-               you're talking over a held frame. */
-  /* audio   = basename in audio/, no extension. The player tries the
-               extensions in AUDIO_EXT below, so drop in whichever format
-               you have — mp3, m4a, wav or aiff — and it just works.
-     animEnd = when that chapter's draw-on finishes, in seconds.
-               Read from the setTimeout delays in each chapter's HTML.
-               Drawn as a marker on the scrub bar so you can see how long
-               you're talking over a held frame. */
+  /* Extensions tried in order, so drop in whichever format you have. */
   const AUDIO_EXT = ['mp3', 'm4a', 'wav', 'aiff'];
 
   /* PACING
@@ -500,11 +512,28 @@
 
   /* Narration cut in use. The Extended Uncut set is still on disk and feeds
      the BDI MQ demo script, but this player ships the Condensed cut only. */
-  /* Lowercase deliberately — GitHub Pages is case-sensitive and the folder is
-     committed lowercase. macOS is case-insensitive, so a mismatch here works
-     locally and 404s only once it's live. */
-  const AUDIO_DIR    = 'audio/condensed/';
+  /* NARRATION VOICES
+     Same seven filenames in each folder, so adding or swapping a voice is a
+     folder of files and nothing else. Voice 1 is the default.
+
+     Folder names are lowercase and hyphenated deliberately: GitHub Pages is
+     case-sensitive and macOS is not, so a capital letter or a space here works
+     locally and 404s once it's live.
+
+     Folders are named descriptively so they're obvious in Finder. Add a voice
+     by dropping in a folder with the same seven filenames and adding a line
+     below. First entry is the default. */
+  const VOICES = [
+    { dir: 'audio/female-voice/', label: 'Female' },
+    { dir: 'audio/male-voice/',   label: 'Male'   },
+  ];
   const AUDIO_PREFIX = 'audio-';
+
+  let voice = 0;
+  try {
+    const saved = parseInt(localStorage.getItem('wb-voice'), 10);
+    if (saved >= 0 && saved < VOICES.length) voice = saved;
+  } catch (e) {}
   const CHAPTERS = [
     { src: '01-intro.html',         num: '01', title: 'Sources',       slug: '01-sources',       animEnd: 15.10 },
     { src: '02-bdi.html',           num: '02', title: 'BDI',           slug: '02-bdi',           animEnd:  8.20 },
@@ -517,9 +546,10 @@
     { src: '07-meta-hub.html',      num: '07', title: 'Meta Hub',      slug: '07-meta-hub',      animEnd: 15.40 },
   ];
 
-  /* Path to a chapter's narration, minus extension. */
-  function audioBase(i) {
-    return encodeURI(AUDIO_DIR + AUDIO_PREFIX + CHAPTERS[i].slug);
+  /* Path to a chapter's narration in the active voice, minus extension. */
+  function audioBase(i, v) {
+    const dir = VOICES[v === undefined ? voice : v].dir;
+    return encodeURI(dir + AUDIO_PREFIX + CHAPTERS[i].slug);
   }
 
   /* Render the current chapter, stretched to the narration length we
@@ -714,11 +744,32 @@
      late event from a previous chapter can't clobber the new one. */
   let attempt = { ch: -1, ext: 0 };
 
+  /* Reset per chapter load, so the fallback can only fire once per chapter. */
+  let fellBack = false;
+
+  /* Update the toggle's label to whatever voice is active. */
+  function paintVoice() {
+    const el = document.getElementById('au-voice-lbl');
+    if (el) el.textContent = VOICES[voice].label;
+  }
+
+  /* Step to the next voice, remember it, and restart the current chapter so
+     picture and sound stay locked. The animation re-paces itself off the new
+     file's duration, so differing voice lengths need no other change. */
+  function cycleVoice() {
+    voice = (voice + 1) % VOICES.length;
+    try { localStorage.setItem('wb-voice', String(voice)); } catch (e) {}
+    paintVoice();
+    clearTimeout(gapTimer);
+    loadChapter(current);
+  }
+
   function loadAudio(i, extIdx) {
     const ch = CHAPTERS[i];
     if (extIdx === undefined) extIdx = 0;
 
     if (extIdx === 0) {
+      fellBack = false;
       au.pause();
       auIcon.innerHTML = ICON_PLAY;
       auFill.style.width = '0%';
@@ -728,11 +779,22 @@
     }
 
     if (extIdx >= AUDIO_EXT.length) {
+      /* Selected voice has no file for this chapter. Fall back to another
+         voice once rather than play silent — a half-populated voice folder
+         shouldn't take the whole asset down. */
+      const alt = VOICES.findIndex((_, v) => v !== voice);
+      if (!fellBack && alt !== -1) {
+        fellBack = true;
+        voice = alt;
+        paintVoice();
+        loadAudio(i, 0);
+        return;
+      }
       attempt = { ch: i, ext: -1 };
       setTrackState(false);
-      /* No track — render at authored timing so the chapter still plays.
-         Deliberately does NOT advance: a missing file should stop here and be
-         visible, not sprint through the remaining chapters. */
+      /* No track in any voice — render at authored timing so the chapter still
+         plays. Deliberately does NOT advance: a missing file should stop here
+         and be visible, not sprint through the remaining chapters. */
       if (renderPending) { renderPending = false; renderChapter(null); }
       return;
     }
@@ -829,6 +891,7 @@
 
 
   refreshNav();
+  paintVoice();
 </script>
 </body>
 </html>
