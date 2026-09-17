@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 03 — When the data isn't clean</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FFFFFF;--navy:#02283B;--body:#4E626D;--mute:#8496A0;--faint:#AFBCC3;
+ --hair:#E5EAED;--coral:#FF7C66;--cw:1280px;--ch:720px}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{background:var(--paper);color:var(--body);font-family:'Poppins',-apple-system,sans-serif;
+ font-weight:300;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center}
+#frame{position:relative;flex:none;width:var(--cw);height:var(--ch);overflow:hidden;
+ background:var(--paper);transform:scale(var(--s,1));transform-origin:center center}
+#orbs{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#orbs figure{position:absolute}
+#orbs img{display:block;width:100%;height:auto}
+#oCluster{width:498px;right:-116px;bottom:-158px}
+#oCluster img{animation:fl1 30s ease-in-out infinite}
+@keyframes fl1{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(-18px,-13px) rotate(2.5deg)}}
+#logo{position:absolute;top:26px;left:44px;z-index:40;height:23px}
+#logo img{height:100%;width:auto;display:block}
+#tag{position:absolute;top:29px;right:44px;z-index:40;display:flex;align-items:center;gap:9px;
+ font-size:10.5px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--faint)}
+#tag i{width:5px;height:5px;border-radius:50%;background:var(--coral);display:block}
+#stage{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;
+ justify-content:center;padding:0 44px 0 96px}
+.hold{max-width:716px}
+.kicker{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--coral);
+ display:flex;align-items:center;gap:11px;margin-bottom:18px}
+.kicker:after{content:"";width:34px;height:1px;background:var(--coral);opacity:.45}
+h1{font-size:54px;font-weight:600;letter-spacing:-.042em;line-height:1.02;color:var(--navy)}
+.lede{margin-top:19px;font-size:16.5px;font-weight:300;line-height:1.55;color:var(--body);max-width:50ch}
+.lede em{font-style:normal;font-weight:500;color:var(--navy)}
+.rail{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:44px;max-width:716px}
+.pr{padding-top:14px;border-top:2px solid var(--hair)}
+.pr.on{border-top-color:var(--coral)}
+.pr img{display:block;width:46px;height:46px;margin-bottom:13px;filter:grayscale(1) opacity(.30)}
+.pr.on img{filter:none}
+.pr .nm{font-size:13.5px;font-weight:500;line-height:1.3;letter-spacing:-.012em;color:var(--mute)}
+.pr.on .nm{color:var(--navy);font-weight:600}
+.pr .ds{margin-top:5px;font-size:11.5px;font-weight:300;line-height:1.42;color:var(--faint)}
+.pr.on .ds{color:var(--body)}
+.a{opacity:0;transform:translateY(18px);animation:rise .75s cubic-bezier(.2,.85,.25,1) forwards;
+ animation-delay:calc(var(--i,0) * 95ms + 160ms)}
+@keyframes rise{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.a{animation:none;opacity:1;transform:none}#orbs img{animation:none}}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="orbs"><figure id="oCluster"><img src="assets/orb-cluster.png" alt=""></figure></div>
+  <div id="logo"><img src="assets/boomi-logo.svg" alt="Boomi"></div>
+  <div id="tag"><i></i>Platform demo</div>
+  <div id="stage"><div class="hold">
+    <div class="kicker a" style="--i:0">Chapter 03</div>
+    <h1 class="a" style="--i:1">When the data<br>isn't clean.</h1>
+    <p class="lede a" style="--i:2">Duplicates and invalid values are caught before they reach a report &mdash; and a steward gets <em>one place to triage them</em>.</p>
+    <div class="rail">
+      <div class="pr a" style="--i:4">
+        <img src="assets/icon-data-integration.png" alt="">
+        <div class="nm">Data Integration</div>
+        <div class="ds">Pipelines into the warehouse</div>
+      </div>
+      <div class="pr on a" style="--i:5">
+        <img src="assets/icon-data-hub.png" alt="">
+        <div class="nm">Data Hub</div>
+        <div class="ds">Golden records across systems</div>
+      </div>
+      <div class="pr a" style="--i:6">
+        <img src="assets/icon-meta-hub.png" alt="">
+        <div class="nm">Meta Hub</div>
+        <div class="ds">Catalogue and glossary</div>
+      </div>
+      <div class="pr a" style="--i:7">
+        <img src="assets/icon-knowledge-hub.png" alt="">
+        <div class="nm">Knowledge Hub</div>
+        <div class="ds">Unstructured data for AI</div>
+      </div>
+    </div>
+  </div></div>
+</div>
+<script>
+(function(){var f=document.getElementById('frame');
+function fit(){var cs=getComputedStyle(document.documentElement),
+ w=parseFloat(cs.getPropertyValue('--cw')),h=parseFloat(cs.getPropertyValue('--ch'));
+ f.style.setProperty('--s',Math.min(innerWidth/w,innerHeight/h));}
+fit();addEventListener('resize',fit,{passive:true});})();
+</script>
+</body>
+</html>

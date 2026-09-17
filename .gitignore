@@ -1,1 +1,21 @@
 .DS_Store
+
+# ---------------------------------------------------------------------------
+# Data Management 101 — working sources. NEVER publish.
+#
+# dm-101/ holds screenshots of a live Boomi demo tenant (account names, record
+# UUIDs, source-system entity IDs), a colleague's email address and headshot,
+# and the timecoded narration transcript. THIS REPO IS PUBLIC.
+#
+# The cleaned, publishable frames live in dm-101-clickable/ and are committed
+# from there. Nothing in dm-101/ should ever be staged.
+# ---------------------------------------------------------------------------
+/dm-101/
+
+# Belt-and-braces: these source-artefact filenames must never be committed
+# anywhere in this repo, even if the working folder is moved or renamed.
+# (Verified at time of writing: no already-tracked file matches these.)
+*--video.html
+source-storyboard.html
+SOURCE-INDEX.md
+transcript-timecoded.txt
