@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boomi MCP Gateway — Clickable Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#04102B;
+  --white:#FFFFFF;
+  --soft:rgba(255,255,255,.80);
+  --dim:rgba(255,255,255,.58);
+  --coral:#FF7C66;
+  /* fixed artboard — change these two for a different capture size */
+  --cw:1280px;
+  --ch:720px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--ink);color:var(--soft);
+  font-family:'Poppins',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:300;-webkit-font-smoothing:antialiased;
+  display:flex;align-items:center;justify-content:center;
+}
+#frame{
+  position:relative;flex:none;
+  width:var(--cw);height:var(--ch);overflow:hidden;
+  background:var(--ink);
+  transform:scale(var(--s,1));transform-origin:center center;
+}
+
+/* ═══════════ BACKGROUND ═══════════ */
+#bg{position:absolute;inset:0;z-index:0}
+#bg img{display:block;width:100%;height:100%;object-fit:cover}
+/* keeps the foot line legible over the dense wave lines at bottom-left */
+#bg:after{content:"";position:absolute;left:0;right:0;bottom:0;height:150px;
+  background:linear-gradient(to top,rgba(4,16,43,.62),rgba(4,16,43,0))}
+
+/* ═══════════ SPHERES ═══════════ */
+#orbs{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+#oCluster{position:absolute;width:498px;right:-116px;bottom:-158px}
+#oCluster img{display:block;width:100%;height:auto;animation:fl1 30s ease-in-out infinite}
+@keyframes fl1{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(-18px,-13px) rotate(2.5deg)}}
+
+/* ═══════════ CHROME ═══════════ */
+#logo{position:absolute;top:26px;left:44px;z-index:40;height:23px}
+#logo img{height:100%;width:auto;display:block}
+#tag{position:absolute;top:29px;right:44px;z-index:40;display:flex;align-items:center;gap:9px;
+  font-size:10.5px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--dim)}
+#tag i{width:5px;height:5px;border-radius:50%;background:var(--coral);display:block}
+
+/* ═══════════ BODY ═══════════ */
+/* content sits in the dark upper field; the wave rises under the right half */
+#stage{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;
+  justify-content:flex-start;padding:150px 44px 0 96px}
+.hold{max-width:640px}
+
+.kicker{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--coral);display:flex;align-items:center;gap:11px;margin-bottom:18px}
+.kicker:after{content:"";width:34px;height:1px;background:var(--coral);opacity:.55}
+
+h1{font-size:64px;font-weight:600;letter-spacing:-.042em;line-height:1;color:var(--white)}
+.lede{margin-top:20px;font-size:16.5px;font-weight:300;line-height:1.55;color:var(--soft);max-width:44ch}
+.lede em{font-style:normal;font-weight:500;color:var(--white)}
+
+/* ═══════════ FOOT ═══════════ */
+#foot{position:absolute;left:96px;bottom:40px;z-index:40;display:flex;align-items:center;gap:20px;
+  font-size:11px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
+#foot span{display:flex;align-items:center;gap:20px}
+#foot span:after{content:"";width:3px;height:3px;border-radius:50%;background:var(--dim);display:block}
+#foot b{font-weight:500;color:var(--soft)}
+
+/* ═══════════ REVEAL ═══════════ */
+.a{opacity:0;transform:translateY(18px);
+  animation:rise .75s cubic-bezier(.2,.85,.25,1) forwards;
+  animation-delay:calc(var(--i,0) * 95ms + 160ms)}
+@keyframes rise{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  .a{animation:none;opacity:1;transform:none}
+  #oCluster img{animation:none}
+}
+</style>
+</head>
+<body>
+
+<div id="frame">
+
+  <div id="bg"><img src="assets/bg-wave.png" alt=""></div>
+
+  <div id="orbs">
+    <figure id="oCluster"><img src="assets/orb-cluster.png" alt=""></figure>
+  </div>
+
+  <div id="logo"><img src="assets/boomi-logo-white.svg" alt="Boomi"></div>
+  <div id="tag"><i></i>Clickable demo</div>
+
+  <div id="stage">
+    <div class="hold">
+
+      <div class="kicker a" style="--i:0">Boomi AI Gateway</div>
+
+      <h1 class="a" style="--i:1">MCP Gateway</h1>
+
+      <p class="lede a" style="--i:2">Catalog, test, scope, and audit every MCP server your agents can reach,
+        from <em>one control point</em>.</p>
+
+    </div>
+  </div>
+
+  <div id="foot" class="a" style="--i:4">
+    <span>Field Engineering</span>
+    <b>Domain Experts</b>
+  </div>
+
+</div>
+
+<script>
+/* scale the artboard to fit any window without reflowing it */
+(function(){
+  var f=document.getElementById('frame');
+  function fit(){
+    var cs=getComputedStyle(document.documentElement),
+        w=parseFloat(cs.getPropertyValue('--cw')),
+        h=parseFloat(cs.getPropertyValue('--ch'));
+    f.style.setProperty('--s', Math.min(innerWidth/w, innerHeight/h));
+  }
+  fit(); addEventListener('resize', fit, {passive:true});
+})();
+</script>
+</body>
+</html>
